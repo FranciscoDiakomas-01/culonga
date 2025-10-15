@@ -81,7 +81,7 @@ export function SignForm({
         setIsLoad(false);
       }, 1500);
       console.log(signIn);
-      if (signIn.status) {
+      if (signIn?.token.length > 0) {
         localStorage.setItem("token", signIn?.token);
         router.push("/dashboard");
         return;

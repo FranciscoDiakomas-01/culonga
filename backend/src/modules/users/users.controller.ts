@@ -72,11 +72,6 @@ export class UsersController {
     return data;
   }
 
-  @Get('gettoken/:code')
-  public async getCode(@Param('code') code: string) {
-    const data = await this.usersService.getMyToken(+code);
-    return data;
-  }
   @Post('auth')
   login(@Body() createUserDto: LoginDTO) {
     return this.usersService.login(createUserDto);

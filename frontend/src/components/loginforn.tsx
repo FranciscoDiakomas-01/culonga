@@ -15,7 +15,6 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"form">) {
   const [error, setError] = useState("");
-  const [code, setCode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [isLoad, setIsLoad] = useState(false);
@@ -25,8 +24,6 @@ export function LoginForm({
     const formdata = new FormData(e.currentTarget);
     const email = formdata.get("email") as string;
     const password = formdata.get("password") as string;
-
-    const MyCode = formdata.get("code") as string;
     if (!password || !email) {
       setError("Preencha todos os campos");
       setTimeout(() => {
@@ -34,55 +31,29 @@ export function LoginForm({
       }, 2000);
     } else {
       setIsLoad(true);
-      if (code) {
-        if (!code) {
-          toast.warning("Preenche os dados");
-          return;
-        }
-        setIsLoad(true);
-        const getter = new UserGetter();
-        const res = await getter.getMyToken(MyCode);
-        if (res?.found && res?.token?.length > 0) {
-          localStorage.setItem("token", res?.token);
-          router.push("/dashboard");
-        } else {
-          toast.warning(res.message);
-        }
+      const createUser = new UserCreater();
+      const signIn = (await createUser.login({
+        email,
+        password,
+      })) as {
+        message: string;
+        token: string;
+        status: boolean;
+        description: string;
+      };
+      setTimeout(() => {
         setIsLoad(false);
+      }, 1500);
+      if (signIn.token.length > 0) {
+        localStorage.setItem("token", signIn.token);
+        router.push("/dashboard");
         return;
-      } else {
-        const createUser = new UserCreater();
-        const signIn = (await createUser.login({
-          email,
-          password,
-        })) as {
-          message: string;
-          token: string;
-          status: boolean;
-          description: string;
-        };
-        setTimeout(() => {
-          setIsLoad(false);
-        }, 1500);
-        if (signIn.status && signIn.token.length > 0) {
-          if (signIn.token == "VERIFYCODE") {
-            setCode(true);
-            toast.info(signIn.message, {
-              description: signIn.description,
-            });
-            return;
-          } else {
-            localStorage.setItem("token", signIn.token);
-            router.push("/dashboard");
-            return;
-          }
-        }
-        toast.info(
-          Array.isArray(signIn.message)
-            ? signIn.message[0]
-            : signIn.message ?? "Erro ao acessar conta"
-        );
       }
+      toast.info(
+        Array.isArray(signIn.message)
+          ? signIn.message[0]
+          : signIn.message ?? "Erro ao acessar conta"
+      );
     }
   }
   return (

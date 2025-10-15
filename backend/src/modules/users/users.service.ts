@@ -90,45 +90,6 @@ export class UsersService {
       };
     }
   }
-  public async getMyToken(code: number) {
-    try {
-      const userWithCode = await this.database.users.findFirst({
-        where: {
-          code,
-        },
-      });
-
-      if (userWithCode) {
-        const token = this.JWTService.sign({
-          userid: userWithCode.id,
-          role: 'SELLER',
-          createdAt: new Date(),
-          expireAt: new Date(),
-        });
-        await this.database.users.update({
-          data: {
-            code: 0,
-          },
-          where: {
-            id: userWithCode.id,
-          },
-        });
-        return {
-          found: true,
-          token,
-        };
-      }
-      return {
-        found: false,
-        message: 'Conta não encontrada',
-      };
-    } catch (error) {
-      return {
-        found: false,
-        message: 'Conta não encontrada',
-      };
-    }
-  }
   // UPDATE
   public async update(id: string, updateUserDto: UpdateUserDto) {
     const updater = new UserUpedater(this.database);

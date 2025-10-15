@@ -1,37 +1,35 @@
-  import { Logger } from "@nestjs/common";
-import DatabaseService from "src/services/database/database.service";
-import { PaypayNotifyDto } from "../dto/update-payment.dto";
-import { Status } from "generated/prisma";
-import ExuteMyWebhooks from "src/modules/integrations/useCases/executeIntegrations";
-import WebHookService from "src/services/webhook/webhook.service";
-import EmailService from "src/services/Email/email.service";
-import MessagingService from "src/services/Message/message.service";
+import { Logger } from '@nestjs/common';
+import DatabaseService from 'src/services/database/database.service';
+import { PaypayNotifyDto } from '../dto/update-payment.dto';
+import { Status } from 'generated/prisma';
+import ExuteMyWebhooks from 'src/modules/integrations/useCases/executeIntegrations';
+import WebHookService from 'src/services/webhook/webhook.service';
+import EmailService from 'src/services/Email/email.service';
+import MessagingService from 'src/services/Message/message.service';
 
 export default class PaymentUpdate {
-  private readonly logger = new Logger("PymentLogger");
+  private readonly logger = new Logger('PaymentLogger');
   private readonly pushKit = new WebHookService();
 
-  construtor( private readonly database : DatabaseService ){
-    
-  }
+  constructor(private readonly database: DatabaseService) {}
 
   public async update(data: PaypayNotifyDto) {
     try {
       const statusMap: Record<
         string,
-        "PENDING" | "APROVED" | "REJECTED" | "CANCELED"
+        'PENDING' | 'APROVED' | 'REJECTED' | 'CANCELED'
       > = {
-        TRADE_SUCCESS: "APROVED",
-        TRADE_FINISHED: "APROVED",
-        REFUND_SUCCESS: "APROVED",
-        TRANSFER_SUCCESS: "APROVED",
-        TRADE_CLOSED: "CANCELED",
-        REFUND_FAIL: "CANCELED",
-        TRANSFER_FAIL: "REJECTED",
+        TRADE_SUCCESS: 'APROVED',
+        TRADE_FINISHED: 'APROVED',
+        REFUND_SUCCESS: 'APROVED',
+        TRANSFER_SUCCESS: 'APROVED',
+        TRADE_CLOSED: 'CANCELED',
+        REFUND_FAIL: 'CANCELED',
+        TRANSFER_FAIL: 'REJECTED',
       };
 
       function mapPaypayStatus(paypayStatus: string): Status {
-        return statusMap[paypayStatus] ?? "PENDING";
+        return statusMap[paypayStatus] ?? 'PENDING';
       }
 
       const payment = await this.database.payment.findFirst({
@@ -55,17 +53,18 @@ export default class PaymentUpdate {
       });
 
       if (!payment) {
-        return { message: "Pagamento não encontrado" };
+        return { message: 'Pagamento não encontrado' };
       }
 
-      if (payment.status === "PENDING") {
+      if (payment.status === 'PENDING') {
         const status = mapPaypayStatus(data.status);
+
         await this.database.payment.update({
           data: { status },
           where: { paypayCode: data.out_trade_no },
         });
 
-        if (status === "APROVED") {
+        if (status === 'APROVED') {
           const user = JSON.parse(payment.user as string) as {
             name: string;
             email: string;
@@ -76,45 +75,49 @@ export default class PaymentUpdate {
             where: { id: payment.productId },
           });
 
-        const emailService = new EmailService();
-        const messagingService = new MessagingService();
-        
-        await Promise.all([
-          emailService.senEmail({
-            to: user.email,
-            subject: "✅ Compra Realizada",
-            html: `<h1>Compra confirmada</h1><p>Produto: ${Product?.title}</p>`,
-          }),
-        
-          messagingService.sendMessage(
-            user.telefone,
-            Product?.file as string,
-            Product?.whatsappSuport
-          ),
-          this.database.users.update({
-            data: {
-              totalEarned: payment.User.totalEarned + valor,
-              availableBalance:
-                payment.User.availableBalance + this.percent(valor),
-            },
-            where: { id: payment.User.id },
-          }),
-        ]);
+          const emailService = new EmailService();
+          const messagingService = new MessagingService();
 
-        await Promise.all([
-          this.pushKit.send(),
-          ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
-        ]);
+          const valor = payment.amount;
+          await Promise.all([
+            emailService.senEmail({
+              to: user.email,
+              subject: '✅ Compra Realizada',
+              html: `<h1>Compra confirmada</h1><p>Produto: ${Product?.title}</p>`,
+            }),
 
-        return { message: "Pagamento modificado" };
+            messagingService.sendMessage(
+              user.telefone,
+              Product?.file as string,
+              Product?.whatsappSuport,
+            ),
+
+            this.database.users.update({
+              data: {
+                totalEarned: payment.User.totalEarned + valor,
+                availableBalance:
+                  payment.User.availableBalance + this.percent(valor),
+              },
+              where: { id: payment.User.id },
+            }),
+          ]);
+
+          await Promise.all([
+            this.pushKit.send(),
+            ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
+          ]);
+
+          return { message: 'Pagamento modificado' };
+        }
+        return {
+          status: payment.status,
+        };
       }
 
-      return {
-        status: payment.status === "APROVED" ? "Aprovado" : "Cancelado",
-      };
+      return { message: 'Pagamento já processado' };
     } catch (error) {
       this.logger.error(error);
-      return false;
+      return { message: 'Erro interno ao processar pagamento' };
     }
   }
 
