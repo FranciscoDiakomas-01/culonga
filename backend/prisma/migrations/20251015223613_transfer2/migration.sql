@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Users" ADD COLUMN     "totalTranfered" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "totatReciev" INTEGER NOT NULL DEFAULT 0;

@@ -38,15 +38,19 @@ export class TransferService {
           data: {
             availableBalance:
               userFrom.availableBalance - createTransferDto.amount,
+            totalTranfered: userFrom.totalTranfered + createTransferDto.amount,
           },
         }),
+
         this.database.users.update({
           where: { id: userTo.id },
           data: {
             availableBalance:
               userTo.availableBalance + createTransferDto.amount,
+            totatReciev: userTo.totatReciev + createTransferDto.amount,
           },
         }),
+
         this.database.transfer.create({
           data: {
             amount: createTransferDto.amount,
@@ -110,12 +114,15 @@ export class TransferService {
       total,
       totalPages,
       transfers,
+      stats: {
+        recived: user.totatReciev,
+        transfered: user.totalTranfered,
+      },
     };
   }
   public async getAllTrasnfers(page: number) {
     const limit = 20;
     const skip = (page - 1) * limit;
-
     const [total, transfers] = await Promise.all([
       this.database.transfer.count({}),
       this.database.transfer.findMany({
@@ -132,9 +139,7 @@ export class TransferService {
         take: limit,
       }),
     ]);
-
     const totalPages = Math.ceil(total / limit);
-
     return {
       success: true,
       message: 'Transferências encontradas com sucesso.',

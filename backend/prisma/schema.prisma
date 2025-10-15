@@ -54,6 +54,8 @@ model Users {
   updatedAt    DateTime          @default(now()) @updatedAt
   verification UserVerification? @relation("verification")
   totalEarned Int  @default(0)
+  totalTranfered Int @default(0)
+  totatReciev Int @default(0)
   withdrawnAmount Int @default(0)
   availableBalance Int  @default(0)
   products     Products[]
