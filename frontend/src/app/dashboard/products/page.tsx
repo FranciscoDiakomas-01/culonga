@@ -299,7 +299,8 @@ export default function Products() {
                           <DialogTitle>Cadastrar Produto</DialogTitle>
                           <DialogDescription>
                             Faça as alterações nas informações do produto aqui.
-                            Clique em salvar quando terminar
+                            Clique em salvar quando terminar , adicione as
+                            informações do seu produto e clique em salvar.
                           </DialogDescription>
                         </DialogHeader>
 

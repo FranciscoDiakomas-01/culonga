@@ -40,11 +40,12 @@ export function LoginForm({
         token: string;
         status: boolean;
         description: string;
-      };
+        };
+      console.log(signIn)
       setTimeout(() => {
         setIsLoad(false);
       }, 1500);
-      if (signIn.token.length > 0) {
+      if (signIn?.token?.length > 0) {
         localStorage.setItem("token", signIn.token);
         router.push("/dashboard");
         return;

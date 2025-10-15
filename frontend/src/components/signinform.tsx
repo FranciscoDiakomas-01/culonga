@@ -103,7 +103,7 @@ export function SignForm({
         <div className="flex flex-col items-center gap-2 text-center">
           <h1 className="text-2xl font-bold">Entre na sua conta</h1>
           <p className="text-muted-foreground text-sm text-balance">
-            Adicione seu e-mail abaixo para criar sua conta
+            Cadastre-se agora
           </p>
         </div>
         <div className="grid gap-6">

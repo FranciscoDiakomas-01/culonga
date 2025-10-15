@@ -22,7 +22,7 @@ export default class PaymentCreater {
         const payments = await this.database.payment.create({
           data: {
             status: 'PENDING',
-            method: data.method == 1 ? 'EXPRESS' : 'REFERENCE',
+            method: data.method == 1 ? 'EXPRESS' : data.method == 2 ? "PAYPAY" : 'REFERENCE',
             user: JSON.stringify({
               name: data.name,
               email: data.email,

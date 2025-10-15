@@ -19,6 +19,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import DatabaseService from './services/database/database.service';
 import { TasksService } from './services/tasks/cron.service';
 import { BankModule } from './modules/bank/bank.module';
+import { TransferModule } from './modules/transfer/transfer.module';
 @Module({
   imports: [
     UsersModule,
@@ -52,6 +53,7 @@ import { BankModule } from './modules/bank/bank.module';
     }),
     ScheduleModule.forRoot({}),
     BankModule,
+    TransferModule,
   ],
   providers: [DatabaseService, TasksService],
 })

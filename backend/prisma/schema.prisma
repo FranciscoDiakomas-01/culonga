@@ -27,8 +27,13 @@ enum UserRole{
 enum PayMethod{
   EXPRESS
   REFERENCE
+  PAYPAY
 }
 
+enum TransferType {
+  INTERNAL
+  EXTERNAL
+}
 
 model Settings {
   id         String            @default(uuid()) @id
@@ -59,6 +64,22 @@ model Users {
   Offer Offer[]
   Payments Payment[]
   Bank Bank[]
+  sentTransfers    Transfer[]        @relation("UserFrom")
+  receivedTransfers Transfer[]       @relation("UserTo")
+}
+
+model Transfer {
+  id         String   @id @default(uuid())
+  fromId     String?
+  toId       String?
+  amount     Int
+  type       TransferType
+  status     Status    @default(APROVED)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  fromUser   Users?    @relation("UserFrom", fields: [fromId], references: [id], onDelete: SetNull)
+  toUser     Users?    @relation("UserTo", fields: [toId], references: [id], onDelete: SetNull)
 }
 
 model Bank{

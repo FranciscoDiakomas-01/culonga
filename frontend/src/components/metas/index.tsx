@@ -38,12 +38,11 @@ export default function MetaVendasCard({ vendas }: Props) {
     return num.toString();
   }
 
-
   return (
     <Card className="p-3 rounded-sm bg-transparent backdrop-blur-3xl shadow-orange-500/10 border-orange-500/20 shadow-2xl">
       <div className="p-0 flex justify-between items-center gap-4 flex-wrap text-xl font-bold">
         <p>Meta Atual</p>
-        <p>{formatNumber(meta)}</p>
+        <p>{formatNumber(meta)} ⚡️</p>
       </div>
 
       <div className="flex justify-between gap-3 items-center">
@@ -52,13 +51,16 @@ export default function MetaVendasCard({ vendas }: Props) {
 
       <div className="flex justify-center lg:gap-0 gap-3 md:flex-row flex-col md:items-center md:text-center">
         {falta > 0 ? (
-          <>
-            <p className="text-gray-400">Faltam</p>
-            <span className="opacity-100 mx-1 font-bold">
-              {falta.toLocaleString()} kz
-            </span>
-            <p className="text-gray-400">para você atingir o próximo nível</p>
-          </>
+          <span className="text-gray-400">
+            <p>
+              Faltam {falta.toLocaleString()} kz para você atingir o próximo
+              nível.
+            </p>
+            <p>
+              Alcance {formatNumber(meta)} em Vendas e Seja um Escalador na
+              Culonga
+            </p>
+          </span>
         ) : (
           <p className="text-green-400 font-bold">Parabéns! Meta atingida 🎉</p>
         )}
