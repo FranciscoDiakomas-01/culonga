@@ -121,168 +121,169 @@ export default function Transfers() {
       />
 
       <section className="px-2 pt-5 place-self-center lg:w-[95%] w-full flex flex-col gap-6">
-        <aside className="grid w-full lg:grid-cols-2 gap-8 py-5">
-          <Card className="p-3 rounded-sm bg-transparent backdrop-blur-3xl shadow-orange-500/10 border-orange-500/20 shadow-2xl">
-            <CardTitle className="text-sm dark:bg-orange-900 dark:border-orange-500 w-[60%] text-center p-1 rounded-sm md:w-[40%] border font-inter">
-              Total Recebido
-            </CardTitle>
-            <h1 className="font-inter text-4xl font-bold">
-              {Number(stats?.recived || 0).toLocaleString()} kz
-            </h1>
-            <CardDescription>
-              Valor total recebido em transferências
-            </CardDescription>
-          </Card>
-
-          <Card className="p-3 rounded-sm bg-transparent backdrop-blur-3xl shadow-orange-500/10 border-orange-500/20 shadow-2xl">
-            <CardTitle className="text-sm dark:bg-orange-900 dark:border-orange-500 w-[60%] text-center p-1 rounded-sm md:w-[40%] border font-inter">
-              Total Enviado
-            </CardTitle>
-            <h1 className="font-inter text-4xl font-bold">
-              {Number(stats?.transfered || 0).toLocaleString()} kz
-            </h1>
-            <CardDescription>
-              Valor total enviado em transferências
-            </CardDescription>
-          </Card>
-        </aside>
-
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-bold">Minhas Transferências</h1>
-
-          <div className="flex gap-2">
-            <Select defaultValue="ALL" onValueChange={setFilter}>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="Tipo" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">Todas</SelectItem>
-                <SelectItem value="INTERNAL">Internas</SelectItem>
-                <SelectItem value="EXTERNAL">Externas</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus size={16} />
-                  Nova
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Nova Transferência</DialogTitle>
-                  <DialogDescription>
-                    Envie dinheiro para outro usuário
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="flex flex-col gap-3">
-                  <Input
-                    placeholder="Email do destinatário"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <Input
-                    placeholder="Montante (kz)"
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                  />
-                </div>
-                <DialogFooter>
-                  <Button onClick={handleCreate} disabled={creating}>
-                    {creating ? (
-                      <Loader2 className="animate-spin" size={16} />
-                    ) : null}
-                    Enviar
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </div>
-
         {load ? (
-          <div className="flex justify-center items-center mt-8">
+          <div className="flex min-h-[30dvh] justify-center items-center mt-8">
             <Loader className="animate-spin" />
           </div>
         ) : (
-          <div className="mb-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>#</TableHead>
-                  <TableHead>De</TableHead>
-                  <TableHead>Para</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Valor</TableHead>
-                  <TableHead>Data</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredTransfers.map((t, i) => (
-                  <TableRow key={t.id}>
-                    <TableCell>{i + 1}</TableCell>
-                    <TableCell>{t.fromUser?.email ?? "-"}</TableCell>
-                    <TableCell>{t.toUser?.email ?? "-"}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={
-                          t.type === "EXTERNAL"
-                            ? "text-orange-500"
-                            : "text-blue-500"
-                        }
-                      >
-                        {t.type}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={
-                          t.status === "APROVED"
-                            ? "text-green-500"
-                            : t.status === "PENDING"
-                            ? "text-orange-500"
-                            : "text-red-500"
-                        }
-                      >
-                        {t.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{t.amount.toLocaleString("pt")} kz</TableCell>
-                    <TableCell>
-                      {new Date(t.createdAt).toLocaleString("pt")}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <span className="flex flex-col gap-6">
+            <aside className="grid w-full lg:grid-cols-2 gap-8 py-5">
+              <Card className="p-3 rounded-sm bg-transparent backdrop-blur-3xl shadow-orange-500/10 border-orange-500/20 shadow-2xl">
+                <CardTitle className="text-sm dark:bg-orange-900 dark:border-orange-500 w-[60%] text-center p-1 rounded-sm md:w-[40%] border font-inter">
+                  Total Recebido
+                </CardTitle>
+                <h1 className="font-inter text-4xl font-bold">
+                  {Number(stats?.recived || 0).toLocaleString()} kz
+                </h1>
+                <CardDescription>
+                  Valor total recebido em transferências
+                </CardDescription>
+              </Card>
 
-            <span className="flex justify-center w-full py-4 gap-3 items-center">
-              <p>
-                {page} de {lastPage}
-              </p>
-              <span className="flex gap-2 mx-4">
-                <Button
-                  onClick={() => setPage(Math.max(1, page - 1))}
-                  variant="outline"
-                  disabled={page <= 1}
-                >
-                  <MoveLeft />
-                </Button>
-                <Button
-                  onClick={() => setPage(Math.min(lastPage, page + 1))}
-                  variant="outline"
-                  disabled={page >= lastPage}
-                >
-                  <MoveRight />
-                </Button>
+              <Card className="p-3 rounded-sm bg-transparent backdrop-blur-3xl shadow-orange-500/10 border-orange-500/20 shadow-2xl">
+                <CardTitle className="text-sm dark:bg-orange-900 dark:border-orange-500 w-[60%] text-center p-1 rounded-sm md:w-[40%] border font-inter">
+                  Total Enviado
+                </CardTitle>
+                <h1 className="font-inter text-4xl font-bold">
+                  {Number(stats?.transfered || 0).toLocaleString()} kz
+                </h1>
+                <CardDescription>
+                  Valor total enviado em transferências
+                </CardDescription>
+              </Card>
+            </aside>
+
+            <div className="flex justify-between items-center">
+              <h1 className="text-xl font-bold">Minhas Transferências</h1>
+
+              <div className="flex gap-2">
+                <Select defaultValue="ALL" onValueChange={setFilter}>
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue placeholder="Tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ALL">Todas</SelectItem>
+                    <SelectItem value="INTERNAL">Internas</SelectItem>
+                    <SelectItem value="EXTERNAL">Externas</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                  <DialogTrigger asChild>
+                    <Button>
+                      <Plus size={16} />
+                      Nova
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Nova Transferência</DialogTitle>
+                      <DialogDescription>
+                        Envie dinheiro para outro usuário
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex flex-col gap-3">
+                      <Input
+                        placeholder="Email do destinatário"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                      <Input
+                        placeholder="Montante (kz)"
+                        type="number"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                      />
+                    </div>
+                    <DialogFooter>
+                      <Button onClick={handleCreate} disabled={creating}>
+                        {creating ? (
+                          <Loader2 className="animate-spin" size={16} />
+                        ) : null}
+                        Enviar
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </div>
+            <div className="mb-4">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>#</TableHead>
+                    <TableHead>De</TableHead>
+                    <TableHead>Para</TableHead>
+                    <TableHead>Tipo</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Valor</TableHead>
+                    <TableHead>Data</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredTransfers.map((t, i) => (
+                    <TableRow key={t.id}>
+                      <TableCell>{i + 1}</TableCell>
+                      <TableCell>{t.fromUser?.email ?? "-"}</TableCell>
+                      <TableCell>{t.toUser?.email ?? "-"}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={
+                            t.type === "EXTERNAL"
+                              ? "text-orange-500"
+                              : "text-blue-500"
+                          }
+                        >
+                          {t.type}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={
+                            t.status === "APROVED"
+                              ? "text-green-500"
+                              : t.status === "PENDING"
+                              ? "text-orange-500"
+                              : "text-red-500"
+                          }
+                        >
+                          {t.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{t.amount.toLocaleString("pt")} kz</TableCell>
+                      <TableCell>
+                        {new Date(t.createdAt).toLocaleString("pt")}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+              <span className="flex justify-center w-full py-4 gap-3 items-center">
+                <p>
+                  {page} de {lastPage}
+                </p>
+                <span className="flex gap-2 mx-4">
+                  <Button
+                    onClick={() => setPage(Math.max(1, page - 1))}
+                    variant="outline"
+                    disabled={page <= 1}
+                  >
+                    <MoveLeft />
+                  </Button>
+                  <Button
+                    onClick={() => setPage(Math.min(lastPage, page + 1))}
+                    variant="outline"
+                    disabled={page >= lastPage}
+                  >
+                    <MoveRight />
+                  </Button>
+                </span>
               </span>
-            </span>
-          </div>
+            </div>
+          </span>
         )}
       </section>
     </main>

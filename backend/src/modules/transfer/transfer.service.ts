@@ -48,6 +48,7 @@ export class TransferService {
             availableBalance:
               userTo.availableBalance + createTransferDto.amount,
             totatReciev: userTo.totatReciev + createTransferDto.amount,
+            totalEarned: userTo.totalEarned + createTransferDto.amount,
           },
         }),
 
