@@ -61,7 +61,7 @@ export default function Rannkinh() {
           Voltar
         </Button>
         <h1 className="text-center text-[#F9BC2C] text-3xl">
-          Ranking de Facturamento
+          Escaladores da Culonga.
         </h1>
       </header>
 

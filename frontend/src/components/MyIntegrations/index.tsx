@@ -75,7 +75,9 @@ export default function MyIntegrationCard({
             <SheetHeader>
               <SheetTitle>{integration.title}</SheetTitle>
               <SheetDescription>
-                Cadastre o link de notificação do seu webhook
+                {integration.title == "UTMFY"
+                  ? "Forneça seu token UTmify e acompanhe tudo no seu painel."
+                  : "Cadastre o link de notificação do seu webhook"}
               </SheetDescription>
             </SheetHeader>
 

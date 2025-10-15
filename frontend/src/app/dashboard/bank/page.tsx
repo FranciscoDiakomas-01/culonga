@@ -415,7 +415,7 @@ export default function Bank() {
                         <Label>Montante</Label>
                         <Input
                           required
-                          placeholder="Informe o monentante"
+                          placeholder="Informe o montante"
                           type="number"
                           min={1000}
                           onChange={(e) => {

@@ -122,7 +122,7 @@ export default class PaymentUpdate {
   }
 
   private percent(montante: number): number {
-    const taxaPlataforma = 0.07;
+    const taxaPlataforma = 0.08;
     const liquido = montante * (1 - taxaPlataforma);
     return Number(liquido.toFixed(2));
   }

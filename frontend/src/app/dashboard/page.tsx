@@ -122,7 +122,7 @@ export default function DashBoard() {
               >
                 <Card className="p-3 rounded-sm bg-transparent backdrop-blur-3xl shadow-orange-500/10 border-orange-500/20 shadow-2xl">
                   <CardTitle className="text-sm dark:bg-orange-900 dark:border-orange-500 w-[50%] text-center  p-1 rounded-sm md:w-[24%] border font-inter ">
-                    Total transacionado
+                    Saldo Total
                   </CardTitle>
                   <h1 className="font-inter text-4xl font-bold">
                     {Number(value).toLocaleString("pt")} kz
@@ -135,11 +135,11 @@ export default function DashBoard() {
                       Comissão recebida
                     </CardTitle>
                     <h1 className="font-inter text-4xl font-bold">
-                      {Number((Number(value) * 7) / 100).toLocaleString("pt")}{" "}
+                      {Number((Number(value) * 8) / 100).toLocaleString("pt")}{" "}
                       kz
                     </h1>
                     <CardDescription>
-                      Valor líquido (7% do total de vendas na plataforma)
+                      Valor líquido (8% do total de vendas na plataforma)
                     </CardDescription>
                   </Card>
                 )}
