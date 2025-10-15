@@ -63,7 +63,7 @@ export class TransferService {
       ]);
 
     return {
-      success: true,
+      created: true,
       message: 'Transferência realizada com sucesso.',
       transfer,
     };
@@ -104,16 +104,14 @@ export class TransferService {
       }),
     ]);
 
-    const totalPages = Math.ceil(total / limit);
+    const lastPage = Math.ceil(total / limit);
 
     return {
       success: true,
       message: 'Transferências encontradas com sucesso.',
       page,
-      limit,
-      total,
-      totalPages,
-      transfers,
+      lastPage,
+      data: transfers,
       stats: {
         recived: user.totatReciev,
         transfered: user.totalTranfered,

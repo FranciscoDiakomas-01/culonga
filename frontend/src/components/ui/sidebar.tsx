@@ -59,11 +59,6 @@ export default function SideBar() {
       to: "/dashboard/bank",
     },
     {
-      label: "Transferências",
-      icon: <SendToBack size={18} />,
-      to: "/dashboard/transfer",
-    },
-    {
       label: "Ranking",
       icon: <ChartArea size={18} />,
       to: "/ranking",
