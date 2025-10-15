@@ -18,7 +18,6 @@ import {
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import logo from "@/assets/images/ckeout.png";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast, Toaster } from "sonner";
@@ -802,39 +801,6 @@ export default function Chekout() {
                                         kz
                                       </h1>
                                     </span>
-                                    {/* Rodapé */}
-                                    <div className="border-b w-full border-gray-200"></div>
-                                    <span className="place-self-center flex items-center gap-1 font-bold text-xl text-indigo-900 justify-center w-full">
-                                      <Image
-                                        src={logo}
-                                        alt="logo"
-                                        className="h-30 w-30 object-contain"
-                                      />
-                                    </span>
-                                    <div className="text-center text-xs text-gray-500 space-y-2">
-                                      <p>
-                                        Ao clicar em <b>Compre agora</b>, você
-                                        concorda com os{" "}
-                                        <a
-                                          href="https://nublapay.com/termos"
-                                          className="text-blue-600 underline"
-                                        >
-                                          Termos de Compra
-                                        </a>{" "}
-                                        e está ciente da{" "}
-                                        <a
-                                          href="https://nublapay.com/politicas"
-                                          className="text-blue-600 underline"
-                                        >
-                                          Política de Privacidade
-                                        </a>
-                                        .
-                                      </p>
-                                      <p className="mt-2">
-                                        Tecnologia Nubla Payments © 2025 — Todos
-                                        os direitos reservados
-                                      </p>
-                                    </div>
                                   </div>
                                 );
                               })}
