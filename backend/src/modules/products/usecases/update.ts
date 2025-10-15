@@ -9,7 +9,6 @@ import DatabaseService from 'src/services/database/database.service';
 import { Status } from 'generated/prisma';
 import IsActiveUser from 'src/interceptors/isActiveUser';
 import { isValidFile } from 'src/lib/util';
-import uploadFile from 'src/services/upload/uploadfile';
 export default class ProductUpdater {
   private readonly logger = new Logger('ProductUpdater');
   private readonly isActive: IsActiveUser;
