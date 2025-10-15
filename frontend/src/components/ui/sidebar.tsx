@@ -7,6 +7,7 @@ import {
   Landmark,
   LogOut,
   MessageCircleQuestion,
+  SendToBack,
   Settings,
   SlidersHorizontal,
   Users,
@@ -58,6 +59,11 @@ export default function SideBar() {
       to: "/dashboard/bank",
     },
     {
+      label: "Transferências",
+      icon: <SendToBack size={18} />,
+      to: "/dashboard/transfer",
+    },
+    {
       label: "Ranking",
       icon: <ChartArea size={18} />,
       to: "/ranking",
@@ -90,6 +96,11 @@ export default function SideBar() {
       label: "Saques",
       icon: <Landmark size={18} />,
       to: "/dashboard/bank",
+    },
+    {
+      label: "Transferências",
+      icon: <SendToBack size={18} />,
+      to: "/dashboard/transfer",
     },
     {
       label: "Integrações",
