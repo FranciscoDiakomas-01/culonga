@@ -1,0 +1,203 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum Status {
+  APROVED
+  PENDING
+  REJECTED
+  CANCELED
+  BANED
+  CREATED
+}
+
+enum UserRole{
+  ADMIN
+  SELLER
+}
+
+enum PayMethod{
+  EXPRESS
+  REFERENCE
+}
+
+
+model Settings {
+  id         String            @default(uuid()) @id
+  percent Int
+}
+
+model Users {
+  id         String            @default(uuid()) @id
+  name         String
+  lastname     String
+  profile      String?
+  email        String            @unique
+  password     String
+  telefone     String            @unique
+  code Int?  @default(0)
+  status       Status            @default(CREATED)
+  role         UserRole          @default(SELLER)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @default(now()) @updatedAt
+  verification UserVerification? @relation("verification")
+  totalEarned Int  @default(0)
+  withdrawnAmount Int @default(0)
+  availableBalance Int  @default(0)
+  products     Products[]
+  Integrations Integration[]
+  Withdrawal Withdrawal[]
+  Notification Notification[]
+  ResetPassword ResetPassword[]
+  Offer Offer[]
+  Payments Payment[]
+  Bank Bank[]
+}
+
+model Bank{
+   id         String            @default(uuid()) @id
+   iban String  @unique
+   title String
+   image String?
+   userid String
+   user Users @relation(fields: [userid] , references: [id] , onDelete: Cascade)
+   
+}
+
+model ResetPassword {
+   id         String            @default(uuid()) @id
+   userid String 
+   status Status @default(PENDING)
+   createdAt    DateTime          @default(now())
+   token String
+   user Users @relation(fields: [userid] ,references: [id] , onDelete: Cascade)
+}
+
+model Withdrawal{
+  id         String            @default(uuid()) @id
+  bank String
+  iban String
+  amount Int
+  userid String
+  status Status @default(PENDING)
+  fileURL String?
+  user Users @relation(fields: [userid] , references: [id] , onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+}
+
+model UserVerification {
+  id         String            @default(uuid()) @id
+  userId   String @unique
+  images    Json
+  status    Status   @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  user      Users    @relation("verification", fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Offer {
+  id        String    @default(uuid()) @id
+  productId String
+  userid    String
+  price     Int
+  link      String
+  title     String
+
+  product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      Users    @relation(fields: [userid], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Products {
+  id         String     @default(uuid()) @id
+  productid  Int        @default(autoincrement()) @unique
+  title      String     @unique
+  cover      String?
+  file       String?
+  userId     String
+  description   String?
+  whatsappSuport String?
+  banner     String?
+  price      Int
+  garant     Int        @default(7)
+  orderbumps String[]
+  link       String     @unique
+  upsell     String?
+  pixelId    String?
+  category   String?
+  type       String
+  payment    Int[]
+  offers     Offer[]
+  backredirect String?
+  status     Status     @default(APROVED)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now()) @updatedAt
+
+  user       Users      @relation(fields: [userId], references: [id])
+  checkout   ProductCheckout?
+}
+
+
+model ProductCheckout {
+  id         String            @default(uuid()) @id
+  productId  String      @unique
+  bg         String?  
+  textColor  String?  
+  timer      Json?    
+  btn        Json     
+  orderbump  Json?    
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+  product    Products @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  uuid          String           @default(uuid()) @id
+  order            Int              @default(autoincrement()) @unique
+  method    PayMethod
+  status Status @default(PENDING)
+  amount Int
+  productId String
+  orderbumps String[]
+  user Json
+  products String[]
+  userid String
+  paypayCode String? @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+  User Users @relation(fields: [userid] , references: [id] , onDelete: Cascade)
+}
+
+model Notification {
+  id         String            @default(uuid()) @id
+  title String
+  deepLink String?
+  message String
+  timestemp  DateTime @default(now())
+  read Boolean @default(false)
+  userId String
+  user Users @relation(fields: [userId] , references: [id] , onDelete: Cascade)
+}
+
+model Integration  {
+  id         String            @default(uuid()) @id
+  userid String
+  status Status @default(APROVED)
+  platform String
+  url String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+  user Users @relation(fields: [userid] , references: [id] , onDelete:  Cascade)
+}
