@@ -36,7 +36,6 @@ import {
   BadgeCheck,
   FileCheck,
   ImageUp,
-  Loader,
   Loader2,
   MoveLeft,
   MoveRight,
@@ -458,7 +457,7 @@ export default function Bank() {
                 hover:bg-green-700 text-white"
                           >
                             {spin ? (
-                              <Loader className="animate-spin" />
+                              <Loader2 className="animate-spin" />
                             ) : (
                               "Salvar"
                             )}

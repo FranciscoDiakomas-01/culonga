@@ -31,7 +31,7 @@ import DashBoardHeader from "@/components/ui/headerDashboard";
 import {
   BadgeCheck,
   Clock,
-  Loader,
+  Loader2,
   MoveLeft,
   MoveRight,
   Search,
@@ -113,7 +113,7 @@ export default function Payments() {
 
       {load ? (
         <div className="flex justify-center items-center mt-8">
-          <Loader className="animate-spin" />
+          <Loader2 className="animate-spin" />
         </div>
       ) : (
         <section className="px-2 pt-5 place-self-center lg:w-[95%] w-full flex flex-col gap-6">

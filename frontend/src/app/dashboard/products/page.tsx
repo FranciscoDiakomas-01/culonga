@@ -33,7 +33,6 @@ import {
   BadgeCheck,
   Filter,
   Image,
-  Loader,
   Loader2,
   MoveLeft,
   MoveRight,

@@ -27,6 +27,7 @@ import {
   MoveRight,
   SlidersHorizontal,
   Plus,
+  Loader2,
 } from "lucide-react";
 import DashBoardHeader from "@/components/ui/headerDashboard";
 import {
@@ -38,6 +39,7 @@ import {
 } from "@/components/ui/select";
 import TransferService, { Transfer } from "@/services/trasnfer";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
 
 export default function Transfers() {
   const [load, setLoad] = useState(true);
@@ -84,7 +86,7 @@ export default function Transfers() {
   }, [filter, transfers]);
 
   async function handleCreate() {
-    if (!email || !amount) return alert("Preencha todos os campos!");
+    if (!email || !amount) return toast.info("Preencha todos os campos!");
     const token = localStorage.getItem("token");
     if (!token) return;
 
@@ -96,7 +98,7 @@ export default function Transfers() {
     setCreating(false);
     console.log(res);
     if (res.created) {
-      alert("Transferência feita com sucesso!");
+      toast.info("Transferência feita com sucesso!");
       setOpenDialog(false);
       setEmail("");
       setAmount("");
@@ -104,7 +106,7 @@ export default function Transfers() {
       setTransfers(updated.data ?? []);
       setFilteredTransfers(updated.data ?? []);
     } else {
-      alert(res.message || "Erro ao criar transferência");
+      toast.info(res.message || "Erro ao criar transferência");
     }
   }
 
@@ -163,7 +165,7 @@ export default function Transfers() {
             <Dialog open={openDialog} onOpenChange={setOpenDialog}>
               <DialogTrigger asChild>
                 <Button>
-                  <Plus className="mr-2" size={16} />
+                  <Plus size={16} />
                   Nova
                 </Button>
               </DialogTrigger>
@@ -190,7 +192,7 @@ export default function Transfers() {
                 <DialogFooter>
                   <Button onClick={handleCreate} disabled={creating}>
                     {creating ? (
-                      <Loader className="animate-spin mr-2" size={16} />
+                      <Loader2 className="animate-spin" size={16} />
                     ) : null}
                     Enviar
                   </Button>
