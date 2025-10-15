@@ -1,12 +1,6 @@
 import server from "../server";
 
 export default class PaymentService {
-  private readonly API_URL =
-    "https://cerpagamentonline.emis.co.ao/online-payment-gateway/webframe/v1/frameToken";
-
-  private readonly frameToken = "e4a33c58-9623-4e1b-b798-a3504306ed05";
-  private readonly terminal = "486467";
-  private readonly callbackUrl = server + "culonga/payments/notify,";
   public async getMyTransactions(token: string, page: number) {
     try {
       interface dataReturnType {
@@ -111,51 +105,25 @@ export default class PaymentService {
       };
     }
   }
-  public async createPayment({
-    amount,
-    reference,
-    telefone,
-  }: {
-    amount: string;
-    reference: string;
-    telefone?: string;
+  public async createPayment(body: {
+    name: string;
+    email: string;
+    method: number;
+    orderbumps: string[];
+    amount: number;
+    productId: string;
+    userid: string;
+    tel: string;
   }) {
     try {
-      const payload = {
-        reference,
-        amount,
-        token: this.frameToken,
-        mobile: "PAYMENT",
-        qrCode: "PAYMENT",
-        callbackUrl: this.callbackUrl,
-        card: "DISABLED",
-        terminal: this.terminal,
-      };
-      const pay = await fetch(this.API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const payData = await pay.json();
-      console.log(payData);
-      return;
-
       const res = await fetch(`${server}payments`, {
         headers: {
           "Content-Type": "application/json",
         },
         method: "POST",
-        body: JSON.stringify("body"),
+        body: JSON.stringify(body),
       });
-
-      const data = (await res.json()) as {
-        id: string; // uuid do pagamento
-        iframeUrl: string; // url do iframe da EMIS
-        expiresIn?: number; // tempo de expiração do token
-        message?: string;
-      };
+      const data = await res.json();
 
       return data;
     } catch (error) {
@@ -290,20 +258,6 @@ export default class PaymentService {
         created: false,
         message: "Problemas de internet",
       };
-    }
-  }
-}
-
-export interface GpoFrameResponse {
-  id: string;
-  timeToLive: number;
-}
-
-export class PayPayService {
-  public async payWithExpress() {
-    try {
-    } catch (error) {
-      console.log(error);
     }
   }
 }

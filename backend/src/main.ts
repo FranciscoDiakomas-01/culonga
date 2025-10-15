@@ -13,12 +13,14 @@ async function bootstrap() {
     new ExpressAdapter(),
     {
       logger: new ConsoleLogger({
-        prefix: 'NublaPay',
+        prefix: 'Culonga',
       }),
     },
   );
-  app.enableCors();
-  app.setGlobalPrefix('nublapay');
+  app.enableCors({
+    origin: '*',
+  });
+  app.setGlobalPrefix('culonga');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -28,7 +30,7 @@ async function bootstrap() {
   );
   app.use(helmet());
   await app.listen(process.env.PORT ?? 3000);
-  const starUp = new AdmminStartUpService()
-  await starUp.createDefaultAdmin()
+  const starUp = new AdmminStartUpService();
+  await starUp.createDefaultAdmin();
 }
 bootstrap();

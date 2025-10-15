@@ -43,8 +43,7 @@ model Users {
   email        String            @unique
   password     String
   telefone     String            @unique
-  code Int?  @default(0)
-  status       Status            @default(CREATED)
+  status       Status            @default(PENDING)
   role         UserRole          @default(SELLER)
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @default(now()) @updatedAt

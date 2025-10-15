@@ -21,7 +21,6 @@ import { Status } from 'generated/prisma';
 @Injectable()
 export class UsersService {
   constructor(private readonly database: DatabaseService) {}
-  // VERIFY
   private readonly JWTService = new JWTService();
   public async createVerification(data: VerifyUserDTO, id: string) {
     const veririer = new UserVerifier(this.database);
