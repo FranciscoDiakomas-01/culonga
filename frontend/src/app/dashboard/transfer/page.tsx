@@ -63,11 +63,11 @@ export default function Transfers() {
   const service = new TransferService();
 
   useEffect(() => {
+    setLoad(true);
     const token = localStorage.getItem("token");
     if (!token) return;
 
     async function get() {
-      setLoad(true);
       const res = await service.get(token as string, page);
       setTransfers(res.data ?? []);
       setFilteredTransfers(res.data ?? []);
@@ -134,7 +134,7 @@ export default function Transfers() {
       <section className="px-2 pt-5 place-self-center lg:w-[95%] w-full flex flex-col gap-6">
         {load ? (
           <div className="flex min-h-[30dvh] justify-center items-center mt-8">
-            <Loader className="animate-spin" />
+            <Loader2 className="animate-spin" />
           </div>
         ) : (
           <span className="flex flex-col gap-6">
