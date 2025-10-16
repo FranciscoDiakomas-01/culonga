@@ -90,13 +90,13 @@ export default class UserGetter {
             value: actives,
             label: 'Usuários Aprovados',
             isCoin: false,
-            description: 'total de Usuários aprovados pela kulonga',
+            description: 'total de Usuários aprovados pela Culonga',
           },
           {
             value: desactives,
             label: 'Usuários Reprovados',
             isCoin: false,
-            description: 'total de Usuários reprovados pela kulonga',
+            description: 'total de Usuários reprovados pela Culonga',
           },
           {
             value: editing,

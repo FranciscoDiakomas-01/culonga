@@ -68,7 +68,7 @@ export default async function ExuteMyWebhooks(
                 },
                 body: JSON.stringify({
                   orderId: crypto.randomUUID(),
-                  platform: 'kulonga',
+                  platform: 'Culonga',
                   paymentMethod: 'pix',
                   status: 'paid',
                   createdAt: new Date(),
@@ -112,7 +112,7 @@ export default async function ExuteMyWebhooks(
                 }),
               },
             );
-            
+
             return postRes;
           }
           const res = await fetch(item.url, { method: 'GET' });

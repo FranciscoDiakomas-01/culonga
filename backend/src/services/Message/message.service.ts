@@ -21,7 +21,7 @@ ${
   `
 Suporte do vendedor whatsapp: ‪+244 ${sellerSuport}‬`
 }
-💬 Suporte da plataforma kulonga: ‪+244 922 718 735‬
+💬 Suporte da plataforma Culonga: ‪+244 922 718 735‬
 Obrigado!`;
 
     console.log(message, link);

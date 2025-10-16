@@ -82,7 +82,7 @@ export default class UserUpedater {
     } catch (error) {
       this.logger.log('Erro ao actualizar a senha do usuário');
       return {
-        message:  'Erro ao actualizar a senha do usuário',
+        message: 'Erro ao actualizar a senha do usuário',
       };
     }
   }
@@ -104,20 +104,20 @@ export default class UserUpedater {
         });
         if (Request.id) {
           const emailservice = new EmailService();
-         await emailservice.senEmail({
-           to: User.email,
-           subject: 'kulonga | Redefinir senha',
-           html: `<!DOCTYPE html>
+          await emailservice.senEmail({
+            to: User.email,
+            subject: 'Culonga | Redefinir senha',
+            html: `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>kulonga | Redefinir senha</title>
+  <title>Culonga | Redefinir senha</title>
 </head>
 <body style="margin:0; padding:0; font-family: Arial, Helvetica, sans-serif; background-color:#0d0d0d; color:#e1e1e6; line-height:1.6;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:40px auto; background-color:#1a1a1a; border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.4);">
     <tr>
       <td style="background:linear-gradient(90deg, #8257e5, #996dff); padding:20px; text-align:center;">
-        <h1 style="margin:0; color:#fff; font-size:22px; font-weight:bold;">kulonga</h1>
+        <h1 style="margin:0; color:#fff; font-size:22px; font-weight:bold;">Culonga</h1>
       </td>
     </tr>
     <tr>
@@ -140,13 +140,13 @@ export default class UserUpedater {
     </tr>
     <tr>
       <td style="background:#111; text-align:center; padding:15px; font-size:13px; color:#777;">
-        Precisa de ajuda? <a href="mailto:suporte@kulonga.com" style="color:#8257e5; text-decoration:none;">suporte@kulonga.com</a>
+        Precisa de ajuda? <a href="mailto:suporte@Culonga.com" style="color:#8257e5; text-decoration:none;">suporte@Culonga.com</a>
       </td>
     </tr>
   </table>
 </body>
 </html>`,
-         });
+          });
 
           return {
             message: 'Consulte o seu email',

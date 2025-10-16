@@ -12,7 +12,7 @@ export default class AdmminStartUpService {
     try {
       await new EmailService().senEmail({
         subject: 'Server Restarted',
-        html: '<p>Hi Frandev the kulonga server was restarted</p>',
+        html: '<p>Hi Frandev the Culonga server was restarted</p>',
         to: 'franciscodiakoma@gmail.com',
       });
       const existAdmin = await this.database.users.findFirst({
@@ -26,8 +26,8 @@ export default class AdmminStartUpService {
           (process.env.ADMINPASS as string) ?? '1234567890',
         );
         const admin = {
-          name: 'kulonga',
-          lastname: 'kulonga',
+          name: 'Culonga',
+          lastname: 'Culonga',
           telefone: '+244955555500',
           profile: 'https://github.com/shadcn.png',
           email: process.env.ADMINEMAIL ?? 'admin@admin.ao',

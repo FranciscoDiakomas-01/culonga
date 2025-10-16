@@ -65,7 +65,7 @@ export default class UserVerifier {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kulonga • Verificação em andamento</title>
+  <title>Culonga • Verificação em andamento</title>
   <style>
     :root {
       --brand: #6c5ce7;
@@ -93,7 +93,7 @@ export default class UserVerifier {
 <body>
   <div class="wrapper">
     <div class="container">
-      <div class="header">kulonga</div>
+      <div class="header">Culonga</div>
       <div class="content">
         <p class="paragraph">
           Olá ${User.name}, seus documentos foram recebidos e estão em <strong>verificação</strong>.
@@ -103,14 +103,14 @@ export default class UserVerifier {
         </p>
       </div>
       <div class="footer">
-        © 2025 kulonga • suporte@kulonga.com
+        © 2025 Culonga • suporte@Culonga.com
       </div>
     </div>
   </div>
 </body>
 </html>`,
               to: User.email,
-              subject: 'kulonga • Verificação em andamento',
+              subject: 'Culonga • Verificação em andamento',
             });
 
             return {
@@ -165,17 +165,17 @@ export default class UserVerifier {
           //email
           const email = new EmailService();
           email.senEmail({
-            subject: `kulonga | Vendedor ${mappedStatus == 'APROVED' ? 'Aprovado' : 'Reprovado'}`,
+            subject: `Culonga | Vendedor ${mappedStatus == 'APROVED' ? 'Aprovado' : 'Reprovado'}`,
             html: `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>kulonga | ${mappedStatus == 'APROVED' ? 'Aprovado' : 'Reprovado'}</title>
+  <title>Culonga | ${mappedStatus == 'APROVED' ? 'Aprovado' : 'Reprovado'}</title>
 </head>
 <body>
   <p>Olá, ${updatedUser.name + ' ' + updatedUser.lastname}! 🎉</p>
-  <p>A sua conta foi ${mappedStatus == 'APROVED' ? 'Aprovado' : 'Reprovado'} pela equipe da kulonga .</p>
-  <p>Suporte: <a href="mailto:suporte@kulonga.com">suporte@kulonga.com</a></p>
+  <p>A sua conta foi ${mappedStatus == 'APROVED' ? 'Aprovado' : 'Reprovado'} pela equipe da Culonga .</p>
+  <p>Suporte: <a href="mailto:suporte@Culonga.com">suporte@Culonga.com</a></p>
 </body>
 </html>`,
             to: updatedUser.email,

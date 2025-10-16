@@ -38,7 +38,7 @@ export class PayPayService {
       sale_product_code: '050200030',
       cashier_type: 'SDK',
       out_trade_no: '012321', // seu número de pedido
-      subject: 'kulonga Pagamento',
+      subject: 'Culonga Pagamento',
       currency: 'AOA',
       price: parseFloat(amount),
       quantity: 1,
