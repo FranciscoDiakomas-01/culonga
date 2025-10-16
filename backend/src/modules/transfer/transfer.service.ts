@@ -135,6 +135,7 @@ export class TransferService {
       stats: {
         recived: user.totatReciev,
         transfered: user.totalTranfered,
+        avaliable: user.availableBalance,
       },
     };
   }

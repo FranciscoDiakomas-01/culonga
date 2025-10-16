@@ -54,7 +54,11 @@ export default function Transfers() {
   const [amount, setAmount] = useState("");
   const [email, setEmail] = useState("");
   const [creating, setCreating] = useState(false);
-  const [stats, setStats] = useState({ recived: 0, transfered: 0 });
+  const [stats, setStats] = useState({
+    recived: 0,
+    transfered: 0,
+    avaliable: 0,
+  });
 
   const service = new TransferService();
 
@@ -127,7 +131,7 @@ export default function Transfers() {
           </div>
         ) : (
           <span className="flex flex-col gap-6">
-            <aside className="grid w-full lg:grid-cols-2 gap-8 py-5">
+            <aside className="grid w-full lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8 py-5">
               <Card className="p-3 rounded-sm bg-transparent backdrop-blur-3xl shadow-orange-500/10 border-orange-500/20 shadow-2xl">
                 <CardTitle className="text-sm dark:bg-orange-900 dark:border-orange-500 w-[60%] text-center p-1 rounded-sm md:w-[40%] border font-inter">
                   Total Recebido
@@ -139,7 +143,6 @@ export default function Transfers() {
                   Valor total recebido em transferências
                 </CardDescription>
               </Card>
-
               <Card className="p-3 rounded-sm bg-transparent backdrop-blur-3xl shadow-orange-500/10 border-orange-500/20 shadow-2xl">
                 <CardTitle className="text-sm dark:bg-orange-900 dark:border-orange-500 w-[60%] text-center p-1 rounded-sm md:w-[40%] border font-inter">
                   Total Enviado
@@ -149,6 +152,17 @@ export default function Transfers() {
                 </h1>
                 <CardDescription>
                   Valor total enviado em transferências
+                </CardDescription>
+              </Card>{" "}
+              <Card className="p-3 rounded-sm bg-transparent backdrop-blur-3xl shadow-orange-500/10 border-orange-500/20 shadow-2xl">
+                <CardTitle className="text-sm dark:bg-orange-900 dark:border-orange-500 w-[60%] text-center p-1 rounded-sm md:w-[40%] border font-inter">
+                  Saldo total
+                </CardTitle>
+                <h1 className="font-inter text-4xl font-bold">
+                  {Number(stats?.avaliable || 0).toLocaleString()} kz
+                </h1>
+                <CardDescription>
+                  Valor total disponível para transferências
                 </CardDescription>
               </Card>
             </aside>

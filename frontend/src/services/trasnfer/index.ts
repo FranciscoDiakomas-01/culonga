@@ -39,6 +39,7 @@ export default class TransferConsumer {
         stats: {
           recived: number;
           transfered: number;
+          avaliable: number;
         };
       };
 
@@ -60,7 +61,6 @@ export default class TransferConsumer {
           data: formatted,
         };
       }
-      
 
       return {
         data: [],
@@ -70,6 +70,7 @@ export default class TransferConsumer {
         stats: {
           recived: 0,
           transfered: 0,
+          avaliable: 0,
         },
       };
     } catch (error) {
@@ -81,6 +82,7 @@ export default class TransferConsumer {
         stats: {
           recived: 0,
           transfered: 0,
+          avaliable: 0,
         },
       };
     }
