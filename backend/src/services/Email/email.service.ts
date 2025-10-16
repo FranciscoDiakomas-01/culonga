@@ -37,7 +37,7 @@ export default class EmailService {
 
     try {
       const info = await this.transporter.sendMail({
-        from: `"NublaPay" <${process.env.EMAIL_USER}>`,
+        from: `"kulonga" <${process.env.EMAIL_USER}>`,
         to,
         subject,
         html,

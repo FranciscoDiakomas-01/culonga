@@ -83,7 +83,7 @@ export default class PaymentUpdate {
             emailService.senEmail({
               to: user.email,
               subject: '✅ Compra Realizada',
-              html: `<h1>Compra confirmada</h1><p>Produto: ${Product?.title}</p>`,
+              html: `<h1>Compra confirmada</h1><p>Produto: ${Product?.title}</p> <br/> <p>Link: ${Product?.link}</p>`,
             }),
 
             messagingService.sendMessage(

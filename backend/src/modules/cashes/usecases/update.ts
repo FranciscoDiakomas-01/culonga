@@ -90,7 +90,7 @@ export default async function AproveWidrall(
             <!-- Header -->
             <tr>
               <td style="background:#0d1117;padding:20px 24px;color:#ffffff;font-family:Arial,Helvetica,sans-serif;">
-                <div style="font-size:18px;font-weight:700;">NublaPay</div>
+                <div style="font-size:18px;font-weight:700;">kulonga</div>
                 <div style="font-size:12px;opacity:.9;">Confirmação de Saque</div>
               </td>
             </tr>
@@ -140,14 +140,14 @@ export default async function AproveWidrall(
 
                 <!-- Button -->
                 <div style="margin-top:16px;">
-                  <a href="app.nublapay.com" class="btn"
+                  <a href="app.kulonga.com" class="btn"
                      style="display:inline-block;background:#0ea5e9;color:#ffffff;text-decoration:none;font-weight:600;padding:10px 14px;border-radius:8px;font-size:14px;">
                     Ver no painel
                   </a>
                 </div>
 
                 <p style="margin:18px 0 0 0;font-size:12px;color:#6b7280;line-height:1.6;">
-                  Se você não reconhece esta operação, notifique-nos imediatamente: <a href="mailto:suporte@nublapay.com" style="color:#0ea5e9;text-decoration:none;">suporte@nublapay.com</a>.
+                  Se você não reconhece esta operação, notifique-nos imediatamente: <a href="mailto:suporte@kulonga.com" style="color:#0ea5e9;text-decoration:none;">suporte@kulonga.com</a>.
                 </p>
               </td>
             </tr>
@@ -155,7 +155,7 @@ export default async function AproveWidrall(
             <!-- Footer -->
             <tr>
               <td style="padding:16px 24px;background:#f9fafb;font-family:Arial,Helvetica,sans-serif;color:#6b7280;font-size:12px;">
-                NublaPay<br />
+                kulonga<br />
                 Este é um e-mail automático. Por favor, não responda.
               </td>
             </tr>

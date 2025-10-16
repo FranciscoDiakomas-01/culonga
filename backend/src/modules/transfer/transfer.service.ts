@@ -28,27 +28,46 @@ export class TransferService {
       throw new NotFoundException('Destinatário não encontrado.');
     }
 
+    if (userFrom.id === userTo.id) {
+      throw new BadRequestException('Você não pode transferir para si mesmo.');
+    }
+
+    if (createTransferDto.amount <= 0) {
+      throw new BadRequestException(
+        'O valor da transferência deve ser positivo.',
+      );
+    }
+
     if (userFrom.availableBalance < createTransferDto.amount) {
       throw new BadRequestException('Saldo insuficiente.');
     }
+
     const [updatedSender, updatedReceiver, transfer] =
       await this.database.$transaction([
         this.database.users.update({
           where: { id: userFrom.id },
           data: {
-            availableBalance:
-              userFrom.availableBalance - createTransferDto.amount,
-            totalTranfered: userFrom.totalTranfered + createTransferDto.amount,
+            availableBalance: {
+              decrement: createTransferDto.amount,
+            },
+            totalTranfered: {
+              increment: createTransferDto.amount,
+            },
           },
         }),
 
         this.database.users.update({
           where: { id: userTo.id },
           data: {
-            availableBalance:
-              userTo.availableBalance + createTransferDto.amount,
-            totatReciev: userTo.totatReciev + createTransferDto.amount,
-            totalEarned: userTo.totalEarned + createTransferDto.amount,
+            availableBalance: {
+              increment: createTransferDto.amount,
+            },
+            totatReciev: {
+              increment: createTransferDto.amount,
+            },
+            totalEarned: {
+              increment: createTransferDto.amount,
+            },
           },
         }),
 

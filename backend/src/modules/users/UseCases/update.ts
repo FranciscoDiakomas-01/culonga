@@ -106,18 +106,18 @@ export default class UserUpedater {
           const emailservice = new EmailService();
          await emailservice.senEmail({
            to: User.email,
-           subject: 'NublaPay | Redefinir senha',
+           subject: 'kulonga | Redefinir senha',
            html: `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>NublaPay | Redefinir senha</title>
+  <title>kulonga | Redefinir senha</title>
 </head>
 <body style="margin:0; padding:0; font-family: Arial, Helvetica, sans-serif; background-color:#0d0d0d; color:#e1e1e6; line-height:1.6;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:40px auto; background-color:#1a1a1a; border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.4);">
     <tr>
       <td style="background:linear-gradient(90deg, #8257e5, #996dff); padding:20px; text-align:center;">
-        <h1 style="margin:0; color:#fff; font-size:22px; font-weight:bold;">NublaPay</h1>
+        <h1 style="margin:0; color:#fff; font-size:22px; font-weight:bold;">kulonga</h1>
       </td>
     </tr>
     <tr>
@@ -140,7 +140,7 @@ export default class UserUpedater {
     </tr>
     <tr>
       <td style="background:#111; text-align:center; padding:15px; font-size:13px; color:#777;">
-        Precisa de ajuda? <a href="mailto:suporte@nublapay.com" style="color:#8257e5; text-decoration:none;">suporte@nublapay.com</a>
+        Precisa de ajuda? <a href="mailto:suporte@kulonga.com" style="color:#8257e5; text-decoration:none;">suporte@kulonga.com</a>
       </td>
     </tr>
   </table>

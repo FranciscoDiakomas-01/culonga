@@ -26,8 +26,8 @@ export default class AdmminStartUpService {
           (process.env.ADMINPASS as string) ?? '1234567890',
         );
         const admin = {
-          name: 'NublaPay',
-          lastname: 'NublaPay',
+          name: 'kulonga',
+          lastname: 'kulonga',
           telefone: '+244955555500',
           profile: 'https://github.com/shadcn.png',
           email: process.env.ADMINEMAIL ?? 'admin@admin.ao',

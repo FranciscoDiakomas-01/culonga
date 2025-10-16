@@ -16,10 +16,12 @@ export default class MessagingService {
     const message = `🎉 Parabéns! Sua compra foi efectuada com sucesso!
 🔗 Clique no link abaixo para teres acesso aos seus produtos:
 ${link}
-${sellerSuport && `
+${
+  sellerSuport &&
+  `
 Suporte do vendedor whatsapp: ‪+244 ${sellerSuport}‬`
-    }
-💬 Suporte da plataforma Nublapay: ‪+244 922 718 735‬
+}
+💬 Suporte da plataforma kulonga: ‪+244 922 718 735‬
 Obrigado!`;
 
     console.log(message, link);

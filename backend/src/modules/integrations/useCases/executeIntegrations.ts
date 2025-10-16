@@ -68,7 +68,7 @@ export default async function ExuteMyWebhooks(
                 },
                 body: JSON.stringify({
                   orderId: crypto.randomUUID(),
-                  platform: 'NublaPay',
+                  platform: 'kulonga',
                   paymentMethod: 'pix',
                   status: 'paid',
                   createdAt: new Date(),

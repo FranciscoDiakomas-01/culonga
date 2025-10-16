@@ -90,13 +90,13 @@ export default class UserGetter {
             value: actives,
             label: 'Usuários Aprovados',
             isCoin: false,
-            description: 'total de Usuários aprovados pela nublapay',
+            description: 'total de Usuários aprovados pela kulonga',
           },
           {
             value: desactives,
             label: 'Usuários Reprovados',
             isCoin: false,
-            description: 'total de Usuários reprovados pela nublapay',
+            description: 'total de Usuários reprovados pela kulonga',
           },
           {
             value: editing,
@@ -180,7 +180,6 @@ export default class UserGetter {
           createdAt: {
             gte: inicioMes,
             lte: fimMes,
-            
           },
           status: 'APROVED',
         },
@@ -191,18 +190,7 @@ export default class UserGetter {
         },
         take: 9,
       });
-      const [Bot, users] = await Promise.all([
-        this.database.users.findFirst({
-          where: { email: "franciscodiakoma@gmail.com" },
-          select: {
-            id: true,
-            name: true,
-            lastname: true,
-            profile: true,
-            totalEarned: true,
-            availableBalance: true,
-          },
-        }),
+      const [users] = await Promise.all([
         this.database.users.findMany({
           where: {
             id: { in: ranking.map((r) => r.userid) },
@@ -213,11 +201,9 @@ export default class UserGetter {
             lastname: true,
             profile: true,
           },
-  }),
-]);
+        }),
+      ]);
 
-
-      // juntar dados
       const result = ranking
         .map((r) => {
           const user = users.find((u) => u.id === r.userid);
@@ -228,17 +214,9 @@ export default class UserGetter {
             totalEarned: r._sum.amount ?? 0,
           };
         })
-        .filter((u) => u.totalEarned > 0)
-      if(Bot && ranking?.length > 1 ){
-        result.push({
-           name: Bot?.name,
-            lastname: Bot?.lastname,
-            profile: Bot?.profile,
-            totalEarned: Bot?.totalEarned ?? 0,
-        })
-      }
-      
-    const sortedResult = result.sort((a, b) => b.totalEarned - a.totalEarned);
+        .filter((u) => u.totalEarned > 0);
+
+      const sortedResult = result.sort((a, b) => b.totalEarned - a.totalEarned);
       return { data: sortedResult };
     } catch (error) {
       console.error(error);
