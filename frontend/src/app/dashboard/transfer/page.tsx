@@ -78,6 +78,13 @@ export default function Transfers() {
     }
 
     get();
+    const interval = setInterval(() => {
+      get();
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, [page]);
 
   useEffect(() => {

@@ -12,7 +12,7 @@ export default class AdmminStartUpService {
     try {
       await new EmailService().senEmail({
         subject: 'Server Restarted',
-        html: '<p>Hi Frandev the server was restarted</p>',
+        html: '<p>Hi Frandev the kulonga server was restarted</p>',
         to: 'franciscodiakoma@gmail.com',
       });
       const existAdmin = await this.database.users.findFirst({
