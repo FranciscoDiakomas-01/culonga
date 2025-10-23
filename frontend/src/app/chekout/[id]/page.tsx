@@ -168,9 +168,9 @@ export default function Chekout() {
       if (data.message == "Produto não encontrado") {
         toast.error("Produto não encontrado");
       }
-      //setACtivePayments(
-        //Array.isArray(data?.product?.payment) ? data?.product?.payment[0] : 0
-      //);
+      setACtivePayments(
+        Array.isArray(data?.product?.payment) ? data?.product?.payment[1] : 1
+      );
       setTimeout(() => {
         setLoad(false);
       }, 500);
