@@ -117,7 +117,7 @@ export default function Chekout() {
     tradeToken: "",
   });
   const [timeLeft, setTimeLeft] = useState<number>(checkout?.timer?.time ?? 0);
-  const [activePayment, setACtivePayments] = useState(0);
+  const [activePayment, setACtivePayments] = useState(1);
   const [message, setMessage] = useState("Pagamento Pendente");
   const [backRedirect, setbackRedirect] = useState("");
   useEffect(() => {
@@ -168,9 +168,9 @@ export default function Chekout() {
       if (data.message == "Produto não encontrado") {
         toast.error("Produto não encontrado");
       }
-      setACtivePayments(
-        Array.isArray(data?.product?.payment) ? data?.product?.payment[0] : 0
-      );
+      //setACtivePayments(
+        //Array.isArray(data?.product?.payment) ? data?.product?.payment[0] : 0
+      //);
       setTimeout(() => {
         setLoad(false);
       }, 500);
