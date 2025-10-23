@@ -8,10 +8,12 @@ import {
   Query,
   HttpCode,
   Header,
+  Put,
 } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { Status } from 'generated/prisma';
+import { updateManualy } from './dto/update-payment.dto';
 
 @Controller('payments')
 export class PaymentsController {
@@ -21,7 +23,10 @@ export class PaymentsController {
   async create(@Body() createPaymentDto: CreatePaymentDto) {
     return await this.paymentsService.create(createPaymentDto);
   }
-
+  @Put('/status')
+  async updatemanualy(@Body() data: updateManualy) {
+    return await this.paymentsService.updateManualy(data);
+  }
   @Get()
   async findAll(
     @Headers('userid') userid: string,

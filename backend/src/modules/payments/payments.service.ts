@@ -1,11 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
-import { PaypayNotifyDto } from './dto/update-payment.dto';
+import { PaypayNotifyDto, updateManualy } from './dto/update-payment.dto';
 import DatabaseService from 'src/services/database/database.service';
 import PaymentCreater from './usecases/create';
 import PaymentGetter from './usecases/get';
 import PaymentUpdate from './usecases/update';
 import { Status } from 'generated/prisma';
+import EmailService from 'src/services/Email/email.service';
+import MessagingService from 'src/services/Message/message.service';
 
 @Injectable()
 export class PaymentsService {
@@ -51,5 +57,72 @@ export class PaymentsService {
   public async update(updatePaymentDto: PaypayNotifyDto | any) {
     const updater = new PaymentUpdate(this.database);
     return await updater.update(updatePaymentDto);
+  }
+  public async updateManualy(data: updateManualy) {
+    const [admin, payment] = await Promise.all([
+      this.database.users.findFirst({
+        where: {
+          id: data.userid,
+          role: 'ADMIN',
+        },
+      }),
+      this.database.payment.findFirst({
+        where: {
+          uuid: data.payid,
+        },
+        include: {
+          User: true,
+        },
+      }),
+    ]);
+
+    if (!admin) {
+      throw new ForbiddenException('Acesso negado');
+    }
+    if (!payment || !payment.User) {
+      throw new NotFoundException('Produto não encontrado');
+    }
+    const mappedStatus: Status = data.status == '1' ? 'APROVED' : 'CANCELED';
+    await this.database.payment.update({
+      data: { status: mappedStatus },
+      where: { uuid: data.payid },
+    });
+    if (mappedStatus == 'APROVED') {
+      const emailService = new EmailService();
+      const messagingService = new MessagingService();
+      const Product = await this.database.products.findFirst({
+        where: { id: payment.productId },
+      });
+      const valor = payment.amount;
+      await Promise.all([
+        emailService.senEmail({
+          to: payment.User.email,
+          subject: '✅ Compra Realizada',
+          html: `<h1>Compra confirmada</h1><p>Produto: ${Product?.title}</p> <br/> <p>Link: ${Product?.link}</p>`,
+        }),
+
+        messagingService.sendMessage(
+          payment.User.telefone,
+          Product?.file as string,
+          Product?.whatsappSuport,
+        ),
+
+        this.database.users.update({
+          data: {
+            totalEarned: payment.User.totalEarned + valor,
+            availableBalance:
+              payment.User.availableBalance + this.percent(valor),
+          },
+          where: { id: payment.User.id },
+        }),
+      ]);
+    }
+    return { message: 'Pagamento modificado' };
+  }
+
+  private percent(montante: number): number {
+    const taxaPlataforma = 0.08;
+    const liquido = montante * (1 - taxaPlataforma);
+    return Number(liquido.toFixed(2));
   }
 }

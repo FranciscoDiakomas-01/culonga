@@ -101,12 +101,6 @@ export default class PaymentUpdate {
               where: { id: payment.User.id },
             }),
           ]);
-
-          await Promise.all([
-            this.pushKit.send(),
-            ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
-          ]);
-
           return { message: 'Pagamento modificado' };
         }
         return {

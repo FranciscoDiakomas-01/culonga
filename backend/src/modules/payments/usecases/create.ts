@@ -61,6 +61,7 @@ export default class PaymentCreater {
           if (!pay?.out_trade_no || !payments?.uuid) {
             return {
               message: 'Erro ao efctuar pagamento',
+              id: payments.uuid,
             };
           }
           await this.database.payment.update({
@@ -84,6 +85,7 @@ export default class PaymentCreater {
           if (!pay?.out_trade_no || !payments?.uuid) {
             return {
               message: 'Erro ao efctuar pagamento',
+              id: payments.uuid,
             };
           }
           await this.database.payment.update({
@@ -107,6 +109,7 @@ export default class PaymentCreater {
           if (!pay?.out_trade_no || !payments?.uuid) {
             return {
               message: 'Erro ao efctuar pagamento',
+              id: payments.uuid,
             };
           }
           await this.database.payment.update({

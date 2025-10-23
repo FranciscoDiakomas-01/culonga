@@ -1,4 +1,12 @@
-import { IsNumberString, IsOptional, IsString, Length } from "class-validator";
+import {
+  IsEmpty,
+  IsIn,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export class PaypayNotifyDto {
   /** 1641546460908 */
@@ -70,4 +78,15 @@ export class PaypayNotifyDto {
   /** "TRADE_SUCCESS" | "TRADE_CLOSED" | "REFUND_SUCCESS" … */
   @IsString()
   status: string;
+}
+
+export class updateManualy {
+  @IsString()
+  @IsNotEmpty()
+  payid: string;
+  @IsEmpty()
+  userid: string;
+  @IsIn(['1', '2'])
+  @IsNotEmpty()
+  status: '1' | '2';
 }
