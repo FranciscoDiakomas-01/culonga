@@ -260,4 +260,34 @@ export default class PaymentService {
       };
     }
   }
+  public async updateMnualyPaymentStatus({
+    payid,
+    status,
+    token,
+  }: {
+    payid: string;
+    status: "1" | "2";
+    token: string;
+  }) {
+    try {
+      const res = await fetch(`${server}payments`, {
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+        },
+        method: "PUT",
+        body: JSON.stringify({
+          payid,
+          status,
+        }),
+      });
+      const data = (await res.json()) as { message: string };
+      return data;
+    } catch (error) {
+      return {
+        message: "Erro ao actualizar",
+        sent: false,
+      };
+    }
+  }
 }

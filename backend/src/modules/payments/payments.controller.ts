@@ -23,8 +23,12 @@ export class PaymentsController {
   async create(@Body() createPaymentDto: CreatePaymentDto) {
     return await this.paymentsService.create(createPaymentDto);
   }
-  @Put('/status')
-  async updatemanualy(@Body() data: updateManualy) {
+  @Put()
+  async updatemanualy(
+    @Body() data: updateManualy,
+    @Headers('userid') userid: string,
+  ) {
+    data.userid = userid;
     return await this.paymentsService.updateManualy(data);
   }
   @Get()

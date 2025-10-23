@@ -82,6 +82,9 @@ export class PaymentsService {
     if (!payment || !payment.User) {
       throw new NotFoundException('Produto não encontrado');
     }
+    if (payment.status != "PENDING") {
+      throw new Bad
+    }
     const mappedStatus: Status = data.status == '1' ? 'APROVED' : 'CANCELED';
     await this.database.payment.update({
       data: { status: mappedStatus },

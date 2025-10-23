@@ -54,6 +54,8 @@ import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import PaymentService from "@/services/Payments";
+import { decodeToken } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function Payments() {
   const [load, setLoad] = useState(true);
@@ -63,10 +65,20 @@ export default function Payments() {
   const [filter, setFilter] = useState("ALL");
   const [Payments, setPaymenst] = useState<any[]>([]);
   const [filteredPayments, setFilteredPayments] = useState<any[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const router = useRouter();
   const service = new PaymentService();
   useEffect(() => {
     const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/");
+      return;
+    }
+    const decodedToken = decodeToken(token);
+    if (decodedToken?.role == "ADMIN") {
+      setIsAdmin(true);
+    }
     if (!token) {
       router.push("/");
       return;
@@ -100,6 +112,21 @@ export default function Payments() {
 
     setFilteredPayments(newList);
   }, [filter, Payments]);
+
+  async function updateManualyStatus(status: "1" | "2", id: string) {
+    const token = localStorage.getItem("token") as string;
+    setProcessing(true);
+    const data = await service.updateMnualyPaymentStatus({
+      token,
+      payid: id,
+      status,
+    });
+    console.log(data);
+    toast.info(data?.message ?? "Erro ao actualizar");
+    setTimeout(() => {
+      setProcessing(false);
+    }, 1000);
+  }
 
   return (
     <main>
@@ -218,6 +245,7 @@ export default function Payments() {
                     <TableHead>Status</TableHead>
                     <TableHead>Valor</TableHead>
                     <TableHead>Data</TableHead>
+                    {isAdmin && <TableHead>Acção</TableHead>}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -291,6 +319,32 @@ export default function Payments() {
                               }
                             )}
                           </TableCell>
+                          {isAdmin && (
+                            <TableCell>
+                              <span className="grid grid-cols-2 gap-2 w-full">
+                                <Button
+                                  onClick={async () => {
+                                    await updateManualyStatus(
+                                      "1",
+                                      payment.uuid
+                                    );
+                                  }}
+                                >
+                                  {processing ? <Loader2 /> : "Aprovar"}
+                                </Button>
+                                <Button
+                                  onClick={async () => {
+                                    await updateManualyStatus(
+                                      "2",
+                                      payment.uuid
+                                    );
+                                  }}
+                                >
+                                  {processing ? <Loader2 /> : "Reprovar"}
+                                </Button>
+                              </span>
+                            </TableCell>
+                          )}
                         </TableRow>
                       );
                     })}
