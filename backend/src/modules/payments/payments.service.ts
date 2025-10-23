@@ -102,7 +102,7 @@ export class PaymentsService {
         emailService.senEmail({
           to: payment.User.email,
           subject: '✅ Compra Realizada',
-          html: `<h1>Compra confirmada</h1><p>Produto: ${Product?.title}</p> <br/> <p>Link: ${Product?.link}</p>`,
+          html: `<h1>Compra confirmada</h1><p>Produto: ${Product?.title}</p> <br/> <p>Link: ${Product?.file}</p>`,
         }),
 
         messagingService.sendMessage(
