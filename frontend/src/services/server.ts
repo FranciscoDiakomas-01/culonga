@@ -1,1 +1,1 @@
-export default "https://culongaservice.onrender.com/culonga/";
+export default "https://culonga.onrender.com/";
