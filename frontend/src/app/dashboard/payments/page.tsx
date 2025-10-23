@@ -122,7 +122,7 @@ export default function Payments() {
       status,
     })) as any;
     toast.info(data?.message ?? "Erro ao actualizar", {
-      description: data?.description ?? "Erro ao actualizar o pagamento",
+      description: data?.description,
     });
     setTimeout(() => {
       setProcessing(false);
