@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -83,7 +84,7 @@ export class PaymentsService {
       throw new NotFoundException('Produto não encontrado');
     }
     if (payment.status != "PENDING") {
-      throw new Bad
+      throw new NotFoundException('Pagamento já foi modificado');
     }
     const mappedStatus: Status = data.status == '1' ? 'APROVED' : 'CANCELED';
     await this.database.payment.update({
