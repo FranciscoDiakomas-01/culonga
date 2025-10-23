@@ -116,13 +116,14 @@ export default function Payments() {
   async function updateManualyStatus(status: "1" | "2", id: string) {
     const token = localStorage.getItem("token") as string;
     setProcessing(true);
-    const data = await service.updateMnualyPaymentStatus({
+    const data = (await service.updateMnualyPaymentStatus({
       token,
       payid: id,
       status,
+    })) as any;
+    toast.info(data?.message ?? "Erro ao actualizar", {
+      description: data?.description ?? "Erro ao actualizar o pagamento",
     });
-    console.log(data);
-    toast.info(data?.message ?? "Erro ao actualizar");
     setTimeout(() => {
       setProcessing(false);
     }, 1000);

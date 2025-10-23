@@ -83,8 +83,22 @@ export class PaymentsService {
     if (!payment || !payment.User) {
       throw new NotFoundException('Produto não encontrado');
     }
-    if (payment.status != "PENDING") {
+    if (payment.status != 'PENDING') {
       throw new NotFoundException('Pagamento já foi modificado');
+    }
+    const Product = await this.database.products.findFirst({
+      where: { id: payment.productId },
+    });
+
+    if (Product && Product?.price != payment.amount) {
+      await this.database.payment.update({
+        data: { status: 'CANCELED' },
+        where: { uuid: data.payid },
+      });
+      throw new BadRequestException({
+        message: 'O cliente não pagou o valor esperado ',
+        description: `Valor do Produto ${Product.price?.toLocaleString('pt')} kz , valor pago pelo cliente ${payment.amount.toLocaleString('pt')} kz`,
+      });
     }
     const mappedStatus: Status = data.status == '1' ? 'APROVED' : 'CANCELED';
     await this.database.payment.update({
@@ -94,9 +108,7 @@ export class PaymentsService {
     if (mappedStatus == 'APROVED') {
       const emailService = new EmailService();
       const messagingService = new MessagingService();
-      const Product = await this.database.products.findFirst({
-        where: { id: payment.productId },
-      });
+
       const valor = payment.amount;
       await Promise.all([
         emailService.senEmail({

@@ -281,7 +281,7 @@ export default class PaymentService {
           status,
         }),
       });
-      const data = (await res.json()) as { message: string };
+      const data = (await res.json()) as { message: string ,  };
       return data;
     } catch (error) {
       return {
