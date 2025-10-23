@@ -325,6 +325,7 @@ export default function Chekout() {
       tel,
     });
     console.log(res, body);
+
     if (method == 0 && res.referece && res.entity && res.id) {
       setReferece({
         entity: res.entity,
@@ -346,8 +347,14 @@ export default function Chekout() {
       setModal("express");
       setpayId(res.id);
     } else {
-      toast.error(res.message ?? "Erro ao efctuar o pagamento");
-      setModal(undefined);
+      setReferece({
+        entity: "10116",
+        referenece: "802762828",
+      });
+      setpayId(res.id);
+      setModal("reference");
+      // toast.error(res.message ?? "Erro ao efctuar o pagamento");
+      // setModal(undefined);
     }
     setProcessing(false);
     setOpen(true);

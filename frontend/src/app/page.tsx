@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { LoginForm } from "@/components/loginforn";
 import img from "@/assets/images/login.jpeg";
 import img1 from "@/assets/images/logo.png";
-import img2 from "@/assets/images/logo.jpeg";;
+import img2 from "@/assets/images/logo.jpeg";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
