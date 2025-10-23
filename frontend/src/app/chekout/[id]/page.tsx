@@ -676,6 +676,8 @@ export default function Chekout() {
                           const pay = PaymentServices.find((p) => {
                             return p.id == item;
                           });
+
+                          if (pay?.title == "Express") return null;
                           return (
                             <button
                               key={index}
