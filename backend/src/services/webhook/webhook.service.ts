@@ -3,7 +3,7 @@ import { Logger } from '@nestjs/common';
 export default class WebHookService {
   private readonly logger = new Logger('WebHook');
   private readonly webhookPath =
-    'https://api.pushcut.io/qNaf-mjmZ9S9nlkyOWbCy/notifications/Venda%20realizada';
+    'https://api.pushcut.io/girhTXhktr7jie0R1Yj2y/notifications/Venda%20Realizada';
 
   public async send() {
     try {

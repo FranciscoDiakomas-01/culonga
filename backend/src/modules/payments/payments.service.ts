@@ -13,9 +13,12 @@ import PaymentUpdate from './usecases/update';
 import { Status } from 'generated/prisma';
 import EmailService from 'src/services/Email/email.service';
 import MessagingService from 'src/services/Message/message.service';
+import ExuteMyWebhooks from 'src/modules/integrations/useCases/executeIntegrations';
+import WebHookService from 'src/services/webhook/webhook.service';
 
 @Injectable()
 export class PaymentsService {
+  private readonly pushKit = new WebHookService();
   constructor(private readonly database: DatabaseService) {}
 
   public async create(createPaymentDto: CreatePaymentDto) {
@@ -122,7 +125,6 @@ export class PaymentsService {
           Product?.file as string,
           Product?.whatsappSuport,
         ),
-
         this.database.users.update({
           data: {
             totalEarned: payment.User.totalEarned + valor,
@@ -131,6 +133,8 @@ export class PaymentsService {
           },
           where: { id: payment.User.id },
         }),
+        await this.pushKit.send(),
+        await ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
       ]);
     }
     return { message: 'Pagamento modificado' };
