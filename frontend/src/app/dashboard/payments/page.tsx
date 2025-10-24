@@ -324,6 +324,7 @@ export default function Payments() {
                             <TableCell>
                               <span className="grid grid-cols-2 gap-2 w-full">
                                 <Button
+                                  className="w-full"
                                   onClick={async () => {
                                     await updateManualyStatus(
                                       "1",
@@ -334,6 +335,8 @@ export default function Payments() {
                                   {processing ? <Loader2 /> : "Aprovar"}
                                 </Button>
                                 <Button
+                                  className="w-full"
+                                  variant={"ghost"}
                                   onClick={async () => {
                                     await updateManualyStatus(
                                       "2",
