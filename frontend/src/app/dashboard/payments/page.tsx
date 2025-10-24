@@ -335,7 +335,7 @@ export default function Payments() {
                                   {processing ? <Loader2 /> : "Aprovar"}
                                 </Button>
                                 <Button
-                                  className="w-full"
+                                  className="w-full border border-white/10"
                                   variant={"ghost"}
                                   onClick={async () => {
                                     await updateManualyStatus(
