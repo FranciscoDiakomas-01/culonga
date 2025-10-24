@@ -30,6 +30,7 @@ import {
 import DashBoardHeader from "@/components/ui/headerDashboard";
 import {
   BadgeCheck,
+  Check,
   Clock,
   Loader2,
   MoveLeft,
@@ -66,7 +67,15 @@ export default function Payments() {
   const [Payments, setPaymenst] = useState<any[]>([]);
   const [filteredPayments, setFilteredPayments] = useState<any[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [processing, setProcessing] = useState(false);
+  const [processing, setProcessing] = useState<{
+    id: string;
+    loading: boolean;
+    operation: any;
+  }>({
+    id: "",
+    loading: false,
+    operation: null,
+  });
   const router = useRouter();
   const service = new PaymentService();
   useEffect(() => {
@@ -115,7 +124,11 @@ export default function Payments() {
 
   async function updateManualyStatus(status: "1" | "2", id: string) {
     const token = localStorage.getItem("token") as string;
-    setProcessing(true);
+    setProcessing({
+      id,
+      loading: true,
+      operation: status,
+    });
     const data = (await service.updateMnualyPaymentStatus({
       token,
       payid: id,
@@ -125,7 +138,11 @@ export default function Payments() {
       description: data?.description,
     });
     setTimeout(() => {
-      setProcessing(false);
+      setProcessing({
+        id: "",
+        loading: false,
+        operation: null,
+      });
     }, 1000);
   }
 
@@ -321,32 +338,37 @@ export default function Payments() {
                             )}
                           </TableCell>
                           {isAdmin && (
-                            <TableCell>
-                              <span className="grid grid-cols-2 gap-2 w-full">
-                                <Button
-                                  className="w-full"
-                                  onClick={async () => {
-                                    await updateManualyStatus(
-                                      "1",
-                                      payment.uuid
-                                    );
-                                  }}
-                                >
-                                  {processing ? <Loader2 /> : "Aprovar"}
-                                </Button>
-                                <Button
-                                  className="w-full border border-white/10"
-                                  variant={"ghost"}
-                                  onClick={async () => {
-                                    await updateManualyStatus(
-                                      "2",
-                                      payment.uuid
-                                    );
-                                  }}
-                                >
-                                  {processing ? <Loader2 /> : "Reprovar"}
-                                </Button>
-                              </span>
+                            <TableCell className="w-50 space-x-3">
+                              {" "}
+                              <Button
+                                className="lg:w-full w-20"
+                                onClick={async () => {
+                                  await updateManualyStatus("1", payment.uuid);
+                                }}
+                              >
+                                {processing?.id == payment?.uuid &&
+                                processing?.loading &&
+                                processing?.operation == 1 ? (
+                                  <Loader2 className="animate-spin" />
+                                ) : (
+                                  "Aprovar"
+                                )}
+                              </Button>
+                              <Button
+                                className="lg:w-full w-20 border border-white/10"
+                                variant={"ghost"}
+                                onClick={async () => {
+                                  await updateManualyStatus("2", payment.uuid);
+                                }}
+                              >
+                                {processing?.id == payment?.uuid &&
+                                processing?.loading &&
+                                processing?.operation == 2 ? (
+                                  <Loader2 className="animate-spin" />
+                                ) : (
+                                  "Reprovar"
+                                )}
+                              </Button>
                             </TableCell>
                           )}
                         </TableRow>
