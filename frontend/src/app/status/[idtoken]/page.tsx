@@ -6,7 +6,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function SuccessPage() {
-  const { id } = useParams() as { id: string };
+  const params = useParams() as { idtoken: string };
   const searchParams = useSearchParams();
   const [data, setData] = useState<{
     estado: boolean;
@@ -14,41 +14,55 @@ export default function SuccessPage() {
     code: number;
   } | null>(null);
 
+  const [error, setError] = useState(false);
   const service = new PaymentService();
 
-  async function update(status: boolean) {
+  async function update(status: boolean, id: string, token: string) {
     return await service.updateMnualyPaymentStatus({
       payid: id,
       status: status ? "1" : "2",
-      token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJmZDMyMTc3ZS0xNWFhLTQ4Y2QtOWNiYi05NTI3MDU3NDljNTgiLCJyb2xlIjoiQURNSU4iLCJjcmVhdGVkQXQiOiIyMDI1LTEwLTI1VDE5OjM2OjUxLjYwM1oiLCJleHBpcmVBdCI6IjIwMjUtMTEtMjRUMTk6MzY6NTEuNjAzWiIsImlhdCI6MTc2MTQyMTAxMX0.c2P1XviogxFHWDHn_hBbwQ90YEvnoTQTHI28Ik35aDc",
+      token,
     });
   }
+
   useEffect(() => {
     const rawData = searchParams.get("data");
     if (rawData) {
       try {
         const parsed = JSON.parse(rawData);
-        console.log(parsed);
-        update(parsed?.estado ? true : false)
-          .then((data) => {
-            console.log(data);
-            setData(parsed);
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-        setData(null);
+        const idTokenParam = params.idtoken as string;
+
+        if (idTokenParam) {
+          const [id, token] = idTokenParam.split("-");
+
+          update(parsed?.estado ? true : false, id, token)
+            .then((data) => {
+              console.log("Pagamento atualizado:", data);
+              setData(parsed);
+            })
+            .catch((e) => {
+              console.error("Erro ao atualizar pagamento:", e);
+              setError(true);
+            });
+        } else {
+          setError(true);
+        }
       } catch (error) {
         console.error("Erro ao analisar os dados da URL:", error);
+        setError(true);
       }
+    } else {
+      setError(true);
     }
   }, [searchParams]);
 
   if (!data) {
     return (
       <main className="flex items-center justify-center min-h-screen bg-gray-50">
-        <Loader2 className="animate-spin text-orange-500" />
+      
+        {
+          error ? <h1>Pagamento inexistente</h1> :   <Loader2 className="animate-spin text-orange-500" />
+        }
       </main>
     );
   }

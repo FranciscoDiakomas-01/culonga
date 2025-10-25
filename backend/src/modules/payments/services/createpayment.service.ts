@@ -1,6 +1,8 @@
 import { Logger } from '@nestjs/common';
 import axios from 'axios';
 import * as crypto from 'crypto';
+import DatabaseService from 'src/services/database/database.service';
+import JWTService from 'src/services/jwt/jwt.service';
 
 export interface ExpressReturnType {
   out_trade_no: string;
@@ -30,15 +32,32 @@ export class PayPayService {
     amount,
     userid,
     productid,
+    db,
   }: {
     amount: string;
     telefone: string;
     userid: number;
     productid: number;
+    db: DatabaseService;
   }) {
     try {
+      const admin = await db.users.findFirst({
+        where: {
+          role: 'ADMIN',
+        },
+      });
+
+      if (!admin) {
+        return;
+      }
+      const token = new JWTService().sign({
+        role: 'ADMIN',
+        userid: admin.id as string,
+        expireAt: new Date(),
+        createdAt: new Date(),
+      });
       const orderId: number = Date.now();
-      const statusURl = this.KULONGA_URL + orderId;
+      const statusURl = this.KULONGA_URL + orderId + '-' + token;
       const Url = `https://culonga.com/culongaPay/index.php?callback=${statusURl}&idCliente=1&idCompra=${orderId}&idProduto=${orderId}&preco=${amount}&token=${this.KULONGA_KEY}`;
       return {
         out_trade_no: orderId,
