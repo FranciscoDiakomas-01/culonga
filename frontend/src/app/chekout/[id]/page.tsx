@@ -347,6 +347,8 @@ export default function Chekout() {
       tel: "955555500",
     });
 
+    console.log(res);
+
     if (method == 0 && res.referece && res.entity && res.id) {
       setReferece({
         entity: res.entity,
@@ -355,7 +357,6 @@ export default function Chekout() {
 
       setpayId(res.id);
       setModal("reference");
-      console.log(res)
       setOpen(true);
     } else if (method == 2 && res.dynamic_link && res.trade_token) {
       toast.error(res.message ?? "Erro ao efctuar o pagamento");
