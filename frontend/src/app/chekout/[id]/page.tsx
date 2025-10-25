@@ -410,20 +410,15 @@ export default function Chekout() {
             sandbox="allow-same-origin allow-forms allow-scripts allow-popups allow-modals"
             onLoad={() => {
               console.log("Iframe da EMIS carregado com sucesso");
-              // Tentar focar no iframe para melhor UX
+              // O iframe carregou, mesmo com alguns erros de CORS
               iframeRef.current?.focus();
             }}
             onError={(e) => {
-              console.error("Erro ao carregar iframe da EMIS:", e);
+              console.error("Erro crítico ao carregar iframe:", e);
               toast.error("Erro ao carregar página de pagamento");
-              // Fallback: tentar abrir em nova aba
-              const blob = new Blob([iframeContent], { type: "text/html" });
-              const url = URL.createObjectURL(blob);
-              window.open(url, "_blank");
-              URL.revokeObjectURL(url);
             }}
           />
-          {/* Botão para fechar o iframe */}
+          {/* Botão para fechar com melhor estilo */}
           <button
             onClick={() => {
               setShowIframe(false);
@@ -431,26 +426,50 @@ export default function Chekout() {
             }}
             style={{
               position: "absolute",
-              top: "15px",
-              right: "15px",
-              background: "rgba(0,0,0,0.7)",
+              top: "20px",
+              right: "20px",
+              background: "rgba(255,0,0,0.8)",
               color: "white",
               border: "none",
               borderRadius: "50%",
-              width: "40px",
-              height: "40px",
+              width: "50px",
+              height: "50px",
               cursor: "pointer",
               zIndex: 9999999999999,
-              fontSize: "18px",
+              fontSize: "20px",
               fontWeight: "bold",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
             }}
             title="Fechar pagamento"
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,0,0,1)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255,0,0,0.8)";
+            }}
           >
             ×
           </button>
+
+          {/* Loading indicator inicial */}
+          {!iframeRef.current?.contentWindow && (
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                textAlign: "center",
+                zIndex: 999999999998,
+              }}
+            >
+              <Loader2 className="animate-spin" size={40} />
+              <p style={{ marginTop: "10px" }}>Carregando pagamento...</p>
+            </div>
+          )}
         </div>
       )}
 
