@@ -5,7 +5,6 @@ import { Status } from 'generated/prisma';
 import ExuteMyWebhooks from 'src/modules/integrations/useCases/executeIntegrations';
 import WebHookService from 'src/services/webhook/webhook.service';
 import EmailService from 'src/services/Email/email.service';
-import MessagingService from 'src/services/Message/message.service';
 
 export default class PaymentUpdate {
   private readonly logger = new Logger('PaymentLogger');
@@ -76,7 +75,6 @@ export default class PaymentUpdate {
           });
 
           const emailService = new EmailService();
-          const messagingService = new MessagingService();
 
           const valor = payment.amount;
           await Promise.all([
@@ -85,13 +83,6 @@ export default class PaymentUpdate {
               subject: '✅ Compra Realizada',
               html: `<h1>Compra confirmada</h1><p>Produto: ${Product?.title}</p> <br/> <p>Link: ${Product?.file}</p>`,
             }),
-
-            messagingService.sendMessage(
-              user.telefone,
-              Product?.file as string,
-              Product?.whatsappSuport,
-            ),
-
             this.database.users.update({
               data: {
                 totalEarned: payment.User.totalEarned + valor,

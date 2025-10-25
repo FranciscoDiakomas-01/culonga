@@ -12,7 +12,6 @@ import PaymentGetter from './usecases/get';
 import PaymentUpdate from './usecases/update';
 import { Status } from 'generated/prisma';
 import EmailService from 'src/services/Email/email.service';
-import MessagingService from 'src/services/Message/message.service';
 import ExuteMyWebhooks from 'src/modules/integrations/useCases/executeIntegrations';
 import WebHookService from 'src/services/webhook/webhook.service';
 
@@ -114,7 +113,6 @@ export class PaymentsService {
     });
     if (mappedStatus == 'APROVED') {
       const emailService = new EmailService();
-      const messagingService = new MessagingService();
 
       const valor = payment.amount;
       await Promise.all([
@@ -124,11 +122,6 @@ export class PaymentsService {
           html: `<h1>Compra confirmada</h1><p>Produto: ${Product?.title}</p> <br/> <p>Link: ${Product?.file}</p>`,
         }),
 
-        messagingService.sendMessage(
-          payment.User.telefone,
-          Product?.file as string,
-          Product?.whatsappSuport,
-        ),
         this.database.users.update({
           data: {
             totalEarned: payment.User.totalEarned + valor,
