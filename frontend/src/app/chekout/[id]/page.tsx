@@ -240,8 +240,7 @@ export default function Chekout() {
             }, 1500);
           }
         } else {
-          //setMessage("Seu pagamento foi cancelado");
-          setMessage("Pagamento Pendente");
+          setMessage("Seu pagamento foi cancelado");
         }
       }, 1500);
     }
@@ -364,6 +363,8 @@ export default function Chekout() {
     setProcessing(false);
   }
 
+
+  
   return (
     <>
       {/* IFRAME PARA PAGAMENTO EXPRESS - AGORA VISÍVEL APENAS QUANDO showIframe for true */}

@@ -112,77 +112,11 @@ export class PayPayService {
   }
 
   public async payWithReference({ amount }: { amount: string }) {
-    const bizContentData = {
-      payer_ip: 'user_ip',
-      timeout_express: '10m',
-      sale_product_code: '050200030',
-      cashier_type: 'SDK',
-      out_trade_no: '012321',
-      subject: 'NublaPa Pagamento',
-      currency: 'AOA',
-      price: parseFloat(amount),
-      quantity: 1,
-      total_amount: parseFloat(amount),
-      payee_identity: '40404040404',
-      trade_info: {
-        currency: 'AOA',
-        out_trade_no: `ORDER_${Date.now()}`,
-        payee_identity: this.paternId,
-        payee_identity_type: '1',
-        price: parseFloat(amount),
-        quantity: '1',
-        subject: 'Catering expenses',
-        total_amount: parseFloat(amount),
-      },
-      pay_method: {
-        pay_product_code: '31',
-        amount: parseFloat(amount),
-        bank_code: 'REF',
-      },
+    return {
+      out_trade_no: `ORDER_${Date.now()}`,
+      reference: '802762828',
+      entity: '10116',
     };
-
-    const encryptedBizContent = this.encryptAndBase64(
-      JSON.stringify(bizContentData),
-      this.privateKey,
-    );
-
-    const requestBody = {
-      request_no: `ORDER_${Date.now()}`,
-      service: 'instant_trade',
-      version: '1.0',
-      partner_id: this.paternId,
-      charset: 'UTF-8',
-      language: 'pt',
-      sign_type: 'RSA',
-      timestamp: this.getCurrentTimestamp(),
-      format: 'JSON',
-      biz_content: encryptedBizContent,
-    };
-
-    this.generateSignature(requestBody);
-
-    for (const key in requestBody) {
-      if (
-        requestBody.hasOwnProperty(key) &&
-        key !== 'sign' &&
-        key !== 'sign_type'
-      ) {
-        requestBody[key] = encodeURIComponent(requestBody[key]);
-      }
-    }
-
-    const response = await axios.post(this.API_URL, requestBody, {
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    const data: ReferenceReturnType = response.data?.biz_content;
-    if (!data?.out_trade_no) {
-      return {
-        ...data,
-        out_trade_no: `ORDER_${Date.now()}`,
-      };
-    }
-    return data;
   }
 
   private generateSignature(requestBody: any) {

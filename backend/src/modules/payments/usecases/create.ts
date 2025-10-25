@@ -122,8 +122,8 @@ export default class PaymentCreater {
   private formatResponse(method: number, pay: any, uuid: string) {
     if (method === 0) {
       return {
-        reference: pay?.reference_id,
-        entity: pay?.entity_id,
+        reference: pay?.reference,
+        entity: pay?.entity,
         id: uuid,
       };
     }
