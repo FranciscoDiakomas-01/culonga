@@ -175,7 +175,12 @@ export class PayPayService {
 
     this.loger.log(response.data);
     const data: ReferenceReturnType = response.data?.biz_content;
-
+    if (!data?.out_trade_no) {
+      return {
+        ...data,
+        out_trade_no: `ORDER_${Date.now()}`,
+      };
+    }
     return data;
   }
 
