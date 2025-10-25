@@ -38,7 +38,7 @@ export class PayPayService {
   }) {
     try {
       const orderId: number = Date.now()
-      const Url = `https://culonga.com/culongaPay/index.php?callback=${this.KULONGA_URL}/${productid}&idCliente=${userid}&idCompra=${orderId}&idProduto=${productid}&preco=${amount}&token=${this.KULONGA_KEY}`;
+      const Url = `https://culonga.com/culongaPay/index.php?callback=${this.KULONGA_URL}${productid}&idCliente=${userid}&idCompra=${orderId}&idProduto=${productid}&preco=${amount}&token=${this.KULONGA_KEY}`;
       return {
         out_trade_no: orderId,
         payurl: Url,
