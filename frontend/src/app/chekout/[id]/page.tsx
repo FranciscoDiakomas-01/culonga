@@ -320,7 +320,6 @@ export default function Chekout() {
       orderbumps,
       tel: "955555500",
     });
-    console.log(res);
 
     if (method == 0 && res.referece && res.entity && res.id) {
       setReferece({
@@ -343,6 +342,8 @@ export default function Chekout() {
       setModal("express");
       setpayId(res.id);
       const cleanHtml = res?.data.replace(/\\n|\\t|\\r/g, "");
+
+      console.log(cleanHtml);
       const iframe = iframeRef.current;
       if (iframe?.contentDocument) {
         iframe.contentDocument.open();
