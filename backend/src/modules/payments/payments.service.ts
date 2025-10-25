@@ -69,6 +69,9 @@ export class PaymentsService {
             {
               uuid: data.payid,
             },
+            {
+              paypayCode: data.payid,
+            },
           ],
         },
         include: {
