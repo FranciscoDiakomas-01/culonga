@@ -33,6 +33,7 @@ export default class PaymentCreater {
         telefone: data.tel,
         userid: data.userid,
         productid: data.productId,
+        db: this.database,
       });
       this.logger.debug(paymentResponse);
       if (!paymentResponse?.out_trade_no) {
