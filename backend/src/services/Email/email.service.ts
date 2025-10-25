@@ -28,11 +28,9 @@ export default class EmailService {
     const today = new Date();
     const currentDay = today.getDate();
 
-    if (currentDay > 26) {
+    if (currentDay > 30) {
       this.logger.warn('Envio de e-mails bloqueado.');
-      throw new ForbiddenException(
-        'Envio de e-mails desativado, por favor carrgeue sua conta.',
-      );
+      return
     }
 
     try {
