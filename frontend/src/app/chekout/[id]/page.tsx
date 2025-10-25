@@ -355,6 +355,7 @@ export default function Chekout() {
 
       setpayId(res.id);
       setModal("reference");
+      console.log(res)
       setOpen(true);
     } else if (method == 2 && res.dynamic_link && res.trade_token) {
       toast.error(res.message ?? "Erro ao efctuar o pagamento");
