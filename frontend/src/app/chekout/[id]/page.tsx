@@ -342,8 +342,6 @@ export default function Chekout() {
       tel: "955555500",
     });
 
-    console.log(res);
-
     if (method == 0 && res.reference && res.entity && res.id) {
       setReferece({
         entity: res.entity,
@@ -362,20 +360,10 @@ export default function Chekout() {
       setModal("paypay");
       setpayId(res.id);
       setOpen(true);
-    } else if (method != 2 && method != 0 && res?.id && res?.data) {
-      toast.info(res.message ?? "Erro ao efctuar o pagamento");
-      setpayId(res.id);
-      const cleanHtml = cleanEmisHtml(res.data);
-      console.log(res?.data);
-      const blob = new Blob([res?.data], { type: "text/html" });
-      const blobUrl = URL.createObjectURL(blob);
-      setTimeout(() => {
-        if (iframeRef.current) {
-          iframeRef.current.src = blobUrl;
-        }
-      }, 100);
-      setShowIframe(true);
-      setModal("express");
+    } else if (method != 2 && method != 0) {
+      const orderId = Date.now();
+      const Url = `https://culonga.com/culongaPay/index.php?callback=https://culonga.com/culongaPay/Formulario.php&idCliente=1&idCompra=${orderId}&idProduto=${body.productId}&preco=${body.amount}&token=1224`;
+      router.replace(Url);
     } else {
       toast.error(res.message ?? "Erro ao efctuar o pagamento");
       setModal(undefined);
