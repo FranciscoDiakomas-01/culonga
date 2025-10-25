@@ -23,7 +23,7 @@ export class PayPayService {
   private readonly API_URL = 'https://gateway.paypayafrica.com/recv.do';
   private readonly paternId = process.env.PATHERID ?? '123456';
   private readonly privateKey = process.env.PAYPAY_PRIVATE as string;
-  private readonly KULONGA_URL = 'https://app.culonga.com/sucess';
+  private readonly KULONGA_URL = 'https://app.culonga.com/status/';
   private readonly KULONGA_KEY = process.env.KULONGA_KEY as string;
 
   public async payWithExpress({
@@ -38,7 +38,8 @@ export class PayPayService {
   }) {
     try {
       const orderId: number = Date.now();
-      const Url = `https://culonga.com/culongaPay/index.php?callback=${this.KULONGA_URL}&idCliente=1&idCompra=${orderId}&idProduto=${orderId}&preco=${amount}&token=${this.KULONGA_KEY}`;
+      const statusURl = this.KULONGA_URL + orderId;
+      const Url = `https://culonga.com/culongaPay/index.php?callback=${statusURl}&idCliente=1&idCompra=${orderId}&idProduto=${orderId}&preco=${amount}&token=${this.KULONGA_KEY}`;
       return {
         out_trade_no: orderId,
         payurl: Url,
