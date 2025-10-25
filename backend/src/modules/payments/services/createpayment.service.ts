@@ -24,82 +24,36 @@ export class PayPayService {
   private readonly API_URL = 'https://gateway.paypayafrica.com/recv.do';
   private readonly paternId = process.env.PATHERID ?? '123456';
   private readonly privateKey = process.env.PAYPAY_PRIVATE as string;
+  private readonly KULONGA_URL = 'https://culonga.com/culongaPay';
+  private readonly KULONGA_KEY = process.env.KULONGA_KEY as string;
 
   public async payWithExpress({
     amount,
     telefone,
+    userid,
+    productid,
   }: {
     amount: string;
     telefone: string;
+    userid: number;
+    productid: number;
   }) {
-    const bizContentData = {
-      payer_ip: 'user_ip',
-      timeout_express: '10m',
-      sale_product_code: '050200030',
-      cashier_type: 'SDK',
-      out_trade_no: '012321', // seu número de pedido
-      subject: 'Culonga Pagamento',
-      currency: 'AOA',
-      price: parseFloat(amount),
-      quantity: 1,
-      total_amount: parseFloat(amount),
-      payee_identity: '40404040404',
-      trade_info: {
-        currency: 'AOA',
-        out_trade_no: `ORDER_${Date.now()}`,
-        payee_identity: this.paternId,
-        payee_identity_type: '1',
-        price: parseFloat(amount),
-        quantity: '1',
-        subject: 'Catering expenses',
-        total_amount: parseFloat(amount),
-      },
-      pay_method: {
-        pay_product_code: '31',
-        amount: parseFloat(amount),
-        bank_code: 'MUL',
-        phone_num: `${telefone}`,
-      },
-    };
-
-    const encryptedBizContent = this.encryptAndBase64(
-      JSON.stringify(bizContentData),
-      this.privateKey,
-    );
-
-    const requestBody = {
-      request_no: `ORDER_${Date.now()}`,
-      service: 'instant_trade',
-      version: '1.0',
-      partner_id: this.paternId,
-      charset: 'UTF-8',
-      language: 'pt',
-      sign_type: 'RSA',
-      timestamp: this.getCurrentTimestamp(),
-      format: 'JSON',
-      biz_content: encryptedBizContent,
-    };
-
-    this.generateSignature(requestBody);
-
-    for (const key in requestBody) {
-      if (
-        requestBody.hasOwnProperty(key) &&
-        key !== 'sign' &&
-        key !== 'sign_type'
-      ) {
-        requestBody[key] = encodeURIComponent(requestBody[key]);
-      }
+    try {
+      const body = {
+        token: this.KULONGA_KEY,
+        preco: amount,
+        callback: 'https://google.com',
+        idCliente: userid,
+        idProduto: productid,
+      };
+      const response = await axios.post(this.KULONGA_URL, body, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      return error;
     }
-
-    const response = await axios.post(this.API_URL, requestBody, {
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    const data = response.data?.biz_content as ExpressReturnType;
-    this.loger.log(response.data);
-
-    return data;
   }
 
   public async payWithPayPay({ amount }: { amount: string }) {
