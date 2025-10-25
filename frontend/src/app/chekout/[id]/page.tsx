@@ -120,9 +120,6 @@ export default function Chekout() {
   const [timeLeft, setTimeLeft] = useState<number>(checkout?.timer?.time ?? 0);
   const [activePayment, setACtivePayments] = useState(1);
   const [message, setMessage] = useState("Pagamento Pendente");
-  const [backRedirect, setbackRedirect] = useState("");
-  const [showIframe, setShowIframe] = useState(false);
-  const [iframeURl, setIFrameURL] = useState("");
 
   useEffect(() => {
     if (!checkout?.timer?.active) return;
@@ -154,24 +151,6 @@ export default function Chekout() {
     return `${m}:${s}`;
   }
 
-  const cleanEmisHtml = (html: string) => {
-    if (!html) return "";
-    let cleanHtml = html
-      .replace(/\\n/g, "\n")
-      .replace(/\\t/g, "\t")
-      .replace(/\\r/g, "\r")
-      .replace(/\\"/g, '"')
-      .replace(/\\'/g, "'")
-      .replace(/\\\\/g, "\\");
-
-    if (!cleanHtml.includes("</html>")) {
-      if (cleanHtml.includes("<html")) {
-        cleanHtml += "\n</html>";
-      }
-    }
-
-    return cleanHtml;
-  };
   useEffect(() => {
     async function get() {
       const data = await service.getProductById(id as string);
@@ -185,7 +164,6 @@ export default function Chekout() {
       setChekout(data?.checkout ?? undefined);
       setMyPayments(data?.product?.payment ?? []);
       setTotal(data?.product?.price ?? 0);
-      setbackRedirect(data?.product?.backredirect ?? "");
       setPixelId(data?.product?.pixelId ?? "");
 
       if (data.message == "Produto não encontrado") {
@@ -204,27 +182,6 @@ export default function Chekout() {
     const subTotal = orderBumps.reduce((acc, item) => acc + item.price, 0);
     setTotal(product?.price + subTotal);
   }, [orderBumps, product]);
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = "";
-      setTimeout(() => {
-        location.href = backRedirect;
-      }, 1);
-      return "";
-    };
-    if (typeof window !== "undefined") {
-      window.addEventListener("beforeunload", handleBeforeUnload);
-      const handlePopState = () => {
-        window.location.href = backRedirect;
-      };
-      window.addEventListener("popstate", handlePopState);
-      return () => {
-        window.removeEventListener("beforeunload", handleBeforeUnload);
-        window.removeEventListener("popstate", handlePopState);
-      };
-    }
-  }, [backRedirect]);
 
   useEffect(() => {
     async function getStatus() {
@@ -373,63 +330,7 @@ export default function Chekout() {
 
   return (
     <>
-      {showIframe && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            zIndex: 999999999999,
-            backgroundColor: "white",
-          }}
-        >
-          <iframe
-            ref={iframeRef}
-            src={iframeURl}
-            style={{
-              width: "100%",
-              height: "100%",
-              border: "none",
-            }}
-            sandbox="allow-scripts allow-forms allow-same-origin"
-          />
-          <button
-            onClick={() => {
-              setShowIframe(false);
-            }}
-            style={{
-              position: "absolute",
-              top: "20px",
-              right: "20px",
-              background: "rgba(255,0,0,0.8)",
-              color: "white",
-              border: "none",
-              borderRadius: "50%",
-              width: "50px",
-              height: "50px",
-              cursor: "pointer",
-              zIndex: 9999999999999,
-              fontSize: "20px",
-              fontWeight: "bold",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
-            }}
-            title="Fechar pagamento"
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(255,0,0,1)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(255,0,0,0.8)";
-            }}
-          >
-            ×
-          </button>
-        </div>
-      )}
+    
 
       <Toaster theme="light"></Toaster>
       {load ? (
