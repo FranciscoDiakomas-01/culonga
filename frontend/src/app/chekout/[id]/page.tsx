@@ -121,6 +121,8 @@ export default function Chekout() {
   const [activePayment, setACtivePayments] = useState(1);
   const [message, setMessage] = useState("Pagamento Pendente");
   const [backRedirect, setbackRedirect] = useState("");
+  const [showIframe, setShowIframe] = useState(false); // Novo estado para controlar o iframe
+
   useEffect(() => {
     if (!checkout?.timer?.active) return;
     setTimeLeft(checkout.timer.time); // reinicia sempre que checkout mudar
@@ -329,6 +331,7 @@ export default function Chekout() {
 
       setpayId(res.id);
       setModal("reference");
+      setOpen(true);
     } else if (method == 2 && res.dynamic_link && res.trade_token) {
       toast.error(res.message ?? "Erro ao efctuar o pagamento");
       setPayPayDeepLink({
@@ -337,9 +340,9 @@ export default function Chekout() {
       });
       setModal("paypay");
       setpayId(res.id);
+      setOpen(true);
     } else if (method != 2 && method != 0 && res?.id && res?.data) {
       toast.error(res.message ?? "Erro ao efctuar o pagamento");
-      setModal("express");
       setpayId(res.id);
       const cleanHtml = res?.data.replace(/\\n|\\t|\\r/g, "");
 
@@ -350,17 +353,21 @@ export default function Chekout() {
         iframe.contentDocument.write(cleanHtml);
         iframe.contentDocument.close();
       }
+
+      // MOSTRAR O IFRAME EM TELA CHEIA PARA MÉTODO EXPRESS
+      setShowIframe(true);
+      setModal("express");
     } else {
       toast.error(res.message ?? "Erro ao efctuar o pagamento");
       setModal(undefined);
     }
     setProcessing(false);
-    setOpen(true);
   }
 
   return (
     <>
-      {String(payId)?.length > 0 && (
+      {/* IFRAME PARA PAGAMENTO EXPRESS - AGORA VISÍVEL APENAS QUANDO showIframe for true */}
+      {showIframe && (
         <iframe
           ref={iframeRef}
           title="Express payment"
@@ -372,6 +379,10 @@ export default function Chekout() {
             height: "100vh",
             border: "none",
             zIndex: 999999999999,
+            backgroundColor: "white",
+          }}
+          onLoad={() => {
+            console.log("Iframe carregado para pagamento Express");
           }}
         />
       )}
