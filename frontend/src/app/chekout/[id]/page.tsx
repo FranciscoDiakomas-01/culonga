@@ -121,11 +121,12 @@ export default function Chekout() {
   const [activePayment, setACtivePayments] = useState(1);
   const [message, setMessage] = useState("Pagamento Pendente");
   const [backRedirect, setbackRedirect] = useState("");
-  const [showIframe, setShowIframe] = useState(false); // Novo estado para controlar o iframe
+  const [showIframe, setShowIframe] = useState(false);
+  const [iframeContent, setIframeContent] = useState("");
 
   useEffect(() => {
     if (!checkout?.timer?.active) return;
-    setTimeLeft(checkout.timer.time); // reinicia sempre que checkout mudar
+    setTimeLeft(checkout.timer.time);
   }, [checkout]);
 
   useEffect(() => {
@@ -152,6 +153,30 @@ export default function Chekout() {
       .padStart(2, "0");
     return `${m}:${s}`;
   }
+  // Função para limpar o HTML da EMIS
+  const cleanEmisHtml = (html: string) => {
+    if (!html) return "";
+
+    // Remover escapes e normalizar o HTML
+    let cleanHtml = html
+      .replace(/\\n/g, "\n")
+      .replace(/\\t/g, "\t")
+      .replace(/\\r/g, "\r")
+      .replace(/\\"/g, '"')
+      .replace(/\\'/g, "'")
+      .replace(/\\\\/g, "\\");
+
+    // Garantir que o HTML esteja completo
+    if (!cleanHtml.includes("</html>")) {
+      console.warn("HTML incompleto da EMIS, tentando reparar...");
+      // Adicionar fechamento básico se estiver faltando
+      if (cleanHtml.includes("<html")) {
+        cleanHtml += "\n</html>";
+      }
+    }
+
+    return cleanHtml;
+  };
   useEffect(() => {
     async function get() {
       const data = await service.getProductById(id as string);
@@ -342,18 +367,13 @@ export default function Chekout() {
       setOpen(true);
     } else if (method != 2 && method != 0 && res?.id && res?.data) {
       toast.error(res.message ?? "Erro ao efctuar o pagamento");
-      setpayId(res.id);
-      const cleanHtml = res?.data.replace(/\\n|\\t|\\r/g, "");
-
-      console.log(cleanHtml);
-      const iframe = iframeRef.current;
-      if (iframe?.contentDocument) {
-        iframe.contentDocument.open();
-        iframe.contentDocument.write(cleanHtml);
-        iframe.contentDocument.close();
-      }
-
-      // MOSTRAR O IFRAME EM TELA CHEIA PARA MÉTODO EXPRESS
+      const cleanHtml = cleanEmisHtml(res?.data);
+      console.log(cleanHtml, res?.data);
+      console.log(
+        "HTML da EMIS preparado:",
+        cleanHtml.substring(0, 500) + "..."
+      );
+      setIframeContent(cleanHtml);
       setShowIframe(true);
       setModal("express");
     } else {
@@ -363,29 +383,74 @@ export default function Chekout() {
     setProcessing(false);
   }
 
-
-  
   return (
     <>
-      {/* IFRAME PARA PAGAMENTO EXPRESS - AGORA VISÍVEL APENAS QUANDO showIframe for true */}
       {showIframe && (
-        <iframe
-          ref={iframeRef}
-          title="Express payment"
+        <div
           style={{
             position: "fixed",
             top: 0,
             left: 0,
             width: "100vw",
             height: "100vh",
-            border: "none",
             zIndex: 999999999999,
             backgroundColor: "white",
           }}
-          onLoad={() => {
-            console.log("Iframe carregado para pagamento Express");
-          }}
-        />
+        >
+          <iframe
+            ref={iframeRef}
+            srcDoc={iframeContent}
+            title="Pagamento Express - Culonga"
+            style={{
+              width: "100%",
+              height: "100%",
+              border: "none",
+            }}
+            sandbox="allow-same-origin allow-forms allow-scripts allow-popups allow-modals"
+            onLoad={() => {
+              console.log("Iframe da EMIS carregado com sucesso");
+              // Tentar focar no iframe para melhor UX
+              iframeRef.current?.focus();
+            }}
+            onError={(e) => {
+              console.error("Erro ao carregar iframe da EMIS:", e);
+              toast.error("Erro ao carregar página de pagamento");
+              // Fallback: tentar abrir em nova aba
+              const blob = new Blob([iframeContent], { type: "text/html" });
+              const url = URL.createObjectURL(blob);
+              window.open(url, "_blank");
+              URL.revokeObjectURL(url);
+            }}
+          />
+          {/* Botão para fechar o iframe */}
+          <button
+            onClick={() => {
+              setShowIframe(false);
+              setIframeContent("");
+            }}
+            style={{
+              position: "absolute",
+              top: "15px",
+              right: "15px",
+              background: "rgba(0,0,0,0.7)",
+              color: "white",
+              border: "none",
+              borderRadius: "50%",
+              width: "40px",
+              height: "40px",
+              cursor: "pointer",
+              zIndex: 9999999999999,
+              fontSize: "18px",
+              fontWeight: "bold",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            title="Fechar pagamento"
+          >
+            ×
+          </button>
+        </div>
       )}
 
       <Toaster theme="light"></Toaster>
