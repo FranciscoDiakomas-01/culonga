@@ -122,7 +122,7 @@ export default function Chekout() {
   const [message, setMessage] = useState("Pagamento Pendente");
   const [backRedirect, setbackRedirect] = useState("");
   const [showIframe, setShowIframe] = useState(false);
-  const [iframeContent, setIframeContent] = useState("");
+  const [iframeURl, setIFrameURL] = useState("");
 
   useEffect(() => {
     if (!checkout?.timer?.active) return;
@@ -344,10 +344,10 @@ export default function Chekout() {
 
     console.log(res);
 
-    if (method == 0 && res.referece && res.entity && res.id) {
+    if (method == 0 && res.reference && res.entity && res.id) {
       setReferece({
         entity: res.entity,
-        referenece: res.referece,
+        referenece: res.reference,
       });
 
       setpayId(res.id);
@@ -363,14 +363,16 @@ export default function Chekout() {
       setpayId(res.id);
       setOpen(true);
     } else if (method != 2 && method != 0 && res?.id && res?.data) {
-      toast.error(res.message ?? "Erro ao efctuar o pagamento");
-      const cleanHtml = cleanEmisHtml(res?.data);
-      console.log(cleanHtml, res?.data);
-      console.log(cleanHtml);
-      const expresschekout = document.getElementById("expresschekout");
-      if (expresschekout) {
-        expresschekout.innerHTML = cleanHtml;
-      }
+      toast.info(res.message ?? "Erro ao efctuar o pagamento");
+      setpayId(res.id);
+      const cleanHtml = cleanEmisHtml(res.data);
+      const blob = new Blob([cleanHtml], { type: "text/html" });
+      const blobUrl = URL.createObjectURL(blob);
+      setTimeout(() => {
+        if (iframeRef.current) {
+          iframeRef.current.src = blobUrl;
+        }
+      }, 100);
       setShowIframe(true);
       setModal("express");
     } else {
@@ -394,11 +396,19 @@ export default function Chekout() {
             backgroundColor: "white",
           }}
         >
-          <span className="text-black " id="expresschekout"></span>
+          <iframe
+            ref={iframeRef}
+            src={iframeURl}
+            style={{
+              width: "100%",
+              height: "100%",
+              border: "none",
+            }}
+            sandbox="allow-scripts allow-forms allow-same-origin"
+          />
           <button
             onClick={() => {
               setShowIframe(false);
-              setIframeContent("");
             }}
             style={{
               position: "absolute",
