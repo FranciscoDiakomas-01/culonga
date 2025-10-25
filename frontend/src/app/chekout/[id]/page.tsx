@@ -153,11 +153,9 @@ export default function Chekout() {
       .padStart(2, "0");
     return `${m}:${s}`;
   }
-  // Função para limpar o HTML da EMIS
+
   const cleanEmisHtml = (html: string) => {
     if (!html) return "";
-
-    // Remover escapes e normalizar o HTML
     let cleanHtml = html
       .replace(/\\n/g, "\n")
       .replace(/\\t/g, "\t")
@@ -166,10 +164,7 @@ export default function Chekout() {
       .replace(/\\'/g, "'")
       .replace(/\\\\/g, "\\");
 
-    // Garantir que o HTML esteja completo
     if (!cleanHtml.includes("</html>")) {
-      console.warn("HTML incompleto da EMIS, tentando reparar...");
-      // Adicionar fechamento básico se estiver faltando
       if (cleanHtml.includes("<html")) {
         cleanHtml += "\n</html>";
       }
@@ -371,11 +366,11 @@ export default function Chekout() {
       toast.error(res.message ?? "Erro ao efctuar o pagamento");
       const cleanHtml = cleanEmisHtml(res?.data);
       console.log(cleanHtml, res?.data);
-      console.log(
-        "HTML da EMIS preparado:",
-        cleanHtml.substring(0, 500) + "..."
-      );
-      setIframeContent(cleanHtml);
+      console.log(cleanHtml);
+      const expresschekout = document.getElementById("expresschekout");
+      if (expresschekout) {
+        expresschekout.innerHTML = cleanHtml;
+      }
       setShowIframe(true);
       setModal("express");
     } else {
@@ -399,27 +394,7 @@ export default function Chekout() {
             backgroundColor: "white",
           }}
         >
-          <iframe
-            ref={iframeRef}
-            srcDoc={iframeContent}
-            title="Pagamento Express - Culonga"
-            style={{
-              width: "100%",
-              height: "100%",
-              border: "none",
-            }}
-            sandbox="allow-same-origin allow-forms allow-scripts allow-popups allow-modals"
-            onLoad={() => {
-              console.log("Iframe da EMIS carregado com sucesso");
-              // O iframe carregou, mesmo com alguns erros de CORS
-              iframeRef.current?.focus();
-            }}
-            onError={(e) => {
-              console.error("Erro crítico ao carregar iframe:", e);
-              toast.error("Erro ao carregar página de pagamento");
-            }}
-          />
-          {/* Botão para fechar com melhor estilo */}
+          <span className="text-black " id="expresschekout"></span>
           <button
             onClick={() => {
               setShowIframe(false);
@@ -454,23 +429,6 @@ export default function Chekout() {
           >
             ×
           </button>
-
-          {/* Loading indicator inicial */}
-          {!iframeRef.current?.contentWindow && (
-            <div
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                textAlign: "center",
-                zIndex: 999999999998,
-              }}
-            >
-              <Loader2 className="animate-spin" size={40} />
-              <p style={{ marginTop: "10px" }}>Carregando pagamento...</p>
-            </div>
-          )}
         </div>
       )}
 
