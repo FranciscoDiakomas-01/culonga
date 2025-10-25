@@ -289,6 +289,7 @@ export default function Chekout() {
       });
     }
     setProcessing(true);
+    const orderId = Date.now();
     const res = await paymentserviceAPI.createPayment({
       ...body,
       amount: Number(body.amount),

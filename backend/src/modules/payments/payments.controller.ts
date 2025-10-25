@@ -24,9 +24,8 @@ export class PaymentsController {
     return await this.paymentsService.create(createPaymentDto);
   }
 
-  @Get('/notify')
-  @HttpCode(200)
-  async getStatus(@Body() data: any) {
+  @Put('/notify')
+  async updateStatus(@Body() data: any) {
     console.log(data);
     return 'success';
   }
