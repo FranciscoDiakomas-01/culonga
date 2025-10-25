@@ -169,7 +169,7 @@ export default function Chekout() {
         toast.error("Produto não encontrado");
       }
       setACtivePayments(
-        Array.isArray(data?.product?.payment) ? data?.product?.payment[1] : 1
+        Array.isArray(data?.product?.payment) ? data?.product?.payment[0] : 1
       );
       setTimeout(() => {
         setLoad(false);
@@ -677,7 +677,6 @@ export default function Chekout() {
                             return p.id == item;
                           });
 
-                          if (pay?.title == "Express") return null;
                           return (
                             <button
                               key={index}
