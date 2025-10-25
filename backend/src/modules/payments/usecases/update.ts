@@ -81,7 +81,116 @@ export default class PaymentUpdate {
             emailService.senEmail({
               to: user.email,
               subject: '✅ Compra Realizada',
-              html: `<h1>Compra confirmada</h1><p>Produto: ${Product?.title}</p> <br/> <p>Link: ${Product?.file}</p>`,
+              html: `<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compra Confirmada - Culonga</title>
+    <style>
+      body {
+        background-color: #f9fafb;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 30px auto;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+      }
+
+      .header {
+        background-color: #1e3a8a;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .content {
+        padding: 25px;
+      }
+
+      .content h1 {
+        font-size: 22px;
+        color: #1e3a8a;
+      }
+
+      .content p {
+        font-size: 15px;
+        line-height: 1.6;
+        margin: 10px 0;
+      }
+
+      .button {
+        display: inline-block;
+        background-color: #1e3a8a;
+        color: #fff !important;
+        padding: 12px 25px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+        margin-top: 15px;
+      }
+
+      .footer {
+        background: #f3f4f6;
+        padding: 15px;
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h2>Culonga</h2>
+      </div>
+
+      <div class="content">
+        <h1>🎉 Compra confirmada!</h1>
+        <p>Olá, ${user.name || 'Caro cliente'},</p>
+        <p>
+          Agradecemos por comprar conosco! Seu pagamento foi confirmado e seu
+          produto está pronto para acesso.
+        </p>
+
+        <p><strong>Produto:</strong> ${Product?.title}</p>
+
+        <p>Você pode acessar seu material clicando no botão abaixo:</p>
+
+        <a
+          href="${Product?.file}"
+          target="_blank"
+          class="button"
+        >
+          Acessar material
+        </a>
+
+        <p style="margin-top: 25px; font-size: 13px; color: #555;">
+          Caso o botão acima não funcione, copie e cole o link abaixo no seu
+          navegador:
+          <br />
+          <a href="${Product?.file}" target="_blank" style="color:#1e3a8a;">
+            ${Product?.file}
+          </a>
+        </p>
+      </div>
+
+      <div class="footer">
+        <p>© ${new Date().getFullYear()} Culonga. Todos os direitos reservados.</p>
+        <p>Esta é uma mensagem automática, por favor não responda.</p>
+      </div>
+    </div>
+  </body>
+</html>
+`,
             }),
             this.database.users.update({
               data: {
