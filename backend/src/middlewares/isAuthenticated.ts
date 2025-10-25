@@ -15,6 +15,7 @@ export default class IsAuthenticated implements NestMiddleware {
     } else {
       const isVeried = this.jwt.verify(token as string);
       const decoded = this.jwt.decode(token as string);
+      console.log(decoded, isVeried);
       if (!isVeried || !decoded) {
         res.status(HttpStatus.UNAUTHORIZED).send({
           message: 'Token inválido ou expirado',

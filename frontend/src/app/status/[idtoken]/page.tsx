@@ -34,6 +34,7 @@ export default function SuccessPage() {
 
         if (idTokenParam) {
           const [id, token] = idTokenParam.split("-");
+          console.log(id, token);
 
           update(parsed?.estado ? true : false, id, token)
             .then((data) => {
@@ -59,10 +60,11 @@ export default function SuccessPage() {
   if (!data) {
     return (
       <main className="flex items-center justify-center min-h-screen bg-gray-50">
-      
-        {
-          error ? <h1>Pagamento inexistente</h1> :   <Loader2 className="animate-spin text-orange-500" />
-        }
+        {error ? (
+          <h1>Pagamento inexistente</h1>
+        ) : (
+          <Loader2 className="animate-spin text-orange-500" />
+        )}
       </main>
     );
   }
