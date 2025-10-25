@@ -75,7 +75,7 @@ export default function Chekout() {
       escription: "Usando paypay você recebe desconto de até 5% na sua compra",
     },
   ];
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  
   const [modal, setModal] = useState<
     "express" | "reference" | "paypay" | undefined
   >(undefined);
@@ -591,6 +591,17 @@ export default function Chekout() {
                           placeholder="Nome Completo"
                           name="name"
                           id="name"
+                          className="flex-1 bg-transparet outline-none"
+                          required
+                        />
+                      </div>
+                      <div className="flex items-center rounded-lg px-3 py-2 bg-gray-100 border">
+                        <Phone className="w-5 h-5  mr-2" />
+                        <input
+                          type="text"
+                          placeholder="Telefone"
+                          name="tel"
+                          id="tel"
                           className="flex-1 bg-transparet outline-none"
                           required
                         />
