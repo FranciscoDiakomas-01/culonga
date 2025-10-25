@@ -28,19 +28,17 @@ export class PayPayService {
 
   public async payWithExpress({
     amount,
-    telefone,
     userid,
     productid,
-    orderId,
   }: {
     amount: string;
     telefone: string;
     userid: number;
     productid: number;
-    orderId: number;
   }) {
     try {
-      const Url = `https://culonga.com/culongaPay/index.php?callback=${this.KULONGA_URL}/${productid}&idCliente=1&idCompra=${orderId}&idProduto=${productid}&preco=${amount}&token=${this.KULONGA_KEY}`;
+      const orderId: number = Date.now()
+      const Url = `https://culonga.com/culongaPay/index.php?callback=${this.KULONGA_URL}/${productid}&idCliente=${userid}&idCompra=${orderId}&idProduto=${productid}&preco=${amount}&token=${this.KULONGA_KEY}`;
       return {
         out_trade_no: orderId,
         payurl: Url,
