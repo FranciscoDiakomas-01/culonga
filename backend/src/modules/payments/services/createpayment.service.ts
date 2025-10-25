@@ -41,9 +41,10 @@ export class PayPayService {
       const body = {
         token: this.KULONGA_KEY,
         preco: amount,
-        callback: 'https://google.com',
+        callback: 'https://culonga.onrender.com/culonga/payments/notify',
         idCliente: userid,
         idProduto: productid,
+        idCompra: `ORDER_${Date.now()}`,
       };
       const response = await axios.post(this.KULONGA_URL, body, {
         headers: { 'Content-Type': 'application/json' },
@@ -51,7 +52,7 @@ export class PayPayService {
 
       return {
         data: response.data,
-        out_trade_no: `ORDER_${Date.now()}`,
+        out_trade_no: body.idCompra,
       };
     } catch (error) {
       return error;

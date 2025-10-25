@@ -23,6 +23,13 @@ export class PaymentsController {
   async create(@Body() createPaymentDto: CreatePaymentDto) {
     return await this.paymentsService.create(createPaymentDto);
   }
+
+  @Get('/notify')
+  @HttpCode(200)
+  async getStatus(@Body() data: any) {
+    console.log(data);
+    return 'success';
+  }
   @Put()
   async updatemanualy(
     @Body() data: updateManualy,
