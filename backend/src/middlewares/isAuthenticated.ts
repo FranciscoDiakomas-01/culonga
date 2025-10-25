@@ -13,7 +13,6 @@ export default class IsAuthenticated implements NestMiddleware {
       });
       return;
     } else {
-      console.log(token);
       if (token == process.env?.SERVER_KEY) {
         next();
         req.headers['userid'] = token;

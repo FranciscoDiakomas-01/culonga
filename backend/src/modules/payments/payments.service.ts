@@ -92,7 +92,7 @@ export class PaymentsService {
     if (Product && Product?.price != payment.amount) {
       await this.database.payment.update({
         data: { status: 'CANCELED' },
-        where: { uuid: data.payid },
+        where: { uuid: payment.uuid },
       });
       throw new BadRequestException({
         message: 'O cliente não pagou o valor esperado ',
@@ -102,7 +102,7 @@ export class PaymentsService {
     const mappedStatus: Status = data.status == '1' ? 'APROVED' : 'CANCELED';
     await this.database.payment.update({
       data: { status: mappedStatus },
-      where: { uuid: data.payid },
+      where: { uuid: payment.uuid },
     });
     if (mappedStatus == 'APROVED') {
       const emailService = new EmailService();
