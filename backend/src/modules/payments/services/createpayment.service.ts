@@ -49,7 +49,7 @@ export class PayPayService {
       const response = await axios.post(this.KULONGA_URL, body, {
         headers: { 'Content-Type': 'application/json' },
       });
-      console.log(response.data);
+      this.loger.log(response.data);
       return response.data;
     } catch (error) {
       return error;
