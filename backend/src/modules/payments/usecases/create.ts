@@ -42,7 +42,7 @@ export default class PaymentCreater {
         data,
         verification.price,
         verification.links,
-        paymentResponse?.out_trade_no,
+        String(paymentResponse?.out_trade_no),
       );
 
       if (!payment) {

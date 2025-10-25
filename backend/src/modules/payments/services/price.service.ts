@@ -7,13 +7,11 @@ export default class PriceVerifier {
   constructor(private readonly database: DatabaseService) {}
   public async verify(orderbumps: string[], amount: number, productId: string) {
     try {
-      
-      const [offer, product] = await Promise.all([
-        this.database.offer.findFirst({ where: { id: productId } }),
+      const [product] = await Promise.all([
         this.database.products.findFirst({ where: { id: productId } }),
       ]);
       // Base: pode ser oferta ou produto
-      const baseItem = offer ?? product;
+      const baseItem = product;
       if (!baseItem) {
         return { status: false, price: 0, links: [] };
       }
@@ -23,14 +21,14 @@ export default class PriceVerifier {
         return {
           status: baseItem.price === amount,
           price: baseItem.price,
-          links: [baseItem.link],
+          links: [baseItem.file as string],
         };
       }
 
       // Buscar os order bumps
       const productsInOrderBumpList = await this.database.products.findMany({
         where: { id: { in: orderbumps } },
-        select: { price: true, link: true },
+        select: { price: true, link: true, file: true },
       });
 
       const priceSum = productsInOrderBumpList.reduce(
@@ -38,13 +36,13 @@ export default class PriceVerifier {
         0,
       );
 
-      const links = productsInOrderBumpList.map((item) => item.link);
+      const links = productsInOrderBumpList.map((item) => item.file);
       const total = baseItem.price + priceSum;
 
       return {
         status: total === amount,
         price: total,
-        links: [...links, baseItem.link],
+        links: [baseItem.file as string],
       };
     } catch (error) {
       this.logger.error(
