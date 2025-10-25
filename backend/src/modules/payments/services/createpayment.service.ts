@@ -20,7 +20,6 @@ export interface ReferenceReturnType {
 }
 
 export class PayPayService {
-  private readonly loger = new Logger('PayPayService');
   private readonly API_URL = 'https://gateway.paypayafrica.com/recv.do';
   private readonly paternId = process.env.PATHERID ?? '123456';
   private readonly privateKey = process.env.PAYPAY_PRIVATE as string;
@@ -49,7 +48,6 @@ export class PayPayService {
       const response = await axios.post(this.KULONGA_URL, body, {
         headers: { 'Content-Type': 'application/json' },
       });
-      this.loger.log(response.data);
       return response.data;
     } catch (error) {
       return error;
@@ -104,7 +102,6 @@ export class PayPayService {
       headers: { 'Content-Type': 'application/json' },
     });
 
-    this.loger.log(response.data);
     const data: ReferenceReturnType = response.data?.biz_content;
     return data;
   }
@@ -173,7 +170,6 @@ export class PayPayService {
       headers: { 'Content-Type': 'application/json' },
     });
 
-    this.loger.log(response.data);
     const data: ReferenceReturnType = response.data?.biz_content;
     if (!data?.out_trade_no) {
       return {

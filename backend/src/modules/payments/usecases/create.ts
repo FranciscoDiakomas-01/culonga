@@ -34,8 +34,7 @@ export default class PaymentCreater {
         userid: data.userid,
         productid: data.productId,
       });
-      console.log(paymentResponse);
-      
+      this.logger.debug(paymentResponse);
       if (!paymentResponse?.out_trade_no) {
         return { message: 'Erro ao efectuar pagamento' };
       }
