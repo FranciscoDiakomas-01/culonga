@@ -106,11 +106,15 @@ export class PaymentsService {
     });
     if (mappedStatus == 'APROVED') {
       const emailService = new EmailService();
-
+      const user = JSON.parse(payment.user as string) as {
+        name: string;
+        email: string;
+        telefone: string;
+      };
       const valor = payment.amount;
       await Promise.all([
         emailService.senEmail({
-          to: payment.User.email,
+          to: user.email,
           subject: '✅ Compra Realizada',
           html: `<!DOCTYPE html>
 <html lang="pt">
@@ -186,7 +190,7 @@ export class PaymentsService {
 
       <div class="content">
         <h1>🎉 Compra confirmada!</h1>
-        <p>Olá, ${payment.User.name || 'Caro cliente'},</p>
+        <p>Olá, ${user.name || 'Caro cliente'},</p>
         <p>
           Agradecemos por comprar conosco! Seu pagamento foi confirmado e seu
           produto está pronto para acesso.
