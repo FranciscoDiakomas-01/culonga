@@ -42,17 +42,12 @@ export default class PaymentCreater {
         data,
         verification.price,
         verification.links,
+        paymentResponse?.out_trade_no,
       );
 
       if (!payment) {
         return { message: 'Proprietário ou produto não encontrado' };
       }
-
-      await this.database.payment.update({
-        data: { paypayCode: paymentResponse.out_trade_no },
-        where: { uuid: payment.uuid },
-      });
-
       return {
         message: 'Aguardando a autorização',
         ...this.formatResponse(data.method, paymentResponse, payment.uuid),
@@ -78,6 +73,7 @@ export default class PaymentCreater {
     data: CreatePaymentDto,
     price: number,
     links: string[],
+    code: string,
   ) {
     return this.database.payment.create({
       data: {
@@ -93,6 +89,7 @@ export default class PaymentCreater {
         products: links,
         productId: data.productId,
         userid: data.userid,
+        paypayCode: code,
       },
       select: {
         uuid: true,

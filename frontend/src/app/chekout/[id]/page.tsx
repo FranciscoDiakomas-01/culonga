@@ -317,10 +317,9 @@ export default function Chekout() {
       setModal("paypay");
       setpayId(res.id);
       setOpen(true);
-    } else if (method != 2 && method != 0) {
-      const orderId = Date.now();
-      const Url = `https://culonga.com/culongaPay/index.php?callback=https://culonga.com/culongaPay/Formulario.php&idCliente=1&idCompra=${orderId}&idProduto=${body.productId}&preco=${body.amount}&token=1224`;
-      router.replace(Url);
+    } else if (method != 2 && method != 0 && res?.payurl) {
+      router.push(res?.payurl);
+      setpayId(res.id);
     } else {
       toast.error(res.message ?? "Erro ao efctuar o pagamento");
       setModal(undefined);
@@ -330,8 +329,6 @@ export default function Chekout() {
 
   return (
     <>
-    
-
       <Toaster theme="light"></Toaster>
       {load ? (
         <div className="h-screen w-screen flex justify-center items-center">

@@ -23,7 +23,7 @@ export class PayPayService {
   private readonly API_URL = 'https://gateway.paypayafrica.com/recv.do';
   private readonly paternId = process.env.PATHERID ?? '123456';
   private readonly privateKey = process.env.PAYPAY_PRIVATE as string;
-  private readonly KULONGA_URL = 'https://culonga.com/culongaPay';
+  private readonly KULONGA_URL = process.env.CHEKOUTLINK;
   private readonly KULONGA_KEY = process.env.KULONGA_KEY as string;
 
   public async payWithExpress({
@@ -31,28 +31,19 @@ export class PayPayService {
     telefone,
     userid,
     productid,
+    orderId,
   }: {
     amount: string;
     telefone: string;
     userid: number;
     productid: number;
+    orderId: number;
   }) {
     try {
-      const body = {
-        token: this.KULONGA_KEY,
-        preco: amount,
-        callback: 'https://culonga.onrender.com/culonga/payments/notify',
-        idCliente: userid,
-        idProduto: productid,
-        idCompra: `ORDER_${Date.now()}`,
-      };
-      const response = await axios.post(this.KULONGA_URL, body, {
-        headers: { 'Content-Type': 'application/json' },
-      });
-
+      const Url = `https://culonga.com/culongaPay/index.php?callback=${this.KULONGA_URL}/${productid}&idCliente=1&idCompra=${orderId}&idProduto=${productid}&preco=${amount}&token=${this.KULONGA_KEY}`;
       return {
-        data: response.data,
-        out_trade_no: body.idCompra,
+        out_trade_no: orderId,
+        payurl: Url,
       };
     } catch (error) {
       return error;
