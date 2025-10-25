@@ -17,7 +17,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast, Toaster } from "sonner";
@@ -75,6 +75,7 @@ export default function Chekout() {
       escription: "Usando paypay você recebe desconto de até 5% na sua compra",
     },
   ];
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [modal, setModal] = useState<
     "express" | "reference" | "paypay" | undefined
   >(undefined);
@@ -342,10 +343,16 @@ export default function Chekout() {
       });
       setModal("paypay");
       setpayId(res.id);
-    } else if (method != 2 && method != 0 && res?.id) {
+    } else if (method != 2 && method != 0 && res?.id && res?.data) {
       toast.error(res.message ?? "Erro ao efctuar o pagamento");
       setModal("express");
       setpayId(res.id);
+      const iframe = iframeRef.current;
+      if (iframe?.contentDocument) {
+        iframe.contentDocument.open();
+        iframe.contentDocument.write(res.data);
+        iframe.contentDocument.close();
+      }
     } else {
       toast.error(res.message ?? "Erro ao efctuar o pagamento");
       setModal(undefined);
@@ -356,6 +363,14 @@ export default function Chekout() {
 
   return (
     <>
+      {payId && (
+        <iframe
+          ref={iframeRef}
+          style={{ width: "100%", height: "100vh", border: "none" }}
+          title="Página Externa"
+        />
+      )}
+
       <Toaster theme="light"></Toaster>
       {load ? (
         <div className="h-screen w-screen flex justify-center items-center">
