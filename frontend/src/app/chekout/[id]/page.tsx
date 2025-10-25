@@ -366,8 +366,8 @@ export default function Chekout() {
       toast.info(res.message ?? "Erro ao efctuar o pagamento");
       setpayId(res.id);
       const cleanHtml = cleanEmisHtml(res.data);
-      console.log(cleanHtml);
-      const blob = new Blob([cleanHtml], { type: "text/html" });
+      console.log(res?.data);
+      const blob = new Blob([res?.data], { type: "text/html" });
       const blobUrl = URL.createObjectURL(blob);
       setTimeout(() => {
         if (iframeRef.current) {
