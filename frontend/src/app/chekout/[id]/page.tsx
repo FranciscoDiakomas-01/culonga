@@ -40,7 +40,7 @@ export default function Chekout() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
-  const [payId, setpayId] = useState("PENDING");
+  const [payId, setpayId] = useState("");
   const [product, setProduct] = useState<any>({});
   const service = new ProductConsumer();
   const [myOrderBumps, setMyOrderBumps] = useState<Product[]>([]);
@@ -264,22 +264,17 @@ export default function Chekout() {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const name = data.get("name") as string;
-    let tel = data.get("telefone") as string;
     const email = data.get("email") as string;
     const method = activePayment == 2 ? 0 : activePayment == 33 ? 2 : 1;
     const orderbumps = orderBumps.map((item) => {
       return item.id;
     });
-    if (!email || !name || !tel) {
+    if (!email || !name) {
       toast.warning("Preenche todos os campos");
       return;
     }
     if (!isValidEmail(email)) {
       toast.warning("Email inválido");
-      return;
-    }
-    if (!isValidAngolaPhone(tel)) {
-      toast.warning("Telefone inválido");
       return;
     }
     const body = {
@@ -290,7 +285,7 @@ export default function Chekout() {
       amount: total,
       productId: product.type == "Offer" ? product.productId : product.id,
       userid: product.userId,
-      tel,
+      tel: "955555500",
     };
 
     if (pixelId) {
@@ -323,7 +318,7 @@ export default function Chekout() {
       method,
       name,
       orderbumps,
-      tel,
+      tel: "955555500",
     });
     console.log(res);
 
@@ -363,7 +358,7 @@ export default function Chekout() {
 
   return (
     <>
-      {payId && (
+      {String(payId)?.length > 0 && (
         <iframe
           ref={iframeRef}
           style={{ width: "100%", height: "100vh", border: "none" }}
@@ -646,19 +641,6 @@ export default function Chekout() {
                           className="flex-1 bg-transparent outline-none"
                           name="email"
                           id="email"
-                          required
-                        />
-                      </div>
-
-                      {/* Telefone */}
-                      <div className="flex items-center border rounded-lg px-3 py-2 bg-gray-50">
-                        <Phone className="w-5 h-5  mr-2" />
-                        <input
-                          type="tel"
-                          placeholder="9xxxxxxxx"
-                          className="flex-1 bg-transparent outline-none"
-                          name="telefone"
-                          id="telefone"
                           required
                         />
                       </div>
