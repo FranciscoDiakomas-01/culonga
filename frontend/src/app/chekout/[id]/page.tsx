@@ -342,10 +342,11 @@ export default function Chekout() {
       toast.error(res.message ?? "Erro ao efctuar o pagamento");
       setModal("express");
       setpayId(res.id);
+      const cleanHtml = res?.data.replace(/\\n|\\t|\\r/g, "");
       const iframe = iframeRef.current;
       if (iframe?.contentDocument) {
         iframe.contentDocument.open();
-        iframe.contentDocument.write(res.data);
+        iframe.contentDocument.write(cleanHtml);
         iframe.contentDocument.close();
       }
     } else {
@@ -361,8 +362,16 @@ export default function Chekout() {
       {String(payId)?.length > 0 && (
         <iframe
           ref={iframeRef}
-          style={{ width: "100%", height: "100vh", border: "none" }}
-          title="Página Externa"
+          title="Express payment"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            border: "none",
+            zIndex: 999999999999,
+          }}
         />
       )}
 
