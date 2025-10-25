@@ -1,9 +1,12 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import PaymentService from "@/services/Payments";
+import { Loader2 } from "lucide-react";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function SuccessPage() {
+  const { id } = useParams() as { id: string };
   const searchParams = useSearchParams();
   const [data, setData] = useState<{
     estado: boolean;
@@ -11,13 +14,31 @@ export default function SuccessPage() {
     code: number;
   } | null>(null);
 
+  const service = new PaymentService();
+
+  async function update(status: boolean) {
+    return await service.updateMnualyPaymentStatus({
+      payid: id,
+      status: status ? "1" : "2",
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJmZDMyMTc3ZS0xNWFhLTQ4Y2QtOWNiYi05NTI3MDU3NDljNTgiLCJyb2xlIjoiQURNSU4iLCJjcmVhdGVkQXQiOiIyMDI1LTEwLTI1VDE5OjM2OjUxLjYwM1oiLCJleHBpcmVBdCI6IjIwMjUtMTEtMjRUMTk6MzY6NTEuNjAzWiIsImlhdCI6MTc2MTQyMTAxMX0.c2P1XviogxFHWDHn_hBbwQ90YEvnoTQTHI28Ik35aDc",
+    });
+  }
   useEffect(() => {
     const rawData = searchParams.get("data");
     if (rawData) {
       try {
         const parsed = JSON.parse(rawData);
-        setData(parsed);
         console.log(parsed);
+        update(parsed?.estado ? true : false)
+          .then((data) => {
+            console.log(data);
+            setData(parsed);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+        setData(null);
       } catch (error) {
         console.error("Erro ao analisar os dados da URL:", error);
       }
@@ -27,9 +48,7 @@ export default function SuccessPage() {
   if (!data) {
     return (
       <main className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center">
-          <h1 className="text-xl font-semibold text-gray-700">Carregando...</h1>
-        </div>
+        <Loader2 className="animate-spin text-orange-500" />
       </main>
     );
   }
@@ -37,17 +56,17 @@ export default function SuccessPage() {
   const isSuccess = data.estado === true;
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-green-50 to-green-100 px-6">
+    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 px-6">
       <div
         className={`bg-white shadow-lg rounded-2xl p-8 text-center max-w-md w-full border-t-4 ${
-          isSuccess ? "border-green-500" : "border-red-500"
+          isSuccess ? "border-orange-500" : "border-red-500"
         }`}
       >
         <div className="flex justify-center mb-4">
           {isSuccess ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-16 w-16 text-green-500"
+              className="h-16 w-16 text-orange-500"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -78,7 +97,7 @@ export default function SuccessPage() {
         </div>
         <h1
           className={`text-2xl font-bold mb-2 ${
-            isSuccess ? "text-green-600" : "text-red-600"
+            isSuccess ? "text-orange-600" : "text-red-600"
           }`}
         >
           {isSuccess
@@ -90,7 +109,7 @@ export default function SuccessPage() {
           href="/"
           className={`inline-block ${
             isSuccess
-              ? "bg-green-500 hover:bg-green-600"
+              ? "bg-orange-500 hover:bg-orange-600"
               : "bg-red-500 hover:bg-red-600"
           } text-white font-semibold py-2 px-6 rounded-full transition-all duration-300`}
         >

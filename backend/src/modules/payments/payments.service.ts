@@ -72,7 +72,11 @@ export class PaymentsService {
       }),
       this.database.payment.findFirst({
         where: {
-          uuid: data.payid,
+          OR: [
+            {
+              uuid: data.payid,
+            },
+          ],
         },
         include: {
           User: true,
