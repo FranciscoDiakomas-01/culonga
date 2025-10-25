@@ -6,7 +6,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function SuccessPage() {
-  const params = useParams() as { idtoken: string };
+  const { id } = useParams() as { id: string };
   const searchParams = useSearchParams();
   const [data, setData] = useState<{
     estado: boolean;
@@ -30,13 +30,12 @@ export default function SuccessPage() {
     if (rawData) {
       try {
         const parsed = JSON.parse(rawData);
-        const idTokenParam = params.idtoken as string;
-
-        if (idTokenParam) {
-          const [id, token] = idTokenParam.split("-");
-          console.log(id, token);
-
-          update(parsed?.estado ? true : false, id, token)
+        if (id) {
+          update(
+            parsed?.estado ? true : false,
+            id,
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJmZDMyMTc3ZS0xNWFhLTQ4Y2QtOWNiYi05NTI3MDU3NDljNTgiLCJyb2xlIjoiQURNSU4iLCJjcmVhdGVkQXQiOiIyMDI1LTEwLTI1VDE5OjM2OjUxLjYwM1oiLCJleHBpcmVBdCI6IjIwMjUtMTEtMjRUMTk6MzY6NTEuNjAzWiIsImlhdCI6MTc2MTQyMTAxMX0.c2P1XviogxFHWDHn_hBbwQ90YEvnoTQTHI28Ik35aDc".trim()
+          )
             .then((data) => {
               console.log("Pagamento atualizado:", data);
               setData(parsed);
