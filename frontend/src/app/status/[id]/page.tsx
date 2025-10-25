@@ -31,11 +31,7 @@ export default function SuccessPage() {
       try {
         const parsed = JSON.parse(rawData);
         if (id) {
-          update(
-            parsed?.estado ? true : false,
-            id,
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJmZDMyMTc3ZS0xNWFhLTQ4Y2QtOWNiYi05NTI3MDU3NDljNTgiLCJyb2xlIjoiQURNSU4iLCJjcmVhdGVkQXQiOiIyMDI1LTEwLTI1VDE5OjM2OjUxLjYwM1oiLCJleHBpcmVBdCI6IjIwMjUtMTEtMjRUMTk6MzY6NTEuNjAzWiIsImlhdCI6MTc2MTQyMTAxMX0.c2P1XviogxFHWDHn_hBbwQ90YEvnoTQTHI28Ik35aDc".trim()
-          )
+          update(parsed?.estado ? true : false, id, "SERVER")
             .then((data) => {
               console.log("Pagamento atualizado:", data);
               setData(parsed);

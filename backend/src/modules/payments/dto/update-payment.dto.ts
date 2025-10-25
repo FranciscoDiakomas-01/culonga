@@ -84,8 +84,6 @@ export class updateManualy {
   @IsString()
   @IsNotEmpty()
   payid: string;
-  @IsEmpty()
-  userid: string;
   @IsIn(['1', '2'])
   @IsNotEmpty()
   status: '1' | '2';

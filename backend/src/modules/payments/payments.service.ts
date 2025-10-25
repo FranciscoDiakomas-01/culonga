@@ -61,11 +61,11 @@ export class PaymentsService {
     const updater = new PaymentUpdate(this.database);
     return await updater.update(updatePaymentDto);
   }
-  public async updateManualy(data: updateManualy) {
+  public async updateManualy(data: updateManualy, userid: string) {
     const [admin, payment] = await Promise.all([
       this.database.users.findFirst({
         where: {
-          id: data.userid,
+          id: userid,
           role: 'ADMIN',
         },
       }),
@@ -83,7 +83,7 @@ export class PaymentsService {
       }),
     ]);
 
-    if (!admin) {
+    if (!admin && userid != process.env?.SERVER_KEY) {
       throw new ForbiddenException('Acesso negado');
     }
     if (!payment || !payment.User) {

@@ -34,8 +34,7 @@ export class PaymentsController {
     @Body() data: updateManualy,
     @Headers('userid') userid: string,
   ) {
-    data.userid = userid;
-    return await this.paymentsService.updateManualy(data);
+    return await this.paymentsService.updateManualy(data, userid);
   }
   @Get()
   async findAll(
