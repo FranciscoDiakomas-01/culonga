@@ -30,11 +30,8 @@ export class PaymentsController {
     return 'success';
   }
   @Put()
-  async updatemanualy(
-    @Body() data: updateManualy,
-    @Headers('userid') userid: string,
-  ) {
-    return await this.paymentsService.updateManualy(data, userid);
+  async updatemanualy(@Body() data: updateManualy) {
+    return await this.paymentsService.updateManualy(data);
   }
   @Get()
   async findAll(

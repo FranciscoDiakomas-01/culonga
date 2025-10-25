@@ -273,7 +273,6 @@ export default class PaymentService {
       const res = await fetch(`${server}payments`, {
         headers: {
           "Content-Type": "application/json",
-          token: token,
         },
         method: "PUT",
         body: JSON.stringify({

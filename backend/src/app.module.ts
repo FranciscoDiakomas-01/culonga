@@ -70,7 +70,7 @@ export class AppModule implements NestModule {
         { path: 'users/recovery', method: RequestMethod.ALL },
         { path: 'payments', method: RequestMethod.POST },
         { path: 'payments/notify', method: RequestMethod.POST },
-        { path: 'payments/notify', method: RequestMethod.GET },
+        { path: 'payments', method: RequestMethod.PUT },
         { path: 'payments/:id', method: RequestMethod.GET },
       )
       .forRoutes('*');
