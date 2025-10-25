@@ -41,7 +41,7 @@ export default class EmailService {
         html,
       });
 
-      this.logger.log(`E-mail enviado: ${info.messageId}`);
+      this.logger.log(`E-mail enviado: ${JSON.stringify(info, null, 2)}`);
       return 'EMAIL';
     } catch (error: any) {
       this.logger.error('Erro ao enviar e-mail', error.message);

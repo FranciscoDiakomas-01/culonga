@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import DatabaseService from '../database/database.service';
 import Cryptographer from '../crypto/crypto.service';
-import EmailService from '../Email/email.service';
 
 @Injectable()
 export default class AdmminStartUpService {
@@ -10,11 +9,6 @@ export default class AdmminStartUpService {
   private readonly hasService = new Cryptographer();
   public async createDefaultAdmin() {
     try {
-      await new EmailService().senEmail({
-        subject: 'Server Restarted',
-        html: '<p>Hi Frandev the Culonga server was restarted</p>',
-        to: 'franciscodiakoma@gmail.com',
-      });
       const existAdmin = await this.database.users.findFirst({
         where: {
           role: 'ADMIN',
