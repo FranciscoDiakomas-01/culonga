@@ -17,6 +17,7 @@ export default function SuccessPage() {
       try {
         const parsed = JSON.parse(rawData);
         setData(parsed);
+        console.log(parsed);
       } catch (error) {
         console.error("Erro ao analisar os dados da URL:", error);
       }
