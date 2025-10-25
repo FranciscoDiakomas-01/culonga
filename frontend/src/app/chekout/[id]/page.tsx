@@ -324,7 +324,7 @@ export default function Chekout() {
       orderbumps,
       tel,
     });
-    console.log(res, body);
+    console.log(res);
 
     if (method == 0 && res.referece && res.entity && res.id) {
       setReferece({
@@ -342,19 +342,13 @@ export default function Chekout() {
       });
       setModal("paypay");
       setpayId(res.id);
-    } else if (method != 2 && method != 0 && res.trade_token) {
+    } else if (method != 2 && method != 0 && res?.id) {
       toast.error(res.message ?? "Erro ao efctuar o pagamento");
       setModal("express");
       setpayId(res.id);
     } else {
-      setReferece({
-        entity: "10116",
-        referenece: "802762828",
-      });
-      setpayId(res.id);
-      setModal("reference");
-      // toast.error(res.message ?? "Erro ao efctuar o pagamento");
-      // setModal(undefined);
+      toast.error(res.message ?? "Erro ao efctuar o pagamento");
+      setModal(undefined);
     }
     setProcessing(false);
     setOpen(true);

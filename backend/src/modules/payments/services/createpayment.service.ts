@@ -48,7 +48,11 @@ export class PayPayService {
       const response = await axios.post(this.KULONGA_URL, body, {
         headers: { 'Content-Type': 'application/json' },
       });
-      return response.data;
+
+      return {
+        data: response.data,
+        out_trade_no: `ORDER_${Date.now()}`,
+      };
     } catch (error) {
       return error;
     }
