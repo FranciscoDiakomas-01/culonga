@@ -28,34 +28,8 @@ export class PayPayService {
   private readonly KULONGA_URL = 'https://app.culonga.com/status/';
   private readonly KULONGA_KEY = process.env.KULONGA_KEY as string;
 
-  public async payWithExpress({
-    amount,
-    userid,
-    productid,
-    db,
-  }: {
-    amount: string;
-    telefone: string;
-    userid: number;
-    productid: number;
-    db: DatabaseService;
-  }) {
+  public async payWithExpress({ amount }: { amount: string }) {
     try {
-      const admin = await db.users.findFirst({
-        where: {
-          role: 'ADMIN',
-        },
-      });
-
-      if (!admin) {
-        return;
-      }
-      const token = new JWTService().sign({
-        role: 'ADMIN',
-        userid: admin.id as string,
-        expireAt: new Date(),
-        createdAt: new Date(),
-      });
       const orderId: number = Date.now();
       const statusURl = this.KULONGA_URL + orderId;
       const Url = `https://culonga.com/culongaPay/index.php?callback=${statusURl}&idCliente=1&idCompra=${orderId}&idProduto=${orderId}&preco=${amount}&token=${this.KULONGA_KEY}`;
