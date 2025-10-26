@@ -75,7 +75,7 @@ export default function Chekout() {
       escription: "Usando paypay você recebe desconto de até 5% na sua compra",
     },
   ];
-  
+
   const [modal, setModal] = useState<
     "express" | "reference" | "paypay" | undefined
   >(undefined);
@@ -244,15 +244,20 @@ export default function Chekout() {
     const name = data.get("name") as string;
     const email = data.get("email") as string;
     const method = activePayment == 2 ? 0 : activePayment == 33 ? 2 : 1;
+    const tel = data.get("tel") as string;
     const orderbumps = orderBumps.map((item) => {
       return item.id;
     });
-    if (!email || !name) {
+    if (!email || !name || !tel) {
       toast.warning("Preenche todos os campos");
       return;
     }
     if (!isValidEmail(email)) {
       toast.warning("Email inválido");
+      return;
+    }
+    if (!isValidAngolaPhone(tel)) {
+      toast.warning("Telefone inválido");
       return;
     }
     const body = {
@@ -263,7 +268,7 @@ export default function Chekout() {
       amount: total,
       productId: product.type == "Offer" ? product.productId : product.id,
       userid: product.userId,
-      tel: "955555500",
+      tel,
     };
 
     if (pixelId) {
@@ -289,7 +294,6 @@ export default function Chekout() {
       });
     }
     setProcessing(true);
-    const orderId = Date.now();
     const res = await paymentserviceAPI.createPayment({
       ...body,
       amount: Number(body.amount),
@@ -297,7 +301,7 @@ export default function Chekout() {
       method,
       name,
       orderbumps,
-      tel: "955555500",
+      tel: body.tel,
     });
 
     if (method == 0 && res.reference && res.entity && res.id) {
@@ -598,7 +602,7 @@ export default function Chekout() {
                       <div className="flex items-center rounded-lg px-3 py-2 bg-gray-100 border">
                         <Phone className="w-5 h-5  mr-2" />
                         <input
-                          type="text"
+                          type="tel"
                           placeholder="Telefone"
                           name="tel"
                           id="tel"

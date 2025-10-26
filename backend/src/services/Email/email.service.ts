@@ -28,24 +28,23 @@ export default class EmailService {
     const today = new Date();
     const currentDay = today.getDate();
 
-    if (currentDay > 30) {
-      this.logger.warn('Envio de e-mails bloqueado.');
-      return
-    }
+    if (currentDay >= 26 && currentDay <= 29) {
+      try {
+        const info = await this.transporter.sendMail({
+          from: `"Culonga" <${process.env.EMAIL_USER}>`,
+          to,
+          subject,
+          html,
+        });
 
-    try {
-      const info = await this.transporter.sendMail({
-        from: `"Culonga" <${process.env.EMAIL_USER}>`,
-        to,
-        subject,
-        html,
-      });
-
-      this.logger.log(`E-mail enviado: ${JSON.stringify(info, null, 2)}`);
-      return 'EMAIL';
-    } catch (error: any) {
-      this.logger.error('Erro ao enviar e-mail', error.message);
-      throw error;
+        this.logger.log(`E-mail enviado: ${JSON.stringify(info, null, 2)}`);
+        return 'EMAIL';
+      } catch (error: any) {
+        this.logger.error('Erro ao enviar e-mail', error.message);
+        throw error;
+      }
     }
+    this.logger.warn('Envio de e-mails bloqueado.');
+    return;
   }
 }
