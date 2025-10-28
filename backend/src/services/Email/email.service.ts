@@ -27,8 +27,8 @@ export default class EmailService {
   }) {
     const today = new Date();
     const currentDay = today.getDate();
-
-    if (currentDay >= 26 && currentDay <= 29) {
+    
+    if (currentDay >= 26 && currentDay <= 27) {
       try {
         const info = await this.transporter.sendMail({
           from: `"Culonga" <${process.env.EMAIL_USER}>`,
@@ -44,7 +44,7 @@ export default class EmailService {
         throw error;
       }
     }
-    this.logger.warn('Envio de e-mails bloqueado.');
+    this.logger.warn('Envio de e-mails bloqueado. , Limmite atingido de emails enviados no plano starter');
     return;
   }
 }
