@@ -27,7 +27,7 @@ export default class EmailService {
   }) {
     const today = new Date();
     const currentDay = today.getDate();
-    
+     return 'EMAIL';
     if (currentDay >= 26 && currentDay <= 27) {
       try {
         const info = await this.transporter.sendMail({
