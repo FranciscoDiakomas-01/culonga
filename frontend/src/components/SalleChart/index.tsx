@@ -60,7 +60,7 @@ export function SalesChart({ data, isAdmin }: { data: any; isAdmin: boolean }) {
             <CardTitle>Vendas realizadas</CardTitle>
             <small className="text-green-500 flex gap-3">
               Valor líquido{" "}
-              {Number((computedValue * 7) / 100).toLocaleString("pt")} kz{" "}
+              {Number((computedValue * 8) / 100).toLocaleString("pt")} kz{" "}
             </small>
             <CardDescription className="md:text-3xl text-xl dark:text-white text-black font-extrabold">
               {computedValue.toLocaleString("pt")} kz
