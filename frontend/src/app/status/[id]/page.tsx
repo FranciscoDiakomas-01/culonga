@@ -1,5 +1,6 @@
 "use client";
 
+import ReactPixel from "react-facebook-pixel";
 import PaymentService from "@/services/Payments";
 import { Loader2 } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
@@ -16,13 +17,27 @@ export default function SuccessPage() {
 
   const [error, setError] = useState(false);
   const service = new PaymentService();
-
   async function update(status: boolean, id: string, token: string) {
-    return await service.updateMnualyPaymentStatus({
+    const data = await service.updateMnualyPaymentStatus({
       payid: id,
       status: status ? "1" : "2",
       token,
     });
+    if (status && data?.product?.pixelId) {
+      ReactPixel.init(data?.product?.pixelId);
+      ReactPixel.track("Purchase", {
+        currency: "BRL",
+        value: parseFloat(String(data?.product?.price ?? 0)),
+        content_ids: [data?.product?.id?.toString() ?? crypto.randomUUID()],
+        contents: [
+          {
+            id: data?.product?.id?.toString() ?? crypto.randomUUID(),
+            quantity: 1,
+          },
+        ],
+        transaction_id: crypto.randomUUID(),
+      });
+    }
   }
 
   useEffect(() => {

@@ -210,7 +210,6 @@ export default function Chekout() {
             });
             setPurchase(true);
           }
-
           if (product?.upsell) {
             setTimeout(() => {
               location.href = product?.upsell;

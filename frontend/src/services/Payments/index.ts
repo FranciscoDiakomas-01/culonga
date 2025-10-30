@@ -281,7 +281,7 @@ export default class PaymentService {
         }),
       });
       const data = (await res.json()) as { message: string };
-      return data;
+      return data as any;
     } catch (error) {
       return {
         message: "Erro ao actualizar",

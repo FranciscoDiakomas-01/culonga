@@ -240,7 +240,7 @@ export class PaymentsService {
         await ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
       ]);
     }
-    return { message: 'Pagamento modificado' };
+    return { message: 'Pagamento modificado' , product : Product };
   }
 
   private percent(montante: number): number {
