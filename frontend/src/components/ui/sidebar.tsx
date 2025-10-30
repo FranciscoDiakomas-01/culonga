@@ -116,7 +116,7 @@ export default function SideBar() {
     {
       label: "Suporte",
       icon: <MessageCircleQuestion size={18} />,
-      to: "https://api.whatsapp.com/send/?phone=244936588301&text&type=phone_number&app_absent=0",
+      to: "https://api.whatsapp.com/send/?phone=244952775029&text&type=phone_number&app_absent=0",
       isLast: true,
     },
   ];

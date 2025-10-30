@@ -298,7 +298,7 @@ export default function Settings() {
             >
               <Link
                 href={
-                  "https://api.whatsapp.com/send/?phone=244936588301&text&type=phone_number&app_absent=0"
+                  "https://api.whatsapp.com/send/?phone=244952775029&text&type=phone_number&app_absent=0"
                 }
                 target="_blank"
               >
@@ -624,7 +624,7 @@ export default function Settings() {
             >
               <Link
                 href={
-                  "https://api.whatsapp.com/send/?phone=244936588301&text&type=phone_number&app_absent=0"
+                  "https://api.whatsapp.com/send/?phone=244952775029&text&type=phone_number&app_absent=0"
                 }
                 target="_blank"
               >
