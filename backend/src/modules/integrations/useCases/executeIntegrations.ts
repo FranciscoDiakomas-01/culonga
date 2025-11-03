@@ -124,8 +124,6 @@ export default async function ExuteMyWebhooks(
     );
 
     responses.forEach((res) => {
-      logger.log(res);
-      console.log(res);
     });
     return responses;
   } catch (error) {

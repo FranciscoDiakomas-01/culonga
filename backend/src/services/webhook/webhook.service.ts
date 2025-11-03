@@ -9,7 +9,6 @@ export default class WebHookService {
     try {
       const data = await fetch(this.webhookPath);
       const res = await data.json();
-      this.logger.log(res);
     } catch (error) {
       this.logger.log(
         error?.message ?? error?.error ?? 'Erro ao chamar o webhook',
