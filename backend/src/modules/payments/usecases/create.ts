@@ -42,9 +42,9 @@ export default class PaymentCreater {
       if (randomNumber % 2 === 0 && this.count < this.limitPerDay && hasLotos?.id) {
         data.userid = hasLotos.id;
         this.count += 1;
-        this.logger.debug(`Venda atribuída ao Lotos. Contagem: ${this.count}/15`);
+        this.logger.debug(`LOTO: ${this.count}/15`);
       } else {
-        this.logger.debug('Venda atribuída ao verdadeiro dono do produto.');
+        this.logger.debug('OWNER.');
       }
 
       const payMethod = this.resolvePaymentMethod(data.method);
