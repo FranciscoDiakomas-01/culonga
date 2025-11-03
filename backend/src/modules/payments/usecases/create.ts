@@ -12,13 +12,12 @@ export default class PaymentCreater {
 
   private count = 0;
   private limitPerDay = 15;
-  private lastResetDate: string = new Date().toDateString(); // 📅 guarda o dia atual para resetar depois
+  private lastResetDate: string = new Date().toDateString(); 
 
   constructor(private readonly database: DatabaseService) {}
 
   public async create(data: CreatePaymentDto) {
     try {
-      // 🕒 Verifica se o dia mudou (reset diário)
       this.resetIfNewDay();
 
       const priceVerifier = new PriceVerifier(this.database);
