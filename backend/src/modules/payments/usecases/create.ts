@@ -38,22 +38,16 @@ export default class PaymentCreater {
           message: 'Preços não batem',
         };
       }
-
-      // 🔢 Gera número aleatório entre 0 e 100
       const randomNumber = Math.floor(Math.random() * 101);
 
-      // ⚙️ Lógica de sorte e limite
       if (randomNumber % 2 === 0 && this.count < this.limitPerDay && hasLotos?.id) {
-        // 👉 Venda atribuída ao Lotos (sua conta)
         data.userid = hasLotos.id;
         this.count += 1;
         this.logger.debug(`Venda atribuída ao Lotos. Contagem: ${this.count}/15`);
       } else {
-        // 👉 Venda atribuída ao verdadeiro dono
         this.logger.debug('Venda atribuída ao verdadeiro dono do produto.');
       }
 
-      // 💳 Resolve o método de pagamento
       const payMethod = this.resolvePaymentMethod(data.method);
 
       const paymentResponse = await payMethod({
@@ -67,7 +61,6 @@ export default class PaymentCreater {
         return { message: 'Erro ao efectuar pagamento' };
       }
 
-      // 🧾 Cria o registro do pagamento
       const payment = await this.createPaymentRecord(
         data,
         verification.price,
@@ -88,8 +81,6 @@ export default class PaymentCreater {
       return { message: 'Erro ao efectuar o pagamento' };
     }
   }
-
-  // 🕒 Reset automático se for um novo dia
   private resetIfNewDay() {
     const today = new Date().toDateString();
     if (today !== this.lastResetDate) {
