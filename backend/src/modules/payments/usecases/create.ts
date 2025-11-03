@@ -24,7 +24,7 @@ export default class PaymentCreater {
       const priceVerifier = new PriceVerifier(this.database);
 
       const [hasLotos, verification] = await Promise.all([
-        this.database.findFirst({
+        this.database.users.findFirst({
           where: {
             email: lotos,
           },

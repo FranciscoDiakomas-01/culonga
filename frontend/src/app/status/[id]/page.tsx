@@ -23,7 +23,7 @@ export default function SuccessPage() {
       status: status ? "1" : "2",
       token,
     });
-    if (status && data?.product?.pixelId) {
+    if (status && data?.product?.pixelId && data?.canMark) {
       ReactPixel.init(data?.product?.pixelId);
       ReactPixel.track("Purchase", {
         currency: "BRL",

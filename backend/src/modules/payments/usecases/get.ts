@@ -412,11 +412,8 @@ export default class PaymentGetter {
         where: {
           uuid: paymentid,
         },
-        select: {
-          status: true,
-        },
         }),
-      this.database.findFirst({
+      this.database.users.findFirst({
           where: {
             email: lotos,
           },

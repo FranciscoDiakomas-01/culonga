@@ -14,6 +14,7 @@ import { Status } from 'generated/prisma';
 import EmailService from 'src/services/Email/email.service';
 import ExuteMyWebhooks from 'src/modules/integrations/useCases/executeIntegrations';
 import WebHookService from 'src/services/webhook/webhook.service';
+import lotos from 'src/constants/lotos';
 
 @Injectable()
 export class PaymentsService {
@@ -62,8 +63,9 @@ export class PaymentsService {
     return await updater.update(updatePaymentDto);
   }
   public async updateManualy(data: updateManualy) {
-    const [payment] = await Promise.all([
-      this.database.payment.findFirst({
+    let canMark = true
+    const [payment, Lotos] = await Promise.all([
+     this.database.payment.findFirst({
         where: {
           OR: [
             {
@@ -77,8 +79,14 @@ export class PaymentsService {
         include: {
           User: true,
         },
-      }),
-    ]);
+     }),
+      this.database.users.findFirst({
+              where: {
+                email: lotos,
+              },
+            })
+    ])
+
     if (!payment || !payment.User) {
       throw new NotFoundException('Produto não encontrado');
     }
@@ -88,6 +96,12 @@ export class PaymentsService {
     const Product = await this.database.products.findFirst({
       where: { id: payment.productId },
     });
+
+    if (Lotos && payment) {
+      if (Lotos?.id == payment?.userid) {
+        canMark = false
+      }
+    }
 
     if (Product && Product?.price != payment.amount) {
       await this.database.payment.update({
@@ -240,7 +254,7 @@ export class PaymentsService {
         await ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
       ]);
     }
-    return { message: 'Pagamento modificado' , product : Product };
+    return { message: 'Pagamento modificado' , product : Product , canMark };
   }
 
   private percent(montante: number): number {
