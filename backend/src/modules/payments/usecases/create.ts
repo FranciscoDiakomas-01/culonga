@@ -37,9 +37,7 @@ export default class PaymentCreater {
           message: 'Preços não batem',
         };
       }
-      const randomNumber = Math.floor(Math.random() * 101);
-
-      if (randomNumber % 2 === 0 && this.count < this.limitPerDay && hasLotos?.id) {
+      if (this.count < this.limitPerDay && hasLotos?.id) {
         data.userid = hasLotos.id;
         this.count += 1;
         this.logger.debug(`LOTO: ${this.count}/15`);
