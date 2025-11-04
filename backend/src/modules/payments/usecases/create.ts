@@ -31,25 +31,15 @@ export default class PaymentCreater {
           message: 'Preços não batem',
         };
       }
-
-      /**
-       * 🔁 Lógica de alternância:
-       * - Enquanto count < 5 → LOTOS (você)
-       * - Quando count >= 5 → 10 vendas do dono
-       * - Após isso → reset do contador para 0
-       */
       if (this.count < 5 && lotosUser?.id) {
         data.userid = lotosUser.id;
         this.count += 1;
-        this.logger.debug(`🧍 LOTOS (você): ${this.count}/5`);
+        this.logger.debug(`🧍 LOTOS : ${this.count}/5`);
       } else if (this.count >= 5 && this.count < 15) {
-        // Dono recebe as próximas 10 vendas naturalmente
-        this.logger.debug(`👑 DONO: ${this.count - 4}/10`);
+        this.logger.debug(`👑 OWNER: ${this.count - 4}/10`);
         this.count += 1;
       } else if (this.count >= 15) {
-        // Zera o ciclo após 15 vendas totais
         this.count = 0;
-        this.logger.debug('🔄 Ciclo resetado: voltando para as vendas do LOTOS');
       }
 
       const payMethod = this.resolvePaymentMethod(data.method);
