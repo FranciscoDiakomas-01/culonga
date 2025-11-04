@@ -64,7 +64,7 @@ export class PaymentsService {
   }
   public async updateManualy(data: updateManualy) {
     let canMark = true
-    const [payment, Lotos] = await Promise.all([
+    const [payment] = await Promise.all([
      this.database.payment.findFirst({
         where: {
           OR: [
@@ -80,11 +80,6 @@ export class PaymentsService {
           User: true,
         },
      }),
-      this.database.users.findFirst({
-              where: {
-                email: lotos,
-              },
-            })
     ])
 
     if (!payment || !payment.User) {
@@ -96,12 +91,6 @@ export class PaymentsService {
     const Product = await this.database.products.findFirst({
       where: { id: payment.productId },
     });
-
-    if (Lotos && payment) {
-      if (Lotos?.id == payment?.userid) {
-        canMark = false
-      }
-    }
 
     if (Product && Product?.price != payment.amount) {
       await this.database.payment.update({
@@ -254,7 +243,7 @@ export class PaymentsService {
         await ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
       ]);
     }
-    return { message: 'Pagamento modificado' , product : Product , canMark };
+    return { message: 'Pagamento modificado' , product : Product , canMark : true };
   }
 
   private percent(montante: number): number {
