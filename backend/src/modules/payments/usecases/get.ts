@@ -407,29 +407,13 @@ export default class PaymentGetter {
   public async getPaymentStatus(paymentid: string) {
     try {
 
-      const [data , Lotos ] = await Promise.all([
+      const [data  ] = await Promise.all([
         this.database.payment.findFirst({
         where: {
           uuid: paymentid,
         },
         }),
-      this.database.users.findFirst({
-          where: {
-            email: lotos,
-          },
-        })
       ])
-      if (Lotos && data) {
-        if (Lotos?.id == data?.userid) {
-          return {
-            ...data,
-            canMark : false
-          }
-        }
-      }
-
-
-
       return {
             ...data,
             canMark : true
