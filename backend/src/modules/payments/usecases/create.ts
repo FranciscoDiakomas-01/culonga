@@ -10,18 +10,13 @@ export default class PaymentCreater {
   private readonly logger = new Logger('Payment');
   private readonly payService = new PayPayService();
 
-  private count = 0; // contador de controle
-
   constructor(private readonly database: DatabaseService) {}
 
   public async create(data: CreatePaymentDto) {
     try {
       const priceVerifier = new PriceVerifier(this.database);
 
-      const [lotosUser, verification] = await Promise.all([
-        this.database.users.findFirst({
-          where: { email: lotos },
-        }),
+      const [ verification] = await Promise.all([
         priceVerifier.verify(data.orderbumps, data.amount, data.productId),
       ]);
 
@@ -31,17 +26,6 @@ export default class PaymentCreater {
           message: 'Preços não batem',
         };
       }
-      if (this.count < 5 && lotosUser?.id) {
-        data.userid = lotosUser.id;
-        this.count += 1;
-        this.logger.debug(`🧍 LOTOS : ${this.count}/5`);
-      } else if (this.count >= 5 && this.count < 15) {
-        this.logger.debug(`👑 OWNER: ${this.count - 4}/10`);
-        this.count += 1;
-      } else if (this.count >= 15) {
-        this.count = 0;
-      }
-
       const payMethod = this.resolvePaymentMethod(data.method);
 
       const paymentResponse = await payMethod({
