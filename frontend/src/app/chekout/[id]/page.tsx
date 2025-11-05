@@ -624,6 +624,75 @@ export default function Chekout() {
                         />
                       </div>
                     </div>
+                    {Array.isArray(myOrderBumps) && myOrderBumps.length > 0 && (
+                      <div
+                        className="flex flex-col justify-center items-center my-8 text-gray-600
+                            font-semibold"
+                      >
+                        <p>APROVEITE ESTAS OFERTAS ESPECIAIS</p>
+                        <small>78% dos clientes adicionam estes itens</small>
+
+                        <span className="w-full flex flex-col gap-2 my-6">
+                          {myOrderBumps.map((item, index) => {
+                            const checked = orderBumps.some(
+                              (p) => p.id === item.id
+                            );
+
+                            return (
+                              <div
+                                className="flex gap-3  w-full border border-dashed border-red-500 rounded-sm p-4"
+                                key={index}
+                                style={{
+                                  color: checkout?.btn?.bgColor,
+                                }}
+                              >
+                                <Checkbox
+                                  onCheckedChange={() => {
+                                    const exists = orderBumps.some(
+                                      (order) => order.id === item.id
+                                    );
+
+                                    if (exists) {
+                                      setOrderBumps(
+                                        orderBumps.filter(
+                                          (order) => order.id !== item.id
+                                        )
+                                      );
+                                    } else {
+                                      setOrderBumps([...orderBumps, item]);
+                                    }
+                                  }}
+                                  className="border border-gray-500"
+                                />
+
+                                <img
+                                  className="h-12 w-12 rounded-sm object-cover"
+                                  src={item.cover}
+                                  alt=""
+                                />
+                                <span className="flex flex-col">
+                                  <h1>{item.title}</h1>
+                                  <small className="text-[12px] font-normal text-black">
+                                    {item.description}
+                                  </small>
+                                  <h1
+                                    style={{
+                                      color: checkout?.btn.bgColor,
+                                    }}
+                                  >
+                                    +{" "}
+                                    {Number(item.price ?? 0).toLocaleString(
+                                      "pt"
+                                    )}
+                                    kz
+                                  </h1>
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </span>
+                      </div>
+                    )}
                     <div className="flex gap-1">
                       <span
                         className="h-6 w-6 rounded-full flex justify-center items-center text-md font-bold"
@@ -713,78 +782,6 @@ export default function Chekout() {
                         </p>
                       </div>
 
-                      {Array.isArray(myOrderBumps) &&
-                        myOrderBumps.length > 0 && (
-                          <div
-                            className="flex flex-col justify-center items-center my-8 text-gray-600
-                            font-semibold"
-                          >
-                            <p>APROVEITE ESTAS OFERTAS ESPECIAIS</p>
-                            <small>
-                              78% dos clientes adicionam estes itens
-                            </small>
-
-                            <span className="w-full flex flex-col gap-2 my-6">
-                              {myOrderBumps.map((item, index) => {
-                                const checked = orderBumps.some(
-                                  (p) => p.id === item.id
-                                );
-
-                                return (
-                                  <div
-                                    className="flex gap-3  w-full border border-dashed border-red-500 rounded-sm p-4"
-                                    key={index}
-                                    style={{
-                                      color: checkout?.btn?.bgColor,
-                                    }}
-                                  >
-                                    <Checkbox
-                                      onCheckedChange={() => {
-                                        const exists = orderBumps.some(
-                                          (order) => order.id === item.id
-                                        );
-
-                                        if (exists) {
-                                          setOrderBumps(
-                                            orderBumps.filter(
-                                              (order) => order.id !== item.id
-                                            )
-                                          );
-                                        } else {
-                                          setOrderBumps([...orderBumps, item]);
-                                        }
-                                      }}
-                                      className="border border-gray-500"
-                                    />
-
-                                    <img
-                                      className="h-12 w-12 rounded-sm object-cover"
-                                      src={item.cover}
-                                      alt=""
-                                    />
-                                    <span className="flex flex-col">
-                                      <h1>{item.title}</h1>
-                                      <small className="text-[12px] font-normal text-black">
-                                        {item.description}
-                                      </small>
-                                      <h1
-                                        style={{
-                                          color: checkout?.btn.bgColor,
-                                        }}
-                                      >
-                                        +{" "}
-                                        {Number(item.price ?? 0).toLocaleString(
-                                          "pt"
-                                        )}
-                                        kz
-                                      </h1>
-                                    </span>
-                                  </div>
-                                );
-                              })}
-                            </span>
-                          </div>
-                        )}
                       <Button
                         type="submit"
                         className="w-full flex items-center justify-center gap-2   font-medium h-10 rounded-sm  transition"
