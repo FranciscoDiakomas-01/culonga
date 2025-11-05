@@ -118,12 +118,10 @@ export class ProductsController {
     @Headers('userid') userid: string,
     @Headers('role') role: string,
     @Query('page') page: number = 1,
-    @Query('list') list: string,
   ) {
     const data = await this.productsService.getAllProduct(
       role?.toUpperCase() != 'ADMIN' ? userid : undefined,
       page,
-      list,
     );
     return data;
   }

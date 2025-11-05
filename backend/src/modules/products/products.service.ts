@@ -159,13 +159,11 @@ export class ProductsService {
   public async getAllProduct(
     userid: string | undefined,
     page: number = 1,
-    list: string,
   ) {
     if (userid) {
       const data = await this.productGetter.getProductbyUser(
         userid,
         page,
-        list,
       );
       return data;
     } else {

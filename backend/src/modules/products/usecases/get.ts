@@ -184,56 +184,32 @@ export default class ProductGetter {
       };
     }
   }
-  public async getProductbyUser(userid: string, page: number, list: string) {
+  public async getProductbyUser(userid: string, page: number) {
     try {
       const isACtive = await this.isActive.isActive(userid);
       if (isACtive) {
         const [products, totalproduct] = await Promise.all([
-          list == 'all'
-            ? this.database.products.findMany({
-                select: {
-                  productid: true,
-                  id: true,
-                  title: true,
-                  cover: true,
-                  status: true,
-                  link: true,
-                  price: true,
-                  createdAt: true,
-                  type: true,
-                  category: true,
-                  totalPurchase: true,
-                },
-                where: {
-                  userId: userid,
-                },
-                orderBy: {
-                  createdAt: 'desc',
-                },
-              })
-            : this.database.products.findMany({
-                select: {
-                  productid: true,
-                  id: true,
-                  title: true,
-                  cover: true,
-                  status: true,
-                  link: true,
-                  price: true,
-                  createdAt: true,
-                  type: true,
-                  category: true,
-                  totalPurchase: true,
-                },
-                take: limit,
-                skip: (page - 1) * limit,
-                where: {
-                  userId: userid,
-                },
-                orderBy: {
-                  createdAt: 'desc',
-                },
-              }),
+          this.database.products.findMany({
+            select: {
+              productid: true,
+              id: true,
+              title: true,
+              cover: true,
+              status: true,
+              link: true,
+              price: true,
+              createdAt: true,
+              type: true,
+              category: true,
+              totalPurchase: true,
+            },
+            where: {
+              userId: userid,
+            },
+            orderBy: {
+              createdAt: 'desc',
+            },
+          }),
           this.database.products.count({
             where: {
               userId: userid,
