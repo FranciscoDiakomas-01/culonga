@@ -258,6 +258,7 @@ export default function Payments() {
                   <TableRow>
                     <TableHead>ID</TableHead>
                     <TableHead>Comprador</TableHead>
+                    <TableHead>Cliente</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Método</TableHead>
                     <TableHead>Produto</TableHead>
@@ -289,16 +290,22 @@ export default function Payments() {
                           <TableCell>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <div className="flex items-center gap-2">
+                                <div className="flex  gap-2">
                                   <Avatar>
                                     <AvatarFallback>{initials}</AvatarFallback>
                                   </Avatar>
                                 </div>
                               </TooltipTrigger>
-                              <TooltipContent>
-                                <p>{user.name}</p>
+                              <TooltipContent className="flex flex-col gap-2">
+                                <h1>{user.name}</h1>
+                                <p>{user.email}</p>
+                                <p>{user.telefone}</p>
                               </TooltipContent>
                             </Tooltip>
+                          </TableCell>
+
+                          <TableCell>
+                            <p>{user?.name}</p>
                           </TableCell>
                           <TableCell>{user.email}</TableCell>
                           <TableCell>{payment.method}</TableCell>
@@ -315,7 +322,7 @@ export default function Payments() {
                                   <span>
                                     <p>{product?.title}</p>
                                     <small>
-                                      {product?.description?.slice(0, 30)} ...
+                                      {product?.description?.slice(0, 50)} ...
                                     </small>
                                   </span>
                                 );
