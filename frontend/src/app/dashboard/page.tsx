@@ -17,6 +17,7 @@ import { AlertCircleIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { BestSales } from "@/components/BestSales";
 export default function DashBoard() {
   const router = useRouter();
   const [load, setLoad] = useState(true);
@@ -151,6 +152,9 @@ export default function DashBoard() {
                 {data?.stats && (
                   <SalesChart data={data?.stats} isAdmin={isAdmin} />
                 )}
+              </article>
+              <article>
+                <BestSales />
               </article>
             </>
           )}

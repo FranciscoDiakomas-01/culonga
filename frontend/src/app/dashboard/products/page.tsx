@@ -132,7 +132,7 @@ export default function Products() {
       setTimeout(() => {
         setStatsLoad(false);
         setLoad(false);
-      }, 500);
+      }, 10000);
     }
 
     get(token);
