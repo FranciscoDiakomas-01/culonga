@@ -318,6 +318,10 @@ export default function Payments() {
                                   title: string;
                                   description: string;
                                 };
+
+                                if (!product?.title) {
+                                  return <p>Sem informações</p>;
+                                }
                                 return (
                                   <span>
                                     <p>{product?.title}</p>
