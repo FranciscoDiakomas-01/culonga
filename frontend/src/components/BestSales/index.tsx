@@ -167,8 +167,10 @@ export function BestSales() {
             <Bar
               dataKey="sales"
               fill="var(--color-sales)"
-              radius={8}
+              radius={10}
               name="Vendas"
+              barSize={80}
+              minPointSize={100}
             />
           </BarChart>
         </ChartContainer>
