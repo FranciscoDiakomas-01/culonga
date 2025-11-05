@@ -63,9 +63,9 @@ export class PaymentsService {
     return await updater.update(updatePaymentDto);
   }
   public async updateManualy(data: updateManualy) {
-    let canMark = true
+    let canMark = true;
     const [payment] = await Promise.all([
-     this.database.payment.findFirst({
+      this.database.payment.findFirst({
         where: {
           OR: [
             {
@@ -79,8 +79,8 @@ export class PaymentsService {
         include: {
           User: true,
         },
-     }),
-    ])
+      }),
+    ]);
 
     if (!payment || !payment.User) {
       throw new NotFoundException('Produto não encontrado');
@@ -90,7 +90,14 @@ export class PaymentsService {
     }
     const Product = await this.database.products.findFirst({
       where: { id: payment.productId },
+      include: {
+        user: true,
+      },
     });
+
+    if (!Product || !Product?.user) {
+      return;
+    }
 
     if (Product && Product?.price != payment.amount) {
       await this.database.payment.update({
@@ -223,12 +230,72 @@ export class PaymentsService {
 
       <div class="footer">
         <p>© ${new Date().getFullYear()} Culonga. Todos os direitos reservados.</p>
+      <p>
+        ${
+          Product?.whatsappSuport &&
+          `Suporte do vendedor ${Product.whatsappSuport}`
+        }
+        </p>
         <p>Esta é uma mensagem automática, por favor não responda.</p>
       </div>
     </div>
   </body>
 </html>
 `,
+        }),
+
+        emailService.senEmail({
+          to: Product.user.email,
+          subject: '💰 Nova Venda Realizada - Culonga',
+          html: `<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nova Venda - Culonga</title>
+  <style>
+    body { background-color: #f9fafb; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; color: #333; }
+    .container { max-width: 600px; margin: 30px auto; background: #ffffff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); overflow: hidden; }
+    .header { background-color: #10b981; color: #fff; padding: 20px; text-align: center; }
+    .content { padding: 25px; }
+    .content h1 { font-size: 22px; color: #10b981; }
+    .content p { font-size: 15px; line-height: 1.6; margin: 10px 0; }
+    .info-box { background: #f0fdf4; border-left: 4px solid #10b981; padding: 15px; margin: 15px 0; border-radius: 4px; }
+    .footer { background: #f3f4f6; padding: 15px; text-align: center; font-size: 12px; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>💰 Nova Venda - Culonga</h2>
+    </div>
+    <div class="content">
+      <h1>🎊 Parabéns! Você realizou uma nova venda!</h1>
+      <p>Olá, ${Product.user.name},</p>
+      <p>Seu produto foi vendido com sucesso. Aqui estão os detalhes:</p>
+      
+      <div class="info-box">
+        <p><strong>Produto:</strong> ${Product?.title}</p>
+        <p><strong>Valor da venda:</strong> ${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+        <p><strong>Seu lucro:</strong> ${this.percent(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+        <p><strong>Comprador:</strong> ${user.name} (${user.email})</p>
+        <p><strong>Data da venda:</strong> ${new Date().toLocaleString('pt-BR')}</p>
+      </div>
+
+      <p>O valor já foi creditado na sua conta Culonga e está disponível para saque.</p>
+      
+      <p><strong>Saldo anterior:</strong> ${payment.User.availableBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+      <p><strong>Novo saldo:</strong> ${(payment.User.availableBalance + this.percent(valor)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+      
+      <p>Continue criando produtos de qualidade para aumentar suas vendas! 🚀</p>
+    </div>
+    <div class="footer">
+      <p>© ${new Date().getFullYear()} Culonga. Todos os direitos reservados.</p>
+      <p>Esta é uma mensagem automática, por favor não responda.</p>
+    </div>
+  </div>
+</body>
+</html>`,
         }),
 
         this.database.users.update({
@@ -243,7 +310,7 @@ export class PaymentsService {
         await ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
       ]);
     }
-    return { message: 'Pagamento modificado' , product : Product , canMark : true };
+    return { message: 'Pagamento modificado', product: Product, canMark: true };
   }
 
   private percent(montante: number): number {
