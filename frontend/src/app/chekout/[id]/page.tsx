@@ -48,7 +48,8 @@ export default function Chekout() {
   const [pixelId, setPixelId] = useState("");
   const paymentserviceAPI = new PaymentService();
   const [purschase, setPurchase] = useState(false);
-  
+  const [] = useState("");
+
   const PaymentServices = [
     {
       title: "Express",
@@ -180,7 +181,10 @@ export default function Chekout() {
     get();
   }, []);
   useEffect(() => {
-    const subTotal = orderBumps.reduce((acc  : any, item : any) => acc + item.price, 0);
+    const subTotal = orderBumps.reduce(
+      (acc: any, item: any) => acc + item.price,
+      0
+    );
     setTotal(product?.price + subTotal);
   }, [orderBumps, product]);
 
@@ -383,8 +387,8 @@ export default function Chekout() {
                       </div>
                       <DialogTitle>{message}</DialogTitle>
                       <DialogDescription className="text-center">
-                        Use esta referência para pagar em qualquer terminal
-                        Multicaixa
+                        {message == "Pagamento efectuado com sucesso" &&
+                          `📧 Acesso liberado! Verifique seu produto "${product?.title}"`}
                       </DialogDescription>
                     </DialogHeader>
 
@@ -460,11 +464,10 @@ export default function Chekout() {
                       <div className="bg-green-500/10 rounded-full place-self-center h-10 w-10 flex justify-center items-center border-green-500 border-dashed border">
                         <CheckCircle2 className="text-green-500" />
                       </div>
-                      <DialogTitle>
-                        {message || "Pagamento com PayPay"}
-                      </DialogTitle>
+                      <DialogTitle>{message}</DialogTitle>
                       <DialogDescription>
-                        Foi aplicado um desconto de 5% na sua compra
+                        {message == "Pagamento efectuado com sucesso" &&
+                          `📧 Acesso liberado! Verifique seu produto "${product?.title}"`}
                       </DialogDescription>
                     </DialogHeader>
 
