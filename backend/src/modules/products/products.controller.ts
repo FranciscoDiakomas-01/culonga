@@ -120,7 +120,7 @@ export class ProductsController {
     @Query('page') page: number = 1,
   ) {
     const data = await this.productsService.getAllProduct(
-      role?.toUpperCase() != 'ADMIN' ? undefined : userid,
+      role?.toUpperCase() != 'ADMIN' ? userid : undefined,
       page,
     );
     return data;

@@ -146,7 +146,12 @@ export function BestSales() {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
+          <BarChart
+            accessibilityLayer
+            height={300}
+            className="h-300"
+            data={chartData}
+          >
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="product"

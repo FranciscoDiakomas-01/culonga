@@ -527,4 +527,7 @@ export default class ProductGetter {
       };
     }
   }
+  public async getSpeficStats() {
+    
+  }
 }
