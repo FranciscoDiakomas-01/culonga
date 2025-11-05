@@ -19,36 +19,20 @@ async function bootstrap() {
     },
   );
 
-  // Configuração CORS simplificada e eficaz
-  const allowedOrigins = [
-    'https://app.culonga.com',
-    'https://www.app.culonga.com',
-    'https://culonga.com',
-    'https://www.culonga.com',
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'http://127.0.0.1:3000',
-  ];
-
-  // 🔥 CONFIGURAÇÃO CORS SIMPLIFICADA
+  // 🔥 CORS TOTALMENTE ABERTO
   app.enableCors({
-    origin: allowedOrigins,
+    origin: true, // ✅ PERMITE QUALQUER ORIGEM
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'token',
-      'x-api-key',
-      'x-requested-with',
-    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
+    allowedHeaders: '*', // ✅ PERMITE QUALQUER HEADER
   });
 
-  // 🔥 CONFIGURAÇÃO SEGURA DO HELMET
+  // Relaxa o Helmet também
   app.use(
     helmet({
       crossOriginResourcePolicy: { policy: 'cross-origin' },
       crossOriginEmbedderPolicy: false,
+      contentSecurityPolicy: false, // ✅ DESABILITA CSP
     }),
   );
 
@@ -65,7 +49,7 @@ async function bootstrap() {
   await app.listen(port);
 
   Logger.log(`🚀 Application running on port ${port}`, 'Bootstrap');
-  Logger.log(`🌐 CORS enabled for: ${allowedOrigins.join(', ')}`, 'CORS');
+  Logger.log(`🔓 CORS TOTALMENTE LIBERADO - QUALQUER ORIGEM`, 'CORS');
 
   const starUp = new AdmminStartUpService();
   await starUp.createDefaultAdmin();

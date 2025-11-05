@@ -61,8 +61,6 @@ import { CorsMiddleware } from './middlewares/cors.middleware';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(CorsMiddleware)
-      .forRoutes('*')
       .apply(IsAuthenticated)
       .exclude(
         { path: 'users/auth', method: RequestMethod.POST },
