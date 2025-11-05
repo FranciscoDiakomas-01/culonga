@@ -299,7 +299,7 @@ export default function Payments() {
                           <Button
                             variant="outline"
                             id="date-start"
-                            className="w-48 justify-between font-normal"
+                            className="w-full justify-between font-normal"
                           >
                             {dateStart
                               ? dateStart.toLocaleDateString("pt-AO")
@@ -308,7 +308,7 @@ export default function Payments() {
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent
-                          className="w-auto overflow-hidden p-0"
+                          className="w-full overflow-hidden p-0"
                           align="start"
                         >
                           <Calendar
@@ -333,7 +333,7 @@ export default function Payments() {
                           <Button
                             variant="outline"
                             id="date-end"
-                            className="w-48 justify-between font-normal"
+                            className="w-full justify-between font-normal"
                           >
                             {dateEnd
                               ? dateEnd.toLocaleDateString("pt-AO")
@@ -342,7 +342,7 @@ export default function Payments() {
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent
-                          className="w-auto overflow-hidden p-0"
+                          className="w-full overflow-hidden p-0"
                           align="start"
                         >
                           <Calendar
