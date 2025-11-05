@@ -20,6 +20,7 @@ import DatabaseService from './services/database/database.service';
 import { TasksService } from './services/tasks/cron.service';
 import { BankModule } from './modules/bank/bank.module';
 import { TransferModule } from './modules/transfer/transfer.module';
+import { CorsMiddleware } from './middlewares/cors.middleware';
 @Module({
   imports: [
     UsersModule,
@@ -60,6 +61,8 @@ import { TransferModule } from './modules/transfer/transfer.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
+      .apply(CorsMiddleware)
+      .forRoutes('*')
       .apply(IsAuthenticated)
       .exclude(
         { path: 'users/auth', method: RequestMethod.POST },
