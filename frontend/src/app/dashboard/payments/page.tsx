@@ -260,6 +260,7 @@ export default function Payments() {
                     <TableHead>Comprador</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Método</TableHead>
+                    <TableHead>Produto</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Valor</TableHead>
                     <TableHead>Data</TableHead>
@@ -301,6 +302,28 @@ export default function Payments() {
                           </TableCell>
                           <TableCell>{user.email}</TableCell>
                           <TableCell>{payment.method}</TableCell>
+                          <TableCell>
+                            {(() => {
+                              try {
+                                const product = JSON.parse(
+                                  payment?.product
+                                ) as {
+                                  title: string;
+                                  description: string;
+                                };
+                                return (
+                                  <span>
+                                    <p>{product?.title}</p>
+                                    <small>
+                                      {product?.description?.slice(0, 30)} ...
+                                    </small>
+                                  </span>
+                                );
+                              } catch (error) {
+                                return <p>Sem informação</p>;
+                              }
+                            })()}
+                          </TableCell>
                           <TableCell>
                             {payment.status === "APROVED" ? (
                               <Badge variant="outline">
