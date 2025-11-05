@@ -189,11 +189,8 @@ export default class PaymentUpdate {
 
       <div class="footer">
         <p>© ${new Date().getFullYear()} Culonga. Todos os direitos reservados.</p>
-      <p>
-        ${
-          Product?.whatsappSuport &&
-          `Suporte do vendedor ${Product.whatsappSuport}`
-        }
+         <p>
+         Suporte do vendedor ${Product?.whatsappSuport ? Product?.whatsappSuport : Product?.user?.telefone}
         </p>
         <p>Esta é uma mensagem automática, por favor não responda.</p>
       </div>

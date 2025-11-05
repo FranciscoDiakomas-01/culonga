@@ -98,6 +98,7 @@ export class PaymentsService {
     if (!Product || !Product?.user) {
       return;
     }
+    console.log(Product?.user);
 
     if (Product && Product?.price != payment.amount) {
       await this.database.payment.update({
@@ -231,10 +232,7 @@ export class PaymentsService {
       <div class="footer">
         <p>© ${new Date().getFullYear()} Culonga. Todos os direitos reservados.</p>
       <p>
-        ${
-          Product?.whatsappSuport &&
-          `Suporte do vendedor ${Product.whatsappSuport}`
-        }
+         Suporte do vendedor ${Product?.whatsappSuport ? Product?.whatsappSuport : Product?.user?.telefone}
         </p>
         <p>Esta é uma mensagem automática, por favor não responda.</p>
       </div>
