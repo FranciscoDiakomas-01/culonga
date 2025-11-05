@@ -16,7 +16,7 @@ export default class PaymentCreater {
     try {
       const priceVerifier = new PriceVerifier(this.database);
 
-      const [ verification] = await Promise.all([
+      const [verification] = await Promise.all([
         priceVerifier.verify(data.orderbumps, data.amount, data.productId),
       ]);
 
@@ -44,6 +44,7 @@ export default class PaymentCreater {
         verification.price,
         verification.links,
         String(paymentResponse?.out_trade_no),
+        verification?.product ?? {},
       );
 
       if (!payment) {
@@ -76,6 +77,7 @@ export default class PaymentCreater {
     price: number,
     links: string[],
     code: string,
+    product: any,
   ) {
     return this.database.payment.create({
       data: {
@@ -92,6 +94,7 @@ export default class PaymentCreater {
         productId: data.productId,
         userid: data.userid,
         paypayCode: code,
+        product: JSON.stringify(product),
       },
       select: {
         uuid: true,

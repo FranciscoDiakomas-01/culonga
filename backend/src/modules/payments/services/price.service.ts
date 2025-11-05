@@ -43,6 +43,7 @@ export default class PriceVerifier {
         status: total === amount,
         price: total,
         links: [baseItem.file as string],
+        product,
       };
     } catch (error) {
       this.logger.error(
