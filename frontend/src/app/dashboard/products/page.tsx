@@ -395,12 +395,12 @@ export default function Products() {
                       <TableHeader>
                         <TableRow>
                           <TableHead className="w-20">ID</TableHead>
-                          <TableHead>Produto</TableHead>
+                          <TableHead className="w-50">Produto</TableHead>
                           {isAdmin && <TableHead>Criador</TableHead>}
-                          <TableHead>Data de Criação</TableHead>
+                          <TableHead>Criado</TableHead>
+                          <TableHead className="">Facturação</TableHead>
                           <TableHead className="">Status</TableHead>
                           <TableHead className="">Preço</TableHead>
-                          <TableHead className="">Facturação</TableHead>
                           <TableHead className="w-20">LINK</TableHead>
                           <TableHead className="w-20">
                             {!isAdmin ? "Detalhes" : "Aprovação"}
@@ -448,6 +448,12 @@ export default function Products() {
                                 }
                               )}
                             </TableCell>
+
+                            <TableHead className="">
+                              {item.totalPurchase}
+                              {Number(item.totalPurchase).toLocaleString("pt")}
+                              kz
+                            </TableHead>
                             <TableCell>
                               {item.status == "APROVED" ? (
                                 <Badge variant={"outline"}>
@@ -469,11 +475,6 @@ export default function Products() {
                             <TableCell>
                               {Number(item.price).toLocaleString("pt")}kz
                             </TableCell>
-
-                            <TableHead className="">
-                              {Number(item.totalPurchase).toLocaleString("pt")}
-                              kz
-                            </TableHead>
                             <TableCell>
                               <Button
                                 className="dark:text-blue-500 underline"

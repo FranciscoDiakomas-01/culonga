@@ -176,19 +176,16 @@ export class ProductsService {
   public async getAllProductByStatus(
     userid: string | undefined,
     page: number = 1,
-    status: Status,
   ) {
     if (userid) {
       const data = await this.productGetter.getAllProductsByStatus(
         page,
-        status,
         userid,
       );
       return data;
     } else {
       const data = await this.productGetter.getAllProductsByStatus(
         page,
-        status,
         undefined,
       );
       return data;
@@ -207,7 +204,7 @@ export class ProductsService {
     const data = await this.productGetter.getProductById(id);
     return data;
   }
-  public async getProductOffers(productid: string,) {
+  public async getProductOffers(productid: string) {
     const offers = await this.productGetter.getProductOffeer(productid);
     return offers;
   }

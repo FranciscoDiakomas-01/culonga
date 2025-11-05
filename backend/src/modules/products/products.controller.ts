@@ -119,35 +119,13 @@ export class ProductsController {
     @Headers('role') role: string,
     @Query('page') page: number = 1,
     @Query('list') list: string,
-    @Query('status') status: string = 'ALL',
   ) {
-    if (role?.toUpperCase() != 'ADMIN') {
-      const data = await this.productsService.getAllProduct(userid, page, list);
-      return data;
-    } else {
-      if (status != 'ALL') {
-        if (role?.toUpperCase() != 'ADMIN') {
-          const data = await this.productsService.getAllProductByStatus(
-            undefined,
-            page,
-            status as Status,
-          );
-          return data;
-        }
-        const data = await this.productsService.getAllProductByStatus(
-          userid,
-          page,
-          status as Status,
-        );
-        return data;
-      }
-      const data = await this.productsService.getAllProduct(
-        undefined,
-        page,
-        list,
-      );
-      return data;
-    }
+    const data = await this.productsService.getAllProduct(
+      role?.toUpperCase() != 'ADMIN' ? userid : undefined,
+      page,
+      list,
+    );
+    return data;
   }
   @Get(':id')
   public async getProductById(@Param('id') id: string) {

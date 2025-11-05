@@ -39,6 +39,7 @@ export default class ProductConsumer {
             link: item.link,
             price: item.price,
             user: item.user,
+            totalPurchase: item?.totalPurchase,
           };
         });
         return {

@@ -195,6 +195,13 @@ export default class ProductGetter {
                   productid: true,
                   id: true,
                   title: true,
+                  cover: true,
+                  status: true,
+                  link: true,
+                  price: true,
+                  createdAt: true,
+                  type: true,
+                  category: true,
                   totalPurchase: true,
                 },
                 where: {
@@ -297,7 +304,6 @@ export default class ProductGetter {
   }
   public async getAllProductsByStatus(
     page: number,
-    status: Status,
     userid: undefined | string,
   ) {
     if (userid) {
@@ -335,13 +341,11 @@ export default class ProductGetter {
             createdAt: 'desc',
           },
           where: {
-            status,
             userId: userid,
           },
         }),
         this.database.products.count({
           where: {
-            status,
             userId: userid,
           },
         }),
@@ -383,15 +387,8 @@ export default class ProductGetter {
         orderBy: {
           createdAt: 'desc',
         },
-        where: {
-          status,
-        },
       }),
-      this.database.products.count({
-        where: {
-          status,
-        },
-      }),
+      this.database.products.count({}),
     ]);
     const lastPage = Math.ceil(totalproduct / limit);
     return {
