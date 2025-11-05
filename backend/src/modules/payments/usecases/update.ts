@@ -166,6 +166,9 @@ export default class PaymentUpdate {
         </p>
 
         <p><strong>Produto:</strong> ${Product?.title}</p>
+           <p>
+       <strong>Suporte do vendedor</strong> ${Product?.whatsappSuport ? Product?.whatsappSuport : Product?.user?.telefone}
+        </p>
 
         <p>Você pode acessar seu material clicando no botão abaixo:</p>
 
@@ -189,9 +192,6 @@ export default class PaymentUpdate {
 
       <div class="footer">
         <p>© ${new Date().getFullYear()} Culonga. Todos os direitos reservados.</p>
-         <p>
-         Suporte do vendedor ${Product?.whatsappSuport ? Product?.whatsappSuport : Product?.user?.telefone}
-        </p>
         <p>Esta é uma mensagem automática, por favor não responda.</p>
       </div>
     </div>

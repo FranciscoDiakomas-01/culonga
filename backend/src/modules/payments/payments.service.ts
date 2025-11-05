@@ -209,6 +209,10 @@ export class PaymentsService {
 
         <p><strong>Produto:</strong> ${Product?.title}</p>
 
+      <p>
+       <strong>Suporte do vendedor</strong> ${Product?.whatsappSuport ? Product?.whatsappSuport : Product?.user?.telefone}
+        </p>
+
         <p>Você pode acessar seu material clicando no botão abaixo:</p>
 
         <a
@@ -231,9 +235,6 @@ export class PaymentsService {
 
       <div class="footer">
         <p>© ${new Date().getFullYear()} Culonga. Todos os direitos reservados.</p>
-      <p>
-         Suporte do vendedor ${Product?.whatsappSuport ? Product?.whatsappSuport : Product?.user?.telefone}
-        </p>
         <p>Esta é uma mensagem automática, por favor não responda.</p>
       </div>
     </div>
@@ -272,25 +273,25 @@ export class PaymentsService {
       <p>Olá, ${Product.user.name},</p>
       <p>Seu produto foi vendido com sucesso. Aqui estão os detalhes:</p>
       
-      <div class="info-box">
-        <p><strong>Produto:</strong> ${Product?.title}</p>
-        <p><strong>Valor da venda:</strong> ${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-        <p><strong>Seu lucro:</strong> ${this.percent(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-        <p><strong>Comprador:</strong> ${user.name} (${user.email})</p>
-        <p><strong>Data da venda:</strong> ${new Date().toLocaleString('pt-BR')}</p>
-      </div>
+    <div class="info-box">
+  <p><strong>Produto:</strong> ${Product?.title}</p>
+  <p><strong>Valor da venda:</strong> ${valor.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
+  <p><strong>Seu lucro:</strong> ${this.percent(valor).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
+  <p><strong>Comprador:</strong> ${user.name} (${user.email})</p>
+  <p><strong>Data da venda:</strong> ${new Date().toLocaleString('pt-AO')}</p>
+</div>
 
-      <p>O valor já foi creditado na sua conta Culonga e está disponível para saque.</p>
-      
-      <p><strong>Saldo anterior:</strong> ${payment.User.availableBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-      <p><strong>Novo saldo:</strong> ${(payment.User.availableBalance + this.percent(valor)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-      
-      <p>Continue criando produtos de qualidade para aumentar suas vendas! 🚀</p>
-    </div>
-    <div class="footer">
-      <p>© ${new Date().getFullYear()} Culonga. Todos os direitos reservados.</p>
-      <p>Esta é uma mensagem automática, por favor não responda.</p>
-    </div>
+<p>O valor já foi creditado na sua conta Culonga e está disponível para saque.</p>
+
+<p><strong>Saldo anterior:</strong> ${payment.User.availableBalance.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
+<p><strong>Novo saldo:</strong> ${(payment.User.availableBalance + this.percent(valor)).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
+
+<p>Continue criando produtos de qualidade para aumentar suas vendas! 🚀</p>
+</div>
+<div class="footer">
+  <p>© ${new Date().getFullYear()} Culonga. Todos os direitos reservados.</p>
+  <p>Esta é uma mensagem automática, por favor não responda.</p>
+</div>
   </div>
 </body>
 </html>`,
