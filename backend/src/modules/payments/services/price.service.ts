@@ -13,7 +13,7 @@ export default class PriceVerifier {
       // Base: pode ser oferta ou produto
       const baseItem = product;
       if (!baseItem) {
-        return { status: false, price: 0, links: [] };
+        return { status: false, price: 0, links: [], product };
       }
 
       // Se não houver order bumps
@@ -22,6 +22,7 @@ export default class PriceVerifier {
           status: baseItem.price === amount,
           price: baseItem.price,
           links: [baseItem.file as string],
+          product,
         };
       }
 
@@ -49,7 +50,7 @@ export default class PriceVerifier {
       this.logger.error(
         error?.message ?? error?.error ?? 'Erro ao verificar os produtos',
       );
-      return { status: false, price: 0, links: [] };
+      return { status: false, price: 0, links: [], product: {} };
     }
   }
 }
