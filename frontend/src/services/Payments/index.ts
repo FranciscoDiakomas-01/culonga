@@ -25,6 +25,8 @@ export default class PaymentService {
         page: number;
         limit: number;
       };
+      console.log(data);
+
       return data;
     } catch (error) {
       return {
@@ -45,6 +47,7 @@ export default class PaymentService {
         },
       });
       const res = (await data.json()) as any;
+      console.log(res);
       return res;
     } catch (error) {
       return [] as any;
@@ -61,6 +64,7 @@ export default class PaymentService {
         body: JSON.stringify(body),
       });
       const data = (await res.json()) as { message: string; created: boolean };
+      console.log(data);
       return data;
     } catch (error) {
       return {
@@ -94,6 +98,7 @@ export default class PaymentService {
         page: number;
         limit: number;
       };
+      console.log(data);
       return data;
     } catch (error) {
       return {
@@ -176,6 +181,7 @@ export default class PaymentService {
         }
       );
       const data = (await res.json()) as { message: string; sent: string };
+      console.log(data);
       return data;
     } catch (error) {
       return {
