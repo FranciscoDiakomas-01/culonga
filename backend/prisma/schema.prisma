@@ -161,6 +161,8 @@ model Products {
   category   String?
   type       String
   payment    Int[]
+
+  totalPurchase Int @default(0)
   offers     Offer[]
   backredirect String?
   status     Status     @default(APROVED)

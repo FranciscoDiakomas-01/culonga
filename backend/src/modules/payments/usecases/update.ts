@@ -261,8 +261,18 @@ export default class PaymentUpdate {
               },
               where: { id: payment.User.id },
             }),
-            await this.pushKit.send(),
-            await ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
+            this.pushKit.send(),
+            ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
+            this.database.products.update({
+              where: {
+                id: payment.productId,
+              },
+              data: {
+                totalPurchase: {
+                  increment: payment.amount,
+                },
+              },
+            }),
           ]);
           return { message: 'Pagamento modificado' };
         }

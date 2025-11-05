@@ -195,6 +195,7 @@ export default class ProductGetter {
                   productid: true,
                   id: true,
                   title: true,
+                  totalPurchase: true,
                 },
                 where: {
                   userId: userid,
@@ -215,6 +216,7 @@ export default class ProductGetter {
                   createdAt: true,
                   type: true,
                   category: true,
+                  totalPurchase: true,
                 },
                 take: limit,
                 skip: (page - 1) * limit,
@@ -266,6 +268,7 @@ export default class ProductGetter {
           createdAt: true,
           type: true,
           category: true,
+          totalPurchase: true,
           user: {
             select: {
               name: true,
@@ -317,6 +320,7 @@ export default class ProductGetter {
             createdAt: true,
             type: true,
             category: true,
+            totalPurchase: true,
             user: {
               select: {
                 name: true,
@@ -365,6 +369,7 @@ export default class ProductGetter {
           createdAt: true,
           type: true,
           category: true,
+          totalPurchase: true,
           user: {
             select: {
               name: true,

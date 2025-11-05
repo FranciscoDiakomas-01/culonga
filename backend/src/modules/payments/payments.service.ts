@@ -242,7 +242,6 @@ export class PaymentsService {
 </html>
 `,
         }),
-
         emailService.senEmail({
           to: Product.user.email,
           subject: '💰 Nova Venda Realizada - Culonga',
@@ -296,7 +295,6 @@ export class PaymentsService {
 </body>
 </html>`,
         }),
-
         this.database.users.update({
           data: {
             totalEarned: payment.User.totalEarned + valor,
@@ -305,8 +303,18 @@ export class PaymentsService {
           },
           where: { id: payment.User.id },
         }),
-        await this.pushKit.send(),
-        await ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
+        this.pushKit.send(),
+        ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
+        this.database.products.update({
+          where: {
+            id: payment.productId,
+          },
+          data: {
+            totalPurchase: {
+              increment: payment.amount,
+            },
+          },
+        }),
       ]);
     }
     return { message: 'Pagamento modificado', product: Product, canMark: true };

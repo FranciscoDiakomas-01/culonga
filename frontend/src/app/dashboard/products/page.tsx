@@ -88,7 +88,7 @@ export default function Products() {
     },
   ]);
 
-  type Prouct = {
+  type IProduct = {
     id: string;
     order: number;
     title: string;
@@ -98,16 +98,17 @@ export default function Products() {
     link: string;
     price: number;
     user?: any;
+    totalPurchase: number;
   };
   const [statsLoad, setStatsLoad] = useState(true);
   const router = useRouter();
-  const [myProducts, setMyProducts] = useState<Prouct[]>([]);
+  const [myProducts, setMyProducts] = useState<IProduct[]>([]);
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [spin, setSpin] = useState(false);
   const [reload, setReload] = useState(false);
   const [lastpage, setLastPage] = useState(1);
-  const [filtredProducts, setFiltredProducts] = useState<Prouct[]>([]);
+  const [filtredProducts, setFiltredProducts] = useState<IProduct[]>([]);
 
   const [isAdmin, setIsAdmin] = useState(false);
   // Buscar dados da API (só aqui)
@@ -399,6 +400,7 @@ export default function Products() {
                           <TableHead>Data de Criação</TableHead>
                           <TableHead className="">Status</TableHead>
                           <TableHead className="">Preço</TableHead>
+                          <TableHead className="">Facturação</TableHead>
                           <TableHead className="w-20">LINK</TableHead>
                           <TableHead className="w-20">
                             {!isAdmin ? "Detalhes" : "Aprovação"}
@@ -467,6 +469,11 @@ export default function Products() {
                             <TableCell>
                               {Number(item.price).toLocaleString("pt")}kz
                             </TableCell>
+
+                            <TableHead className="">
+                              {Number(item.totalPurchase).toLocaleString("pt")}
+                              kz
+                            </TableHead>
                             <TableCell>
                               <Button
                                 className="dark:text-blue-500 underline"
