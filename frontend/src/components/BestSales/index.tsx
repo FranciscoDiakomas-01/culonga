@@ -99,7 +99,7 @@ export function BestSales() {
   // Se estiver carregando, não mostra nada
   if (load) {
     return (
-      <Card>
+      <Card className="bg-transparent backdrop-blur-2xl mb-8">
         <CardContent className="flex justify-center items-center h-64">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </CardContent>
@@ -115,7 +115,7 @@ export function BestSales() {
   // Se não há dados de vendas
   if (chartData.length === 0) {
     return (
-      <Card>
+      <Card className="bg-transparent backdrop-blur-2xl mb-8">
         <CardHeader>
           <CardTitle>Vendas por Produto</CardTitle>
           <CardDescription>Seus produtos mais vendidos</CardDescription>
@@ -137,7 +137,7 @@ export function BestSales() {
   );
 
   return (
-    <Card>
+    <Card className="bg-transparent backdrop-blur-2xl mb-8">
       <CardHeader>
         <CardTitle>Vendas por Produto</CardTitle>
         <CardDescription>
