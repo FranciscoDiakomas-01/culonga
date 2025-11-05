@@ -450,7 +450,6 @@ export default function Products() {
                             </TableCell>
 
                             <TableHead className="">
-                              {item.totalPurchase}
                               {Number(item.totalPurchase).toLocaleString("pt")}
                               kz
                             </TableHead>
