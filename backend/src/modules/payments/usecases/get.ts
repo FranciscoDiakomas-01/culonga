@@ -508,4 +508,47 @@ export default class PaymentGetter {
       };
     }
   }
+
+  public async getMyPaymentPerInterval(
+    from: string,
+    to: string,
+    userid: string,
+  ) {
+    try {
+      const date1 = new Date(from);
+      const dat2 = new Date(to);
+      const user = await this.database.users.findFirst({
+        where: {
+          id: userid,
+        },
+      });
+      if (!user) {
+        return {
+          message: 'Perfil não encontrado',
+        };
+      }
+      const totalPayments = await this.database.payment.aggregate({
+        _sum: {
+          amount: true,
+        },
+        where: {
+          status: 'APROVED',
+          userid: userid,
+          createdAt: {
+            gte: date1,
+            lte: dat2,
+          },
+        },
+        _count: true,
+      });
+      return {
+        total: totalPayments?._sum,
+        sales: totalPayments._count,
+      };
+    } catch (error) {
+      return {
+        message: 'Data inválida',
+      };
+    }
+  }
 }

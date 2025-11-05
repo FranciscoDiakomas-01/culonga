@@ -60,6 +60,15 @@ export class PaymentsController {
     return await this.paymentsService.findAll(page, userid);
   }
 
+  @Get('/interval/:from/:to')
+  async getInInterval(
+    @Headers('userid') userid: string,
+    @Param('from') from: string,
+    @Param('to') to: string,
+  ) {
+    return await this.paymentsService.getbyInterval(userid, from, to);
+  }
+
   @Get(':id')
   public async findOne(@Param('id') id: string) {
     return this.paymentsService.findOne(id);

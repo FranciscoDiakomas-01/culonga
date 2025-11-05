@@ -52,6 +52,11 @@ export class PaymentsService {
     const myPayments = getter.getPaymentsByStatus(userid, page, status);
     return myPayments;
   }
+  public async getbyInterval(userid: string, from: string, to: string) {
+    const getter = new PaymentGetter(this.database);
+    const myPayments = getter.getMyPaymentPerInterval(from, to, userid);
+    return myPayments;
+  }
 
   public async findOne(id: string) {
     const getter = new PaymentGetter(this.database);

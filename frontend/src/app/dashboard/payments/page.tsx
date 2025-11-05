@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Table,
   TableBody,
@@ -86,9 +85,19 @@ export default function Payments() {
   });
   const router = useRouter();
 
-  const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  // 🗓️ ESTADOS PARA FILTRO DE DATA
+  const [dateStart, setDateStart] = useState<Date | undefined>(undefined);
+  const [dateEnd, setDateEnd] = useState<Date | undefined>(undefined);
+  const [openStart, setOpenStart] = useState(false);
+  const [openEnd, setOpenEnd] = useState(false);
+  const [filteredStats, setFilteredStats] = useState<{
+    total: number;
+    sales: number;
+    periodo: string;
+  } | null>(null);
+
   const service = new PaymentService();
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -123,15 +132,80 @@ export default function Payments() {
 
   useEffect(() => {
     if (filter === "ALL") {
-      setFilteredPayments(Payments);
+      // Se há filtro de data, aplica apenas o filtro de data
+      if (filteredStats) {
+        aplicarFiltroData(Payments);
+      } else {
+        setFilteredPayments(Payments);
+      }
       return;
     }
-    const newList = Payments.filter((item) => {
+
+    let newList = Payments.filter((item) => {
       return item.status.toUpperCase() === filter.toUpperCase();
     });
 
+    // Se há filtro de data, aplica também o filtro de data
+    if (filteredStats) {
+      newList = aplicarFiltroData(newList);
+    }
+
     setFilteredPayments(newList);
-  }, [filter, Payments]);
+  }, [filter, Payments, filteredStats]);
+
+  // 🎯 FUNÇÃO PARA APLICAR FILTRO DE DATA
+  const aplicarFiltroData = (paymentsList: any[]) => {
+    if (!dateStart || !dateEnd) return paymentsList;
+
+    return paymentsList.filter((payment) => {
+      const paymentDate = new Date(payment.createdAt);
+      return paymentDate >= dateStart && paymentDate <= dateEnd;
+    });
+  };
+
+  // 🎯 FUNÇÃO PARA FILTRAR POR DATA
+  const handleDateFilter = () => {
+    if (!dateStart || !dateEnd) {
+      toast.error("Selecione ambas as datas");
+      return;
+    }
+
+    const paymentsFiltradas = aplicarFiltroData(Payments);
+    const total = paymentsFiltradas.reduce(
+      (sum, payment) => sum + payment.amount,
+      0
+    );
+    const sales = paymentsFiltradas.length;
+    const periodo = `${dateStart.toLocaleDateString(
+      "pt-AO"
+    )} - ${dateEnd.toLocaleDateString("pt-AO")}`;
+
+    setFilteredStats({
+      total,
+      sales,
+      periodo,
+    });
+
+    // Aplica também filtro de status se houver
+    if (filter !== "ALL") {
+      const filteredByStatus = paymentsFiltradas.filter((item) => {
+        return item.status.toUpperCase() === filter.toUpperCase();
+      });
+      setFilteredPayments(filteredByStatus);
+    } else {
+      setFilteredPayments(paymentsFiltradas);
+    }
+
+    toast.success(`Filtrado: ${periodo}`);
+  };
+
+  const limparFiltroData = () => {
+    setDateStart(undefined);
+    setDateEnd(undefined);
+    setFilteredStats(null);
+    setFilteredPayments(Payments);
+    toast.info("Filtro de data removido");
+  };
 
   async function updateManualyStatus(status: "1" | "2", id: string) {
     const token = localStorage.getItem("token") as string;
@@ -209,21 +283,26 @@ export default function Payments() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="grid gap-3">
+
+                  {/* 🗓️ FILTRO POR DATA */}
+                  <div className="grid gap-3 mt-5 w-full">
                     <p>Filtrar por período</p>
                     <div className="flex flex-col gap-3">
-                      <Label htmlFor="date" className="px-1">
+                      <Label htmlFor="date-start" className="px-1">
                         Data de início
                       </Label>
-                      <Popover open={open} onOpenChange={setOpen}>
-                        <PopoverTrigger asChild>
+                      <Popover open={openStart} onOpenChange={setOpenStart}>
+                        <PopoverTrigger
+                          asChild
+                          className="w-full z-[9999999999999999999999999]"
+                        >
                           <Button
                             variant="outline"
-                            id="date"
+                            id="date-start"
                             className="w-48 justify-between font-normal"
                           >
-                            {date
-                              ? date.toLocaleDateString()
+                            {dateStart
+                              ? dateStart.toLocaleDateString("pt-AO")
                               : "Selecione a data"}
                             <ChevronDownIcon />
                           </Button>
@@ -234,27 +313,30 @@ export default function Payments() {
                         >
                           <Calendar
                             mode="single"
-                            selected={date}
-                            captionLayout="dropdown"
+                            selected={dateStart}
                             onSelect={(date) => {
-                              setDate(date);
-                              setOpen(false);
+                              setDateStart(date);
+                              setOpenStart(false);
                             }}
                           />
                         </PopoverContent>
                       </Popover>
-                      <Label htmlFor="date" className="px-1">
+
+                      <Label htmlFor="date-end" className="px-1">
                         Data de fim
                       </Label>
-                      <Popover open={open} onOpenChange={setOpen}>
-                        <PopoverTrigger asChild>
+                      <Popover open={openEnd} onOpenChange={setOpenEnd}>
+                        <PopoverTrigger
+                          asChild
+                          className="w-full z-[9999999999999999999999999]"
+                        >
                           <Button
                             variant="outline"
-                            id="date"
+                            id="date-end"
                             className="w-48 justify-between font-normal"
                           >
-                            {date
-                              ? date.toLocaleDateString()
+                            {dateEnd
+                              ? dateEnd.toLocaleDateString("pt-AO")
                               : "Selecione a data"}
                             <ChevronDownIcon />
                           </Button>
@@ -265,33 +347,28 @@ export default function Payments() {
                         >
                           <Calendar
                             mode="single"
-                            selected={date}
-                            captionLayout="dropdown"
+                            selected={dateEnd}
                             onSelect={(date) => {
-                              setDate(date);
-                              setOpen(false);
+                              setDateEnd(date);
+                              setOpenEnd(false);
                             }}
                           />
                         </PopoverContent>
                       </Popover>
                     </div>
                   </div>
+
                   <div className="border-t place-self-center  w-full dark:border-white/10"></div>
                   <SheetFooter className="grid grid-cols-2 gap-2 px-0">
                     <SheetClose asChild>
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setFilter("ALL");
-                        }}
-                      >
+                      <Button variant="outline" onClick={limparFiltroData}>
                         Limpar
                       </Button>
                     </SheetClose>
                     <Button
                       type="submit"
-                      className="bg-green-600
-                hover:bg-green-700 text-white"
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                      onClick={handleDateFilter}
                     >
                       Filtrar
                     </Button>
@@ -301,8 +378,40 @@ export default function Payments() {
             </Sheet>
           </span>
 
-          <article className="grid lg:grid-cols-4 my-6  gap-3 md:grid-cols-2 ">
-            {Array.isArray(data?.stats?.stats) &&
+          {/* 📊 ESTATÍSTICAS - MOSTRA APENAS UMA DAS VERSÕES */}
+          <article className="grid lg:grid-cols-4 my-6 gap-3 md:grid-cols-2">
+            {/* ESTATÍSTICAS DO PERÍODO FILTRADO */}
+            {filteredStats && (
+              <>
+                <Card className="p-2 rounded-sm gap-3 lg:text-start bg-transparent backdrop-blur-3xl font-bold">
+                  <small className="text-blue-500 text-center lg:text-start">
+                    Total do Período
+                  </small>
+                  <CardTitle className="text-2xl text-center lg:text-start">
+                    {Number(filteredStats.total).toLocaleString("pt")} kz
+                  </CardTitle>
+                  <CardDescription className="text-center lg:text-start">
+                    {filteredStats.sales} vendas
+                  </CardDescription>
+                </Card>
+
+                <Card className="p-2 rounded-sm gap-3 lg:text-start bg-transparent backdrop-blur-3xl font-bold">
+                  <small className="text-green-500 text-center lg:text-start">
+                    Período Selecionado
+                  </small>
+                  <CardTitle className="text-lg text-center lg:text-start">
+                    {filteredStats.periodo}
+                  </CardTitle>
+                  <CardDescription className="text-center lg:text-start">
+                    Vendas filtradas por data
+                  </CardDescription>
+                </Card>
+              </>
+            )}
+
+            {/* ESTATÍSTICAS GERAIS (apenas quando NÃO há filtro de data) */}
+            {!filteredStats &&
+              Array.isArray(data?.stats?.stats) &&
               data?.stats?.stats.length > 0 &&
               data?.stats?.stats.map((item: any, index: number) => (
                 <Card
@@ -322,7 +431,6 @@ export default function Payments() {
                     {Number(item.value).toLocaleString("pt")} kz
                   </CardTitle>
                   <CardDescription className="text-center lg:text-start">
-                    {" "}
                     {item?.total ?? 0} vendas
                   </CardDescription>
                 </Card>
@@ -330,7 +438,7 @@ export default function Payments() {
           </article>
 
           <div className="mb-4">
-            <Card className="rounded-sm bg-transparent  py-0">
+            <Card className="rounded-sm bg-transparent py-0">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -350,10 +458,7 @@ export default function Payments() {
                   {Array.isArray(filteredPayments) &&
                     filteredPayments.length > 0 &&
                     filteredPayments.map((payment: any, index: number) => {
-                      // converter a string JSON em objeto
                       const user = JSON.parse(payment.user);
-
-                      // pegar iniciais (apenas primeira letra do nome)
                       const initials = user.name
                         ? user.name
                             .split(" ")
@@ -368,7 +473,7 @@ export default function Payments() {
                           <TableCell>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <div className="flex  gap-2">
+                                <div className="flex gap-2">
                                   <Avatar>
                                     <AvatarFallback>{initials}</AvatarFallback>
                                   </Avatar>
@@ -451,7 +556,6 @@ export default function Payments() {
                           </TableCell>
                           {isAdmin && (
                             <TableCell className="w-50 space-x-3">
-                              {" "}
                               <Button
                                 className="lg:w-full w-20"
                                 onClick={async () => {
