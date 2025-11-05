@@ -195,6 +195,7 @@ model Payment {
   orderbumps String[]
   user Json
   products String[]
+  product Json?
   userid String
   paypayCode String? @unique
   createdAt  DateTime @default(now())

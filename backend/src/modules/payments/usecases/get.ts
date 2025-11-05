@@ -45,6 +45,7 @@ export default class PaymentGetter {
                 products: true,
                 user: true,
                 updatedAt: true,
+                product: true,
               },
             }),
             this.database.payment.count({
@@ -406,18 +407,17 @@ export default class PaymentGetter {
   }
   public async getPaymentStatus(paymentid: string) {
     try {
-
-      const [data  ] = await Promise.all([
+      const [data] = await Promise.all([
         this.database.payment.findFirst({
-        where: {
-          uuid: paymentid,
-        },
+          where: {
+            uuid: paymentid,
+          },
         }),
-      ])
+      ]);
       return {
-            ...data,
-            canMark : true
-          }
+        ...data,
+        canMark: true,
+      };
     } catch (error) {
       this.logger.log(error);
       return {
@@ -425,7 +425,11 @@ export default class PaymentGetter {
       };
     }
   }
-  public async getPaymentsByStatus(userid: string | undefined, page: number , status : Status) {
+  public async getPaymentsByStatus(
+    userid: string | undefined,
+    page: number,
+    status: Status,
+  ) {
     try {
       if (userid) {
         const isAvtive = await this.isActive.isActive(userid);
