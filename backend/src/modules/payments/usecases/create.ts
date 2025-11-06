@@ -51,7 +51,7 @@ export default class PaymentCreater {
         };
       }
 
-      if (!data?.cuponCode && !verification.status) {
+      if (!verification.status) {
         return {
           status: false,
           message: 'Preços não batem',
@@ -78,6 +78,7 @@ export default class PaymentCreater {
         userid: data.userid,
         productid: data.productId,
       });
+      console.log(data);
 
       if (!paymentResponse?.out_trade_no) {
         return { message: 'Erro ao efectuar pagamento' };
@@ -115,6 +116,7 @@ export default class PaymentCreater {
       return {
         message: 'Aguardando a autorização',
         ...this.formatResponse(data.method, paymentResponse, payment.uuid),
+        ammount: data.amount,
       };
     } catch (error) {
       this.logger.error(error?.message ?? 'Erro ao efectuar pagamento');
