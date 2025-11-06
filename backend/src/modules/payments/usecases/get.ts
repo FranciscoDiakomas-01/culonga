@@ -550,7 +550,7 @@ export default class PaymentGetter {
         });
 
         return {
-          total: totalPayments?._sum?.amount,
+          total: this.percent(totalPayments?._sum?.amount ?? 0),
           sales: totalPayments._count,
         };
       }
@@ -570,7 +570,7 @@ export default class PaymentGetter {
       });
 
       return {
-        total: this.percent(totalPayments?._sum?.amount ?? 0),
+        total: totalPayments?._sum?.amount,
         sales: totalPayments._count,
       };
     } catch (error) {

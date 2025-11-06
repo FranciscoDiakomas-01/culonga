@@ -383,7 +383,9 @@ export default function Payments() {
               <>
                 <Card className="p-2 rounded-sm gap-3 lg:text-start bg-transparent backdrop-blur-3xl font-bold">
                   <small className="text-blue-500 text-center lg:text-start">
-                    Total do Período
+                    {isAdmin
+                      ? "Facturamento da plataforma"
+                      : " Total do Período"}
                   </small>
                   <CardTitle className="text-2xl text-center lg:text-start">
                     {Number(filteredStats.total).toLocaleString("pt")} kz
