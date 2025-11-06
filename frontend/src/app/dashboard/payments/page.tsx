@@ -284,17 +284,14 @@ export default function Payments() {
                   </div>
 
                   {/* 🗓️ FILTRO POR DATA */}
-                  <div className="grid gap-3 mt-5 w-full">
+                  <div className="grid gap-3 mt-5 w-full z-60">
                     <p>Filtrar por período</p>
                     <div className="flex flex-col gap-3">
                       <Label htmlFor="date-start" className="px-1">
                         Data de início
                       </Label>
                       <Popover open={openStart} onOpenChange={setOpenStart}>
-                        <PopoverTrigger
-                          asChild
-                          className="w-full z-[9999999999999999999999999]"
-                        >
+                        <PopoverTrigger asChild className="w-full ">
                           <Button
                             variant="outline"
                             id="date-start"
@@ -309,6 +306,7 @@ export default function Payments() {
                         <PopoverContent
                           className="w-full overflow-hidden p-0"
                           align="start"
+                          style={{ zIndex: 9999 }}
                         >
                           <Calendar
                             mode="single"
@@ -325,10 +323,7 @@ export default function Payments() {
                         Data de fim
                       </Label>
                       <Popover open={openEnd} onOpenChange={setOpenEnd}>
-                        <PopoverTrigger
-                          asChild
-                          className="w-full z-[9999999999999999999999999]"
-                        >
+                        <PopoverTrigger asChild className="w-full ">
                           <Button
                             variant="outline"
                             id="date-end"
@@ -343,6 +338,7 @@ export default function Payments() {
                         <PopoverContent
                           className="w-full overflow-hidden p-0"
                           align="start"
+                          style={{ zIndex: 9999 }}
                         >
                           <Calendar
                             mode="single"
