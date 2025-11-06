@@ -102,7 +102,7 @@ export default function CouponsPage() {
       <section className="px-2 pt-5 place-self-center lg:w-[95%] w-full flex flex-col gap-6">
         {/* --- Cards de Estatísticas --- */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="p-4 border border-gray-200 shadow-sm">
+          <Card className="p-4 border shadow-sm">
             <CardHeader className="p-0 mb-2">
               <CardTitle className="text-sm text-gray-500">Total</CardTitle>
             </CardHeader>
@@ -111,7 +111,7 @@ export default function CouponsPage() {
             </CardContent>
           </Card>
 
-          <Card className="p-4 border border-green-200 shadow-sm">
+          <Card className="p-4 border shadow-sm">
             <CardHeader className="p-0 mb-2">
               <CardTitle className="text-sm text-green-600">Ativos</CardTitle>
             </CardHeader>
@@ -120,7 +120,7 @@ export default function CouponsPage() {
             </CardContent>
           </Card>
 
-          <Card className="p-4 border border-red-200 shadow-sm">
+          <Card className="p-4 border  shadow-sm">
             <CardHeader className="p-0 mb-2">
               <CardTitle className="text-sm text-red-600">Inativos</CardTitle>
             </CardHeader>
