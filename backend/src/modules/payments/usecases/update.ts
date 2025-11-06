@@ -41,6 +41,7 @@ export default class PaymentUpdate {
           productId: true,
           amount: true,
           uuid: true,
+          coupun: true,
           User: {
             select: {
               id: true,
@@ -199,7 +200,6 @@ export default class PaymentUpdate {
 </html>
 `,
             }),
-
             emailService.senEmail({
               to: Product.user.email,
               subject: '💰 Nova Venda Realizada - Culonga',
@@ -274,6 +274,26 @@ export default class PaymentUpdate {
               },
             }),
           ]);
+
+          try {
+            if (payment?.coupun) {
+              const couponData = JSON.parse(payment.coupun as any);
+              if (couponData?.id) {
+                const amount = Number(payment.amount) || 0;
+                await this.database.coupon.update({
+                  where: { id: couponData.id },
+                  data: {
+                    totalPurchased: { increment: amount },
+                  },
+                });
+              }
+            }
+          } catch (error) {
+            this.logger.error(
+              `Erro ao atualizar totalPurchased do cupom: ${error.message}`,
+            );
+          }
+
           return { message: 'Pagamento modificado' };
         }
         return {

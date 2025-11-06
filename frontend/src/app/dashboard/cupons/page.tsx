@@ -177,6 +177,8 @@ export default function CouponsPage() {
                       <TableHead>Desconto</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Criado em</TableHead>
+                      <TableHead>Vendas</TableHead>
+                      <TableHead>Facturado</TableHead>
                       <TableHead className="text-right">Ações</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -196,8 +198,13 @@ export default function CouponsPage() {
                             </span>
                           )}
                         </TableCell>
+
                         <TableCell>
                           {new Date(c.createdAt).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>{c.usedCount}</TableCell>
+                        <TableCell>
+                          {Number(c.totalPurchased).toLocaleString("pt")} kz
                         </TableCell>
                         <TableCell className="text-right space-x-2">
                           <Button

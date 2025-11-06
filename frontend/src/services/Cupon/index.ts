@@ -4,7 +4,7 @@ export interface CouponData {
   code: string;
   description?: string;
   discount: number;
-  minPurchase?: number;
+  totalPurchased?: number;
   maxUsage?: number;
 }
 
