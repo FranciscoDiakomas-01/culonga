@@ -479,8 +479,8 @@ export default function Payments() {
                   <TableRow>
                     <TableHead>ID</TableHead>
                     <TableHead>Cupom</TableHead>
+                    <TableHead>Desconto</TableHead>
                     <TableHead>Comprador</TableHead>
-                    <TableHead>Email</TableHead>
                     <TableHead>Método</TableHead>
                     <TableHead>Produto</TableHead>
                     <TableHead>Status</TableHead>
@@ -511,7 +511,7 @@ export default function Payments() {
                                 variant={"outline"}
                               >
                                 <TrendingUp size={15} />
-                                Cupom usado
+                               {cupon?.code}
                               </Badge>
                             ) : (
                               <Badge className="text-red-500 bg-red-500/10 border-red-500/10 flex space-x-2 items-center">
@@ -521,12 +521,15 @@ export default function Payments() {
                             )}
                           </TableCell>
 
-                          <TableCell className="flex flex-col gap-1">
-                            <h1>{user.name}</h1>
-                            <p>{user.email}</p>
-                            <p>{user.telefone}</p>
+                          <TableCell>
+                            <TableCell>{cupon?.discount ?? 0}%</TableCell>
                           </TableCell>
-                          <TableCell>{user.email}</TableCell>
+
+                          <TableCell className="flex flex-col gap-1">
+                            <h1 className="font-semibold">{user.name}</h1>
+                            <p>{user.email}</p>
+                            <small>{user.telefone}</small>
+                          </TableCell>
                           <TableCell>{payment.method}</TableCell>
                           <TableCell>
                             {(() => {
