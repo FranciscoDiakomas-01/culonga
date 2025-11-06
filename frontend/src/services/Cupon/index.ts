@@ -36,7 +36,7 @@ export default class CouponClient {
         headers: this.headers,
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Erro ao criar cupom");
+
       return await res.json();
     } catch (err: any) {
       console.error("Erro create:", err.message);
@@ -50,7 +50,6 @@ export default class CouponClient {
         method: "GET",
         headers: this.headers,
       });
-      if (!res.ok) throw new Error("Erro ao listar cupons");
       const data = await res.json();
       return data?.data ?? [];
     } catch (err: any) {
@@ -65,7 +64,6 @@ export default class CouponClient {
         method: "DELETE",
         headers: this.headers,
       });
-      if (!res.ok) throw new Error("Erro ao remover cupom");
       return true;
     } catch (err: any) {
       console.error("Erro remove:", err.message);
@@ -79,8 +77,7 @@ export default class CouponClient {
         method: "PATCH",
         headers: this.headers,
       });
-      if (!res.ok) throw new Error("Erro ao alternar status");
-      return true;
+      return await res.json();
     } catch (err: any) {
       console.error("Erro toggle:", err.message);
       return false;

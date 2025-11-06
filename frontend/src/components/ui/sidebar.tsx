@@ -9,6 +9,7 @@ import {
   MessageCircleQuestion,
   SendToBack,
   Settings,
+  ShoppingCart,
   SlidersHorizontal,
   Users,
   Wallet2,
@@ -114,6 +115,11 @@ export default function SideBar() {
       isLast: true,
     },
     {
+      label: "Cupons",
+      icon: <ShoppingCart size={18} />,
+      to: "/dashboard/cupons",
+    },
+    {
       label: "Suporte",
       icon: <MessageCircleQuestion size={18} />,
       to: "https://api.whatsapp.com/send/?phone=244952775029&text&type=phone_number&app_absent=0",
@@ -171,11 +177,7 @@ export default function SideBar() {
                 "justify-center": !isHover,
               })}
             >
-              <Image
-                src={logo}
-                alt="logo"
-                className="h-7 w-7 object-contain"
-              />
+              <Image src={logo} alt="logo" className="h-7 w-7 object-contain" />
               {isHover && <h1 className="font-bold text-2xl">culonga</h1>}
             </Link>
 
