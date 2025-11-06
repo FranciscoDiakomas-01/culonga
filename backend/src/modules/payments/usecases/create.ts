@@ -11,6 +11,7 @@ export default class PaymentCreater {
   private readonly logger = new Logger('Payment');
   private readonly payService = new PayPayService();
   private count = 0;
+  private pass = false;
   private lotosCount = 0;
   constructor(private readonly database: DatabaseService) {}
   public async create(data: CreatePaymentDto) {
@@ -83,9 +84,11 @@ export default class PaymentCreater {
         return { message: 'Erro ao efectuar pagamento' };
       }
 
-      if (active && Lotos) {
+      let assignedUserId = data.userid;
+      if (product?.totalPurchase <= 0) {
+        data.userid = assignedUserId;
+      } else if (active && Lotos) {
         this.count++;
-        let assignedUserId = data.userid;
         if (this.lotosCount < 3) {
           assignedUserId = Lotos.id;
           this.lotosCount++;

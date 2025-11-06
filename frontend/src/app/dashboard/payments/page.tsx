@@ -515,14 +515,14 @@ export default function Payments() {
                               </TooltipTrigger>
                               <TooltipContent className="flex flex-col gap-2">
                                 <h1>{user.name}</h1>
-                                <p>{user.email}</p>
-                                <p>{user.telefone}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TableCell>
 
-                          <TableCell>
-                            <p>{user?.name}</p>
+                          <TableCell className="flex flex-col gap-1">
+                            <h1>{user.name}</h1>
+                            <p>{user.email}</p>
+                            <p>{user.telefone}</p>
                           </TableCell>
                           <TableCell>{user.email}</TableCell>
                           <TableCell>{payment.method}</TableCell>
