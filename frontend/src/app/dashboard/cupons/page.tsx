@@ -15,20 +15,28 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import DashBoardHeader from "@/components/ui/headerDashboard";
+import { useRouter } from "next/navigation";
 
 export default function CouponsPage() {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const [newCoupon, setNewCoupon] = useState({
     code: "",
     discount: 0,
   });
 
-  const token = "seu_token_aqui"; // ou pegue do contexto/auth
-  const client = new CouponClient(token);
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      router.push("/");
+      localStorage.clear();
+    }
+  }, [router]);
 
   const loadCoupons = async () => {
+    const client = new CouponClient(localStorage.getItem("token") as string);
     setLoading(true);
+
     const list = await client.list();
     if (list) setCoupons(list);
     setLoading(false);
@@ -39,6 +47,9 @@ export default function CouponsPage() {
       toast.error("Preencha todos os campos");
       return;
     }
+
+    const client = new CouponClient(localStorage.getItem("token") as string);
+
     const created = await client.create(newCoupon);
     if (created) {
       toast.success("Cupom criado!");
@@ -51,6 +62,7 @@ export default function CouponsPage() {
 
   const handleRemove = async (id: string) => {
     if (confirm("Tem certeza que deseja excluir este cupom?")) {
+      const client = new CouponClient(localStorage.getItem("token") as string);
       const ok = await client.remove(id);
       if (ok) {
         toast.success("Removido com sucesso");
@@ -60,6 +72,7 @@ export default function CouponsPage() {
   };
 
   const handleToggle = async (id: string) => {
+    const client = new CouponClient(localStorage.getItem("token") as string);
     const ok = await client.toggle(id);
     if (ok) {
       toast.success("Status alterado!");
