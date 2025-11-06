@@ -542,7 +542,7 @@ export default class PaymentGetter {
         _count: true,
       });
       return {
-        total: totalPayments?._sum,
+        total: totalPayments?._sum?.amount,
         sales: totalPayments._count,
       };
     } catch (error) {
