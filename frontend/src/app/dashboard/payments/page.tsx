@@ -87,7 +87,6 @@ export default function Payments() {
   });
   const router = useRouter();
 
-  // 🗓️ ESTADOS PARA FILTRO DE DATA
   const [dateStart, setDateStart] = useState<Date | undefined>(undefined);
   const [dateEnd, setDateEnd] = useState<Date | undefined>(undefined);
   const [openStart, setOpenStart] = useState(false);
@@ -125,7 +124,7 @@ export default function Payments() {
     get(token);
     const interval = setInterval(() => {
       get(token);
-    }, 3000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);

@@ -104,8 +104,7 @@ export default function UsersTable() {
         if (data?.data) {
           setUsers(data.data);
           setLasPage(data.lastpage || 0);
-          // Corrigindo o problema do stats undefined
-          setstats(data.stats || []); // Fallback para array vazio
+          setstats(data.stats || []);
         } else {
           setUsers([]);
           setstats([]);

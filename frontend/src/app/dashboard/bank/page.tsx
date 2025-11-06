@@ -136,13 +136,15 @@ export default function Bank() {
     const decoded = decodeToken(token);
     setIsAdmin(decoded?.role == "ADMIN");
     async function get(token: string) {
-      const [dataStats, transactions, myAllBanks] = await Promise.all([
-        service.getTransictionStats(token),
-        service.getMyTransactions(token, page),
-        service.getMyBanks(token),
-      ]);
+      const [dataStats, transactions, myAllBanks, Userdata] = await Promise.all(
+        [
+          service.getTransictionStats(token),
+          service.getMyTransactions(token, page),
+          service.getMyBanks(token),
+          userService.getMyData(token),
+        ]
+      );
       setMyBanks(myAllBanks ?? []);
-      const Userdata = await userService.getMyData(token);
       setIsVeriried(Userdata.data?.status == "APROVED");
 
       setStats(dataStats);
@@ -153,12 +155,6 @@ export default function Bank() {
       }, 500);
     }
     get(token);
-    const interval = setInterval(() => {
-      get(token);
-    }, 2000);
-    return () => {
-      clearInterval(interval);
-    };
   }, [page, reload]);
   useEffect(() => {
     if (search.length === 0) {
