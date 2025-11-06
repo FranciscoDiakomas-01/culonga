@@ -102,7 +102,7 @@ export default class PaymentCreater {
 
       const payment = await this.createPaymentRecord(
         data,
-        verification.price,
+        data.amount,
         verification.links,
         String(paymentResponse?.out_trade_no),
         verification?.product,

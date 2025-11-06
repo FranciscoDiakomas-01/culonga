@@ -416,7 +416,9 @@ export default function Chekout() {
                       }}
                     >
                       <h1 className="text-3xl font-bold">
-                        {total.toLocaleString("pt")}kz
+                        <h1 className="text-3xl font-bold">
+                          {Number(ammount).toLocaleString("pt")} kz
+                        </h1>
                       </h1>
                       <small className="text-sm">Valor a pagar</small>
                     </span>
@@ -480,9 +482,6 @@ export default function Chekout() {
                         <CheckCircle2 className="text-green-500" />
                       </div>
                       <DialogTitle>{message}</DialogTitle>
-                      <h1 className="text-center font-bold text-2xl">
-                        {Number(ammount).toLocaleString("pt")} kz
-                      </h1>
                       <DialogDescription>
                         {message == "Pagamento efectuado com sucesso" &&
                           `Acesso liberado, verique o seu email para receberes o seu produto"`}
@@ -498,7 +497,7 @@ export default function Chekout() {
                       }}
                     >
                       <h1 className="text-3xl font-bold">
-                        {Number(total - total * 0.05).toLocaleString("pt")}kz
+                        {Number(ammount).toLocaleString("pt")} kz
                       </h1>
                       <small className="text-sm">Valor a pagar</small>
                     </span>
