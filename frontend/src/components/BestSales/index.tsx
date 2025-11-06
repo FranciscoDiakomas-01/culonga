@@ -148,8 +148,8 @@ export function BestSales() {
         <ChartContainer config={chartConfig}>
           <BarChart
             accessibilityLayer
-            height={300}
-            className="h-300"
+            height={100}
+            className="h-100"
             data={chartData}
           >
             <CartesianGrid vertical={false} />
