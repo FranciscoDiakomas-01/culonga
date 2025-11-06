@@ -155,6 +155,7 @@ export default class PaymentCreater {
         userid: data.userid,
         paypayCode: code,
         product: JSON.stringify(product),
+        coupun: JSON.stringify(cupon ?? {}),
       },
       select: {
         uuid: true,
