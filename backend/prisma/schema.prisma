@@ -56,6 +56,8 @@ model Users {
   totalEarned Int  @default(0)
   totalTranfered Int @default(0)
   totatReciev Int @default(0)
+  totalAfiliations Int @default(0)
+  totalAfiliates Int @default(0)
   withdrawnAmount Int @default(0)
   availableBalance Int  @default(0)
   products     Products[]
@@ -69,6 +71,7 @@ model Users {
   sentTransfers    Transfer[]        @relation("UserFrom")
   receivedTransfers Transfer[]       @relation("UserTo")
   Coupons Coupon[]
+  Afiliates Afiliates[]
 }
 
 model Transfer {
@@ -161,19 +164,35 @@ model Products {
   pixelId    String?
   category   String?
   type       String
+  totalAfiliates Int @default(0)
+  totalPurchasedAfiliates Int @default(0)
   payment    Int[]
-
+  percentShare Int @default(0)
   totalPurchase Int @default(0)
   offers     Offer[]
   backredirect String?
   status     Status     @default(APROVED)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @default(now()) @updatedAt
-
   user       Users      @relation(fields: [userId], references: [id])
+  Afiliates Afiliates[]
   checkout   ProductCheckout?
 }
 
+
+model Afiliates {
+  id Int @id @default(autoincrement())
+  userId String
+  totalSells Int @default(0)
+  totalPurchases Int @default(0)
+  productId String
+  link String
+  status Boolean @default(true)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now()) @updatedAt
+  product Products @relation( fields: [productId] , references: [id], onDelete:  Cascade)
+  user Users @relation(fields: [userId] , references: [ id] , onDelete: Cascade)
+}
 
 model ProductCheckout {
   id         String            @default(uuid()) @id

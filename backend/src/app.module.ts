@@ -22,6 +22,7 @@ import { BankModule } from './modules/bank/bank.module';
 import { TransferModule } from './modules/transfer/transfer.module';
 import { CorsMiddleware } from './middlewares/cors.middleware';
 import { CoupunsModule } from './modules/coupuns/coupuns.module';
+import { AffiliatesModule } from './modules/affiliates/affiliates.module';
 @Module({
   imports: [
     UsersModule,
@@ -57,6 +58,7 @@ import { CoupunsModule } from './modules/coupuns/coupuns.module';
     BankModule,
     TransferModule,
     CoupunsModule,
+    AffiliatesModule,
   ],
   providers: [DatabaseService, TasksService],
 })

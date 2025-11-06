@@ -69,17 +69,6 @@ export function BestSales() {
       setLoad(false);
       return;
     }
-
-    const decoded = decodeToken(token);
-    const userIsAdmin = decoded?.role === "ADMIN";
-    setIsAdmin(userIsAdmin);
-
-    // Se for admin, não carrega os dados
-    if (userIsAdmin) {
-      setLoad(false);
-      return;
-    }
-
     async function get(token: string) {
       try {
         const data1 = await service.get(token, 1);
