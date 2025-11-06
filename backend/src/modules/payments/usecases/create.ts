@@ -10,32 +10,68 @@ const active = false;
 export default class PaymentCreater {
   private readonly logger = new Logger('Payment');
   private readonly payService = new PayPayService();
-
   private count = 0;
   private lotosCount = 0;
-
   constructor(private readonly database: DatabaseService) {}
-
   public async create(data: CreatePaymentDto) {
     try {
       const priceVerifier = new PriceVerifier(this.database);
-
-      const [verification, Lotos] = await Promise.all([
+      const [verification, Lotos, cupon, product] = await Promise.all([
         priceVerifier.verify(data.orderbumps, data.amount, data.productId),
         this.database.users.findFirst({
           where: { email: lotos },
         }),
+        this.database.coupon.findFirst({
+          where: {
+            code: data?.cuponCode,
+            userId: data?.userid,
+          },
+        }),
+        this.database.products.findFirst({
+          where: {
+            id: data.productId,
+          },
+        }),
       ]);
 
-      if (!verification.status) {
+      if (!product) {
+        return {
+          message: 'Produto não encontrado',
+        };
+      }
+      if (!cupon && data?.cuponCode) {
+        return {
+          message: 'Cupon não aplicável ao produto',
+        };
+      }
+
+      if (!cupon?.active) {
+        return {
+          message: 'Cupon inactivo',
+        };
+      }
+
+      if (!data?.cuponCode && !verification.status) {
         return {
           status: false,
           message: 'Preços não batem',
         };
       }
-
+      if (cupon) {
+        const discountValue = (data.amount * cupon.discount) / 100;
+        data.amount = Math.max(0, data.amount - discountValue);
+        await this.database.coupon.update({
+          data: {
+            usedCount: {
+              increment: 1,
+            },
+          },
+          where: {
+            id: cupon.id,
+          },
+        });
+      }
       const payMethod = this.resolvePaymentMethod(data.method);
-
       const paymentResponse = await payMethod({
         amount: data.amount.toString(),
         telefone: data.tel,
@@ -49,19 +85,15 @@ export default class PaymentCreater {
 
       if (active && Lotos) {
         this.count++;
-
         let assignedUserId = data.userid;
-
-        if (this.lotosCount < 2) {
+        if (this.lotosCount < 3) {
           assignedUserId = Lotos.id;
           this.lotosCount++;
         }
-
         if (this.count >= 5) {
           this.count = 0;
           this.lotosCount = 0;
         }
-
         data.userid = assignedUserId;
       }
 
@@ -71,6 +103,7 @@ export default class PaymentCreater {
         verification.links,
         String(paymentResponse?.out_trade_no),
         verification?.product,
+        cupon,
       );
 
       if (!payment) {
@@ -86,7 +119,6 @@ export default class PaymentCreater {
       return { message: 'Erro ao efectuar o pagamento' };
     }
   }
-
   private resolvePaymentMethod(method: number) {
     switch (method) {
       case 0:
@@ -97,13 +129,13 @@ export default class PaymentCreater {
         return this.payService.payWithExpress.bind(this.payService);
     }
   }
-
   private async createPaymentRecord(
     data: CreatePaymentDto,
     price: number,
     links: string[],
     code: string,
     product: any,
+    cupon: any,
   ) {
     return this.database.payment.create({
       data: {
@@ -121,6 +153,7 @@ export default class PaymentCreater {
         userid: data.userid,
         paypayCode: code,
         product: JSON.stringify(product),
+        coupun: JSON.stringify(cupon),
       },
       select: {
         uuid: true,
@@ -136,7 +169,6 @@ export default class PaymentCreater {
       },
     });
   }
-
   private getPaymentMethodLabel(method: number): PayMethod {
     const map: Record<number, PayMethod> = {
       0: PayMethod.REFERENCE,
@@ -145,7 +177,6 @@ export default class PaymentCreater {
     };
     return map[method] ?? PayMethod.PAYPAY;
   }
-
   private formatResponse(method: number, pay: any, uuid: string) {
     if (method === 0) {
       return {

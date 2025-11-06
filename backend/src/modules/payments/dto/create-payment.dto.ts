@@ -4,6 +4,7 @@ import {
   IsIn,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsPhoneNumber,
   IsString,
   IsUUID,
@@ -45,4 +46,8 @@ export class CreatePaymentDto {
   @IsNotEmpty({ message: 'Id do proprietário inválido inválido' })
   @IsUUID(undefined, { message: 'Id do proprietário inválido inválido' })
   userid: string;
+
+  @IsString({ message: 'Cupon inválido' })
+  @IsOptional({ message: 'Cupon inválido' })
+  cuponCode?: string;
 }

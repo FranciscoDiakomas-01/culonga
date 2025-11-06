@@ -119,6 +119,7 @@ export default class PaymentService {
     productId: string;
     userid: string;
     tel: string;
+    cuponCode: string | undefined;
   }) {
     try {
       const res = await fetch(`${server}payments`, {
@@ -313,7 +314,7 @@ export default class PaymentService {
       return {
         total: data?.total ?? 0,
         sales: data?.sales ?? 0,
-        message: data?.message 
+        message: data?.message,
       } as dataReturnType;
     } catch (error: any) {
       return {

@@ -12,6 +12,8 @@ import {
   Mail,
   PartyPopper,
   Phone,
+  ShoppingBag,
+  ShoppingCart,
   User,
   Verified,
   Zap,
@@ -246,6 +248,7 @@ export default function Chekout() {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const name = data.get("name") as string;
+    const cupon = data.get("cupon") as string | undefined;
     const email = data.get("email") as string;
     const method = activePayment == 2 ? 0 : activePayment == 33 ? 2 : 1;
     const tel = data.get("tel") as string;
@@ -273,6 +276,7 @@ export default function Chekout() {
       productId: product.type == "Offer" ? product.productId : product.id,
       userid: product.userId,
       tel,
+      cupon,
     };
 
     if (pixelId) {
@@ -306,6 +310,7 @@ export default function Chekout() {
       name,
       orderbumps,
       tel: body.tel,
+      cuponCode: body.cupon,
     });
 
     if (method == 0 && res.reference && res.entity && res.id) {
@@ -624,6 +629,16 @@ export default function Chekout() {
                           name="email"
                           id="email"
                           required
+                        />
+                      </div>
+                      <div className="flex items-center border rounded-lg px-3 py-2 bg-gray-50">
+                        <ShoppingCart className="w-5 h-5  mr-2" />
+                        <input
+                          type="text"
+                          placeholder="Cupon"
+                          className="flex-1 bg-transparent outline-none"
+                          name="cupon"
+                          id="cupon"
                         />
                       </div>
                     </div>

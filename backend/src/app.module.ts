@@ -21,6 +21,7 @@ import { TasksService } from './services/tasks/cron.service';
 import { BankModule } from './modules/bank/bank.module';
 import { TransferModule } from './modules/transfer/transfer.module';
 import { CorsMiddleware } from './middlewares/cors.middleware';
+import { CoupunsModule } from './modules/coupuns/coupuns.module';
 @Module({
   imports: [
     UsersModule,
@@ -55,6 +56,7 @@ import { CorsMiddleware } from './middlewares/cors.middleware';
     ScheduleModule.forRoot({}),
     BankModule,
     TransferModule,
+    CoupunsModule,
   ],
   providers: [DatabaseService, TasksService],
 })

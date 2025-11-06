@@ -68,6 +68,7 @@ model Users {
   Bank Bank[]
   sentTransfers    Transfer[]        @relation("UserFrom")
   receivedTransfers Transfer[]       @relation("UserTo")
+  Coupons Coupon[]
 }
 
 model Transfer {
@@ -194,10 +195,12 @@ model Payment {
   status Status @default(PENDING)
   amount Int
   productId String
+  description String?
   orderbumps String[]
   user Json
   products String[]
   product Json?
+  coupun Json?
   userid String
   paypayCode String? @unique
   createdAt  DateTime @default(now())
@@ -225,4 +228,18 @@ model Integration  {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now()) @updatedAt
   user Users @relation(fields: [userid] , references: [id] , onDelete:  Cascade)
+}
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  description String?
+  discount    Int
+  usedCount   Int      @default(0)
+  totalPurchased Int @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  active      Boolean  @default(true)
+  userId String
+  User Users @relation(fields: [userId] , references: [id] , onDelete: Cascade)
 }
