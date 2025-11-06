@@ -208,6 +208,7 @@ export default class ProductGetter {
             },
             orderBy: {
               createdAt: 'desc',
+              totalPurchase: 'desc',
             },
           }),
           this.database.products.count({
@@ -264,6 +265,7 @@ export default class ProductGetter {
         skip: (page - 1) * limit,
         orderBy: {
           createdAt: 'desc',
+          totalPurchase: 'desc',
         },
       }),
       this.database.products.count({}),
@@ -527,7 +529,5 @@ export default class ProductGetter {
       };
     }
   }
-  public async getSpeficStats() {
-    
-  }
+  public async getSpeficStats() {}
 }
