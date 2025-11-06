@@ -523,6 +523,18 @@ export default class PaymentGetter {
     try {
       const date1 = new Date(from);
       const dat2 = new Date(to);
+
+      if (date1 == dat2) {
+        return {
+          message: 'Datas não podem ser iguais',
+        };
+      }
+
+      if (dat2 < date1) {
+        return {
+          message: 'Data final não pode ser menor',
+        };
+      }
       const user = await this.database.users.findFirst({
         where: {
           id: userid,
