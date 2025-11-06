@@ -321,6 +321,25 @@ export class PaymentsService {
           },
         }),
       ]);
+
+      try {
+        if (payment?.coupun) {
+          const couponData = JSON.parse(payment.coupun as any);
+          if (couponData?.id) {
+            const amount = Number(payment.amount) || 0;
+            await this.database.coupon.update({
+              where: { id: couponData.id },
+              data: {
+                totalPurchased: { increment: amount },
+              },
+            });
+          }
+        }
+      } catch (error) {
+        console.error(
+          `Erro ao atualizar totalPurchased do cupom: ${error.message}`,
+        );
+      }
     }
     return { message: 'Pagamento modificado', product: Product, canMark: true };
   }
