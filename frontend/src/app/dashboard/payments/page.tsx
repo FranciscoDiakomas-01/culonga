@@ -248,7 +248,7 @@ export default function Payments() {
         <section className="px-2 pt-5 place-self-center lg:w-[95%] w-full flex flex-col gap-6">
           <h1 className="text-xl">Minhas vendas</h1>
           <span className="place-self-end flex  gap-4 items-center">
-            <Sheet>
+            <Sheet modal={false}>
               <Button asChild variant={"outline"}>
                 <SheetTrigger>
                   <SlidersHorizontal className="text-orange-500" />
@@ -338,7 +338,7 @@ export default function Payments() {
                         <PopoverContent
                           className="w-full overflow-hidden p-0"
                           align="start"
-                          style={{ zIndex: 9999 }}
+                          style={{ zIndex: 1000 }}
                         >
                           <Calendar
                             mode="single"
