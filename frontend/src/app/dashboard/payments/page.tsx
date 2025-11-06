@@ -131,27 +131,27 @@ export default function Payments() {
   }, [page]);
 
   useEffect(() => {
-    if (filter === "ALL") {
-      // Se há filtro de data, aplica apenas o filtro de data
-      if (filteredStats) {
-        aplicarFiltroData(Payments);
-      } else {
-        setFilteredPayments(Payments);
-      }
-      return;
+    aplicarFiltros();
+  }, [filter, Payments, filteredStats, dateStart, dateEnd]);
+
+  // 🔥 FUNÇÃO ÚNICA PARA APLICAR TODOS OS FILTROS
+  const aplicarFiltros = () => {
+    let resultado = [...Payments];
+
+    // 🔥 APLICA FILTRO DE DATA SE ESTIVER ATIVO
+    if (filteredStats && dateStart && dateEnd) {
+      resultado = aplicarFiltroData(resultado);
     }
 
-    let newList = Payments.filter((item) => {
-      return item.status.toUpperCase() === filter.toUpperCase();
-    });
-
-    // Se há filtro de data, aplica também o filtro de data
-    if (filteredStats) {
-      newList = aplicarFiltroData(newList);
+    // 🔥 APLICA FILTRO DE STATUS SE NÃO FOR "ALL"
+    if (filter !== "ALL") {
+      resultado = resultado.filter((item) => {
+        return item.status.toUpperCase() === filter.toUpperCase();
+      });
     }
 
-    setFilteredPayments(newList);
-  }, [filter, Payments, filteredStats]);
+    setFilteredPayments(resultado);
+  };
 
   const aplicarFiltroData = (paymentsList: any[]) => {
     if (!dateStart || !dateEnd) return paymentsList;
@@ -198,27 +198,24 @@ export default function Payments() {
     const periodo = `${dateStart.toLocaleDateString(
       "pt-AO"
     )} - ${dateEnd.toLocaleDateString("pt-AO")}`;
-    const paymentsFiltradas = aplicarFiltroData(Payments);
+
+    // 🔥 BUSCA DADOS DO BACKEND PARA AS ESTATÍSTICAS
     const data = await service.getByInterval(
       token,
       dateStart.toISOString(),
       dateEnd.toISOString()
     );
-    console.log(data)
+
+    console.log(data);
+
+    // 🔥 ATIVA O FILTRO DE DATA
     setFilteredStats({
       periodo,
       sales: data?.sales ?? 0,
       total: data?.total ?? 0,
     });
-    if (filter !== "ALL") {
-      const filteredByStatus = paymentsFiltradas.filter((item) => {
-        return item.status.toUpperCase() === filter.toUpperCase();
-      });
-      setFilteredPayments(filteredByStatus);
-    } else {
-      setFilteredPayments(paymentsFiltradas);
-    }
 
+    // 🔥 OS FILTROS SERÃO APLICADOS AUTOMATICAMENTE NO useEffect
     toast.success(`Filtrado: ${periodo}`);
   };
 
@@ -456,6 +453,24 @@ export default function Payments() {
               ))}
           </article>
 
+          {/* 🔥 INDICADOR VISUAL QUANDO FILTRO ESTÁ ATIVO */}
+          {filteredStats && (
+            <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 text-center">
+              <p className="text-orange-700 text-sm">
+                📅 Mostrando vendas do período:{" "}
+                <strong>{filteredStats.periodo}</strong>{" "}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={limparFiltroData}
+                  className="text-orange-600 hover:text-orange-800"
+                >
+                  (Limpar filtro)
+                </Button>
+              </p>
+            </div>
+          )}
+
           <div className="mb-4">
             <Card className="rounded-sm bg-transparent py-0">
               <Table>
@@ -475,7 +490,7 @@ export default function Payments() {
                 </TableHeader>
                 <TableBody>
                   {Array.isArray(filteredPayments) &&
-                    filteredPayments.length > 0 &&
+                  filteredPayments.length > 0 ? (
                     filteredPayments.map((payment: any, index: number) => {
                       const user = JSON.parse(payment.user);
                       const initials = user.name
@@ -608,7 +623,32 @@ export default function Payments() {
                           )}
                         </TableRow>
                       );
-                    })}
+                    })
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={isAdmin ? 10 : 9}
+                        className="text-center py-8"
+                      >
+                        <div className="flex flex-col items-center gap-2">
+                          <Search className="h-8 w-8 text-gray-400" />
+                          <p className="text-gray-500">
+                            {filteredStats
+                              ? "Nenhuma venda encontrada no período selecionado."
+                              : "Nenhuma venda encontrada."}
+                          </p>
+                          {filteredStats && (
+                            <Button
+                              variant="outline"
+                              onClick={limparFiltroData}
+                            >
+                              Limpar filtro de data
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </Card>

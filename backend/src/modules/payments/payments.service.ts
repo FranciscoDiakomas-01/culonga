@@ -215,7 +215,7 @@ export class PaymentsService {
         <p><strong>Produto:</strong> ${Product?.title}</p>
 
       <p>
-       <strong>Suporte do vendedor</strong> ${Product?.whatsappSuport ? Product?.whatsappSuport : Product?.user?.telefone}
+       <strong>Suporte do vendedor</strong> ${Product?.whatsappSuport}
         </p>
 
         <p>Você pode acessar seu material clicando no botão abaixo:</p>
