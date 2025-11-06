@@ -49,10 +49,8 @@ export function BestSales() {
   const [myProducts, setMyProducts] = useState<IProduct[]>([]);
   const service = new ProductConsumer();
 
-  // Transforma os produtos em dados para o gráfico
   const chartData = myProducts
-    .filter((product) => product.totalPurchase > 0) // Apenas produtos com vendas
-    .slice(0, 6) // Limita a 6 produtos para o gráfico
+    .slice(0, 10)
     .map((product, index) => ({
       product:
         product.title.length > 15
