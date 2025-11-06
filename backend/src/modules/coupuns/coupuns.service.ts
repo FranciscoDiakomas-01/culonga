@@ -6,7 +6,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateCouponDto } from './dto/create-coupun.dto';
-import { UpdateCoupunDto } from './dto/update-coupun.dto';
 import DatabaseService from 'src/services/database/database.service';
 
 @Injectable()
