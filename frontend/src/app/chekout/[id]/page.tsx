@@ -397,10 +397,6 @@ export default function Chekout() {
                         <CheckCircle2 className="text-green-500" />
                       </div>
                       <DialogTitle>{message}</DialogTitle>
-
-                      <h1 className="text-center font-bold text-2xl">
-                        {Number(ammount).toLocaleString("pt")} kz
-                      </h1>
                       <DialogDescription className="text-center">
                         {message == "Pagamento efectuado com sucesso" &&
                           `Acesso liberado, verique o seu email para receberes o seu produto"`}
