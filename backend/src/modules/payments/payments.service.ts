@@ -103,18 +103,6 @@ export class PaymentsService {
     if (!Product || !Product?.user) {
       return;
     }
-    console.log(Product?.user);
-
-    if (Product && Product?.price != payment.amount) {
-      await this.database.payment.update({
-        data: { status: 'CANCELED' },
-        where: { uuid: payment.uuid },
-      });
-      throw new BadRequestException({
-        message: 'O cliente não pagou o valor esperado ',
-        description: `Valor do Produto ${Product.price?.toLocaleString('pt')} kz , valor pago pelo cliente ${payment.amount.toLocaleString('pt')} kz`,
-      });
-    }
     const mappedStatus: Status = data.status == '1' ? 'APROVED' : 'CANCELED';
     await this.database.payment.update({
       data: { status: mappedStatus },
@@ -341,7 +329,7 @@ export class PaymentsService {
         );
       }
     }
-    return { message: 'Pagamento modificado', product: Product, canMark: true };
+    return { message: 'Pagamento modificado', product: Product, canMark };
   }
 
   private percent(montante: number): number {
