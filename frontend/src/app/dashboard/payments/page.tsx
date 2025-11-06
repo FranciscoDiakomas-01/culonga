@@ -164,29 +164,28 @@ export default function Payments() {
   };
 
   // 🎯 FUNÇÃO PARA FILTRAR POR DATA
-  const handleDateFilter = () => {
+  const handleDateFilter = async () => {
     if (!dateStart || !dateEnd) {
       toast.error("Selecione ambas as datas");
       return;
     }
 
-    const paymentsFiltradas = aplicarFiltroData(Payments);
-    const total = paymentsFiltradas.reduce(
-      (sum, payment) => sum + payment.amount,
-      0
-    );
-    const sales = paymentsFiltradas.length;
+    const token = localStorage.getItem("token") as string;
     const periodo = `${dateStart.toLocaleDateString(
       "pt-AO"
     )} - ${dateEnd.toLocaleDateString("pt-AO")}`;
-
+    const paymentsFiltradas = aplicarFiltroData(Payments);
+    const data = await service.getByInterval(
+      token,
+      dateStart.toISOString(),
+      dateEnd.toISOString()
+    );
     setFilteredStats({
-      total,
-      sales,
       periodo,
+      sales: data?.sales ?? 0,
+      total: data?.total ?? 0,
     });
-
-    // Aplica também filtro de status se houver
+    toast.info(data?.message);
     if (filter !== "ALL") {
       const filteredByStatus = paymentsFiltradas.filter((item) => {
         return item.status.toUpperCase() === filter.toUpperCase();

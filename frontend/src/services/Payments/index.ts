@@ -295,4 +295,32 @@ export default class PaymentService {
       };
     }
   }
+
+  public async getByInterval(token: string, from: string, to: string) {
+    try {
+      interface dataReturnType {
+        total: number;
+        message: string;
+        sales: number;
+      }
+      const res = await fetch(`${server}payments/interval/${from}/${to}`, {
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+        },
+      });
+      const data = (await res.json()) as dataReturnType;
+      return {
+        total: data?.total ?? 0,
+        sales: data?.sales ?? 0,
+        message: data?.message ?? "Admininstrador não pode consultar",
+      } as dataReturnType;
+    } catch (error: any) {
+      return {
+        total: 0,
+        sales: 0,
+        message: error?.message,
+      };
+    }
+  }
 }
