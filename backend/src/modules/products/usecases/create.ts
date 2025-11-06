@@ -14,11 +14,27 @@ export default class ProductSetter {
     try {
       const uuid = crypto.randomUUID();
       const isAcive = await this.isActiveUser.isActive(data.userId);
-      const user = await this.database.users.findFirst({
-        where: {
-          id: data.userId,
-        },
-      });
+      const [user, isAProduct] = await Promise.all([
+        this.database.users.findFirst({
+          where: {
+            id: data.userId,
+          },
+        }),
+        this.database.products.findFirst({
+          where: {
+            title: {
+              mode: 'insensitive',
+              equals: data.title,
+            },
+          },
+        }),
+      ]);
+
+      if (isAProduct) {
+        return {
+          message: 'Produto existente , tente outro nome',
+        };
+      }
       if (!isAcive || !user) {
         return {
           message: 'A sua conta esta suspensa',
@@ -37,11 +53,11 @@ export default class ProductSetter {
           backredirect: '',
           garant: 7,
           userId: data.userId,
-          payment: [1,2, 33],
+          payment: [1, 2, 33],
           orderbumps: [],
           upsell: '',
           status: 'PENDING',
-          whatsappSuport: "",
+          whatsappSuport: '',
         },
       });
       const [checkout] = await Promise.all([
@@ -83,8 +99,7 @@ export default class ProductSetter {
           title: data.title,
           price: data.price,
           productId: data.productId,
-          link:
-            process.env.CHEKOUTLINK + id,
+          link: process.env.CHEKOUTLINK + id,
         },
       });
       if (Offer) {
