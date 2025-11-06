@@ -111,7 +111,6 @@ export default function Products() {
   const [filtredProducts, setFiltredProducts] = useState<IProduct[]>([]);
 
   const [isAdmin, setIsAdmin] = useState(false);
-  // Buscar dados da API (só aqui)
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -121,11 +120,14 @@ export default function Products() {
     const decoded = decodeToken(token);
     setIsAdmin(decoded?.role === "ADMIN");
     async function get(token: string) {
-      const data = (await service.getPoductStat(token)) as any;
+      const [data1, data] = await Promise.all([
+        service.get(token, page),
+        service.getPoductStat(token) as any,
+      ]);
+
       if (!data?.message) {
         setStats(data);
       }
-      const data1 = await service.get(token, page);
       setLastPage(data1.lastPage);
       setMyProducts(data1.products);
       setFiltredProducts(data1.products);

@@ -13,7 +13,6 @@ import {
   endOfYear,
 } from 'date-fns';
 import { Status } from 'generated/prisma';
-import lotos from 'src/constants/lotos';
 
 export default class PaymentGetter {
   private readonly logger = new Logger('Payment');

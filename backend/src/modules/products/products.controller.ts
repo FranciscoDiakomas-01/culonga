@@ -119,10 +119,10 @@ export class ProductsController {
     @Headers('role') role: string,
     @Query('page') page: number = 1,
   ) {
-    const data = await this.productsService.getAllProduct(
-      role?.toUpperCase() != 'ADMIN' ? userid : undefined,
-      page,
-    );
+    if (role?.toUpperCase() != 'ADMIN') {
+      return await this.productsService.getAllProduct(userid, page);
+    }
+    const data = await this.productsService.getAllProduct(undefined, page);
     return data;
   }
   @Get(':id')
