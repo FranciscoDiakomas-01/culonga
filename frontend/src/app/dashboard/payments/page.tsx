@@ -36,6 +36,8 @@ import {
   Search,
   ShieldX,
   SlidersHorizontal,
+  TrendingDown,
+  TrendingUp,
 } from "lucide-react";
 import {
   Sheet,
@@ -477,8 +479,8 @@ export default function Payments() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>ID</TableHead>
+                    <TableHead>Cupom</TableHead>
                     <TableHead>Comprador</TableHead>
-                    <TableHead>Cliente</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Método</TableHead>
                     <TableHead>Produto</TableHead>
@@ -493,6 +495,9 @@ export default function Payments() {
                   filteredPayments.length > 0 ? (
                     filteredPayments.map((payment: any, index: number) => {
                       const user = JSON.parse(payment.user);
+                      const cupon = JSON.parse(
+                        payment?.cupon ? payment?.cupon : { code: "" }
+                      ) as { code: string; id: string };
                       const initials = user.name
                         ? user.name
                             .split(" ")
@@ -505,18 +510,20 @@ export default function Payments() {
                         <TableRow key={payment.uuid}>
                           <TableCell>{index + 1}</TableCell>
                           <TableCell>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div className="flex gap-2">
-                                  <Avatar>
-                                    <AvatarFallback>{initials}</AvatarFallback>
-                                  </Avatar>
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent className="flex flex-col gap-2">
-                                <h1>{user.name}</h1>
-                              </TooltipContent>
-                            </Tooltip>
+                            {cupon?.id ? (
+                              <Badge
+                                className="text-green-500 bg-green-500/10 border-green-500/10 flex space-x-2 items-center"
+                                variant={"outline"}
+                              >
+                                <TrendingUp size={15} />
+                                Cupom usado
+                              </Badge>
+                            ) : (
+                              <Badge className="text-red-500 bg-red-500/10 border-red-500/10 flex space-x-2 items-center">
+                                <TrendingDown size={15} />
+                                Não usado
+                              </Badge>
+                            )}
                           </TableCell>
 
                           <TableCell className="flex flex-col gap-1">

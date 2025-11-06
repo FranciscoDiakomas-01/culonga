@@ -100,7 +100,6 @@ export default function CouponsPage() {
         }}
       />
       <section className="px-2 pt-5 place-self-center lg:w-[95%] w-full flex flex-col gap-6">
-        {/* --- Cards de Estatísticas --- */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card className="p-4 border shadow-sm">
             <CardHeader className="p-0 mb-2">

@@ -46,6 +46,7 @@ export default class PaymentGetter {
                 user: true,
                 updatedAt: true,
                 product: true,
+                coupun: true,
               },
             }),
             this.database.payment.count({
