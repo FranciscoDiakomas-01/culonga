@@ -153,13 +153,37 @@ export default function Payments() {
     setFilteredPayments(newList);
   }, [filter, Payments, filteredStats]);
 
-  // 🎯 FUNÇÃO PARA APLICAR FILTRO DE DATA
   const aplicarFiltroData = (paymentsList: any[]) => {
     if (!dateStart || !dateEnd) return paymentsList;
 
+    // 🔥 NORMALIZA AS DATAS (ignora horas, minutos, segundos)
+    const startDateNormalized = new Date(
+      dateStart.getFullYear(),
+      dateStart.getMonth(),
+      dateStart.getDate()
+    );
+
+    const endDateNormalized = new Date(
+      dateEnd.getFullYear(),
+      dateEnd.getMonth(),
+      dateEnd.getDate()
+    );
+
     return paymentsList.filter((payment) => {
       const paymentDate = new Date(payment.createdAt);
-      return paymentDate >= dateStart && paymentDate <= dateEnd;
+
+      // 🔥 NORMALIZA A DATA DO PAGAMENTO TAMBÉM
+      const paymentDateNormalized = new Date(
+        paymentDate.getFullYear(),
+        paymentDate.getMonth(),
+        paymentDate.getDate()
+      );
+
+      // 🔥 COMPARA APENAS DIA, MÊS E ANO
+      return (
+        paymentDateNormalized >= startDateNormalized &&
+        paymentDateNormalized <= endDateNormalized
+      );
     });
   };
 
@@ -180,12 +204,12 @@ export default function Payments() {
       dateStart.toISOString(),
       dateEnd.toISOString()
     );
+    console.log(data)
     setFilteredStats({
       periodo,
       sales: data?.sales ?? 0,
       total: data?.total ?? 0,
     });
-    toast.info(data?.message);
     if (filter !== "ALL") {
       const filteredByStatus = paymentsFiltradas.filter((item) => {
         return item.status.toUpperCase() === filter.toUpperCase();

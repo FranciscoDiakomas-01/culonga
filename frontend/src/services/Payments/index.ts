@@ -313,7 +313,7 @@ export default class PaymentService {
       return {
         total: data?.total ?? 0,
         sales: data?.sales ?? 0,
-        message: data?.message ?? "Admininstrador não pode consultar",
+        message: data?.message 
       } as dataReturnType;
     } catch (error: any) {
       return {
