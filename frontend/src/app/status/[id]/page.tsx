@@ -131,6 +131,7 @@ export default function SuccessPage() {
             : "Falha no pagamento"}
         </h1>
         <p className="text-gray-600 mb-6">{data.mensagem}</p>
+        <p>{isSuccess && `📧 Acesso liberado! Verifique seu email`}</p>
         <a
           href="/"
           className={`inline-block ${

@@ -388,7 +388,7 @@ export default function Chekout() {
                       <DialogTitle>{message}</DialogTitle>
                       <DialogDescription className="text-center">
                         {message == "Pagamento efectuado com sucesso" &&
-                          `📧 Acesso liberado! Verifique seu produto "${product?.title}"`}
+                          `Acesso liberado, verique o seu email para receberes o seu produto"`}
                       </DialogDescription>
                     </DialogHeader>
 
@@ -467,7 +467,7 @@ export default function Chekout() {
                       <DialogTitle>{message}</DialogTitle>
                       <DialogDescription>
                         {message == "Pagamento efectuado com sucesso" &&
-                          `📧 Acesso liberado! Verifique seu produto "${product?.title}"`}
+                          `Acesso liberado, verique o seu email para receberes o seu produto"`}
                       </DialogDescription>
                     </DialogHeader>
 
