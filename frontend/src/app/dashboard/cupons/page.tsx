@@ -27,7 +27,7 @@ export default function CouponsPage() {
   });
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
+    if (!localStorage.getItem("token")) {
       router.push("/");
       localStorage.clear();
     }
