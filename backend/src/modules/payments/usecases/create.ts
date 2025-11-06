@@ -45,8 +45,7 @@ export default class PaymentCreater {
           message: 'Cupon não aplicável ao produto',
         };
       }
-
-      if (!cupon?.active) {
+      if (cupon && !cupon?.active) {
         return {
           message: 'Cupon inactivo',
         };
