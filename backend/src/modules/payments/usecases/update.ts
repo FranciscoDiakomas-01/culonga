@@ -255,9 +255,12 @@ export default class PaymentUpdate {
             }),
             this.database.users.update({
               data: {
-                totalEarned: payment.User.totalEarned + valor,
-                availableBalance:
-                  payment.User.availableBalance + this.percent(valor),
+                totalEarned: {
+                  increment: valor,
+                },
+                availableBalance: {
+                  increment: this.percent(valor),
+                },
               },
               where: { id: payment.User.id },
             }),

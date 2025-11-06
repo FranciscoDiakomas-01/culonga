@@ -135,16 +135,12 @@ export default function Payments() {
     aplicarFiltros();
   }, [filter, Payments, filteredStats, dateStart, dateEnd]);
 
-  // 🔥 FUNÇÃO ÚNICA PARA APLICAR TODOS OS FILTROS
   const aplicarFiltros = () => {
     let resultado = [...Payments];
 
-    // 🔥 APLICA FILTRO DE DATA SE ESTIVER ATIVO
     if (filteredStats && dateStart && dateEnd) {
       resultado = aplicarFiltroData(resultado);
     }
-
-    // 🔥 APLICA FILTRO DE STATUS SE NÃO FOR "ALL"
     if (filter !== "ALL") {
       resultado = resultado.filter((item) => {
         return item.status.toUpperCase() === filter.toUpperCase();
@@ -157,7 +153,6 @@ export default function Payments() {
   const aplicarFiltroData = (paymentsList: any[]) => {
     if (!dateStart || !dateEnd) return paymentsList;
 
-    // 🔥 NORMALIZA AS DATAS (ignora horas, minutos, segundos)
     const startDateNormalized = new Date(
       dateStart.getFullYear(),
       dateStart.getMonth(),
@@ -172,15 +167,11 @@ export default function Payments() {
 
     return paymentsList.filter((payment) => {
       const paymentDate = new Date(payment.createdAt);
-
-      // 🔥 NORMALIZA A DATA DO PAGAMENTO TAMBÉM
       const paymentDateNormalized = new Date(
         paymentDate.getFullYear(),
         paymentDate.getMonth(),
         paymentDate.getDate()
       );
-
-      // 🔥 COMPARA APENAS DIA, MÊS E ANO
       return (
         paymentDateNormalized >= startDateNormalized &&
         paymentDateNormalized <= endDateNormalized
@@ -188,7 +179,6 @@ export default function Payments() {
     });
   };
 
-  // 🎯 FUNÇÃO PARA FILTRAR POR DATA
   const handleDateFilter = async () => {
     if (!dateStart || !dateEnd) {
       toast.error("Selecione ambas as datas");
@@ -200,23 +190,18 @@ export default function Payments() {
       "pt-AO"
     )} - ${dateEnd.toLocaleDateString("pt-AO")}`;
 
-    // 🔥 BUSCA DADOS DO BACKEND PARA AS ESTATÍSTICAS
     const data = await service.getByInterval(
       token,
       dateStart.toISOString(),
       dateEnd.toISOString()
     );
 
-    console.log(data);
-
-    // 🔥 ATIVA O FILTRO DE DATA
     setFilteredStats({
       periodo,
       sales: data?.sales ?? 0,
       total: data?.total ?? 0,
     });
 
-    // 🔥 OS FILTROS SERÃO APLICADOS AUTOMATICAMENTE NO useEffect
     toast.success(`Filtrado: ${periodo}`);
   };
 
@@ -304,8 +289,6 @@ export default function Payments() {
                       </SelectContent>
                     </Select>
                   </div>
-
-                  {/* 🗓️ FILTRO POR DATA */}
                   <div className="grid gap-3 mt-5 w-full z-60">
                     <p>Filtrar por período</p>
                     <div className="flex flex-col gap-3">
@@ -395,9 +378,7 @@ export default function Payments() {
             </Sheet>
           </span>
 
-          {/* 📊 ESTATÍSTICAS - MOSTRA APENAS UMA DAS VERSÕES */}
           <article className="grid lg:grid-cols-4 my-6 gap-3 md:grid-cols-2">
-            {/* ESTATÍSTICAS DO PERÍODO FILTRADO */}
             {filteredStats && (
               <>
                 <Card className="p-2 rounded-sm gap-3 lg:text-start bg-transparent backdrop-blur-3xl font-bold">
@@ -425,8 +406,6 @@ export default function Payments() {
                 </Card>
               </>
             )}
-
-            {/* ESTATÍSTICAS GERAIS (apenas quando NÃO há filtro de data) */}
             {!filteredStats &&
               Array.isArray(data?.stats?.stats) &&
               data?.stats?.stats.length > 0 &&
@@ -454,7 +433,6 @@ export default function Payments() {
               ))}
           </article>
 
-          {/* 🔥 INDICADOR VISUAL QUANDO FILTRO ESTÁ ATIVO */}
           {filteredStats && (
             <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 text-center">
               <p className="text-orange-700 text-sm">
@@ -511,7 +489,7 @@ export default function Payments() {
                                 variant={"outline"}
                               >
                                 <TrendingUp size={15} />
-                               {cupon?.code}
+                                {cupon?.code}
                               </Badge>
                             ) : (
                               <Badge className="text-red-500 bg-red-500/10 border-red-500/10 flex space-x-2 items-center">

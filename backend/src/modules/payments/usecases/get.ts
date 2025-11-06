@@ -107,12 +107,13 @@ export default class PaymentGetter {
                 amount: true,
               },
               orderBy: {
-                createdAt: 'asc',
+                createdAt: 'desc',
               },
               where: {
                 userid,
                 status: 'APROVED',
               },
+              take: 70,
             }),
             this.database.payment.groupBy({
               by: ['productId'],
@@ -267,6 +268,7 @@ export default class PaymentGetter {
           where: {
             status: 'APROVED',
           },
+          take: 100,
         }),
         this.database.payment.groupBy({
           by: ['productId'],
@@ -305,7 +307,6 @@ export default class PaymentGetter {
         countMes,
         countAno,
       ] = await Promise.all([
-        // apenas aprovados (soma)
         this.database.payment.aggregate({
           _sum: { amount: true },
           where: {
@@ -373,8 +374,8 @@ export default class PaymentGetter {
         stats: [
           {
             title: 'Vendas realizadas hoje',
-            value: totalHoje._sum.amount || 0, // soma só aprovados
-            total: countHoje || 0, // quantidade total de pagamentos
+            value: totalHoje._sum.amount || 0,
+            total: countHoje || 0,
             label: 'Hoje',
           },
           {
@@ -509,6 +510,11 @@ export default class PaymentGetter {
     }
   }
 
+  private percent(montante: number): number {
+    const taxaPlataforma = 0.08;
+    const liquido = montante * (1 - taxaPlataforma);
+    return Number(liquido.toFixed(2));
+  }
   public async getMyPaymentPerInterval(
     from: string,
     to: string,
@@ -527,6 +533,27 @@ export default class PaymentGetter {
           message: 'Perfil não encontrado',
         };
       }
+
+      if (user?.role == 'ADMIN') {
+        const totalPayments = await this.database.payment.aggregate({
+          _sum: {
+            amount: true,
+          },
+          where: {
+            status: 'APROVED',
+            createdAt: {
+              gte: date1,
+              lte: dat2,
+            },
+          },
+          _count: true,
+        });
+
+        return {
+          total: totalPayments?._sum?.amount,
+          sales: totalPayments._count,
+        };
+      }
       const totalPayments = await this.database.payment.aggregate({
         _sum: {
           amount: true,
@@ -541,8 +568,9 @@ export default class PaymentGetter {
         },
         _count: true,
       });
+
       return {
-        total: totalPayments?._sum?.amount,
+        total: this.percent(totalPayments?._sum?.amount ?? 0),
         sales: totalPayments._count,
       };
     } catch (error) {

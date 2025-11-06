@@ -37,8 +37,10 @@ export default function DashBoard() {
       setIsAdmin(true);
     }
     async function get(token: string) {
-      const res = await service.getMyPayments(token, 1);
-      const userData = await usrservice.getMyData(token);
+      const [res, userData] = await Promise.all([
+        service.getMyPayments(token, 1),
+        usrservice.getMyData(token),
+      ]);
       if (
         !userData?.data ||
         userData.data.status == "BANED" ||
@@ -59,13 +61,6 @@ export default function DashBoard() {
       setStatus(userData?.data?.status);
     }
     get(token);
-    const interval = setInterval(() => {
-      get(token);
-    }, 2000);
-
-    return () => {
-      clearInterval(interval);
-    };
   }, []);
   return (
     <main>
