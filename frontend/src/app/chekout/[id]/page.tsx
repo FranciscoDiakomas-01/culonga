@@ -276,7 +276,7 @@ export default function Chekout() {
       productId: product.type == "Offer" ? product.productId : product.id,
       userid: product.userId,
       tel,
-      cupon,
+      cuponCode: cupon,
     };
 
     if (pixelId) {
@@ -310,6 +310,7 @@ export default function Chekout() {
       name,
       orderbumps,
       tel: body.tel,
+      cuponCode: body.cuponCode,
     });
 
     if (method == 0 && res.reference && res.entity && res.id) {
@@ -628,6 +629,16 @@ export default function Chekout() {
                           name="email"
                           id="email"
                           required
+                        />
+                      </div>
+                      <div className="flex items-center border rounded-lg px-3 py-2 bg-gray-50">
+                        <ShoppingCart className="w-5 h-5  mr-2" />
+                        <input
+                          type="text"
+                          placeholder="Cupon"
+                          className="flex-1 bg-transparent outline-none"
+                          name="cupon"
+                          id="cupon"
                         />
                       </div>
                     </div>

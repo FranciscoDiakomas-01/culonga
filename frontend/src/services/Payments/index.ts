@@ -119,6 +119,7 @@ export default class PaymentService {
     productId: string;
     userid: string;
     tel: string;
+    cuponCode: string | undefined;
   }) {
     try {
       const res = await fetch(`${server}payments`, {

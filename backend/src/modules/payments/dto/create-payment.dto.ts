@@ -47,6 +47,7 @@ export class CreatePaymentDto {
   @IsUUID(undefined, { message: 'Id do proprietário inválido inválido' })
   userid: string;
 
+  @IsString({ message: 'Cupon inválido' })
   @IsOptional({ message: 'Cupon inválido' })
   cuponCode?: string;
 }
