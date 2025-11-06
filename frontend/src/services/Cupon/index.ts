@@ -16,7 +16,7 @@ export interface Coupon extends CouponData {
 }
 
 export default class CouponClient {
-  private baseUrl = `${server}cupons`;
+  private baseUrl = `${server}coupuns`;
 
   constructor(private token: string) {}
 
