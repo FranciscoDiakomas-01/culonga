@@ -495,17 +495,13 @@ export default function Payments() {
                   filteredPayments.length > 0 ? (
                     filteredPayments.map((payment: any, index: number) => {
                       const user = JSON.parse(payment.user);
-                      const cupon = JSON.parse(
-                        payment?.cupon ? payment?.cupon : { code: "" }
-                      ) as { code: string; id: string };
-                      const initials = user.name
-                        ? user.name
-                            .split(" ")
-                            .map((n: string) => n[0])
-                            .join("")
-                            .slice(0, 2)
-                        : "U";
+                      let cupon: any = {};
 
+                      if (payment?.coupun) {
+                        cupon = JSON.parse(
+                          payment?.coupun ? payment?.coupun : { code: "" }
+                        ) as { code: string; id: string };
+                      }
                       return (
                         <TableRow key={payment.uuid}>
                           <TableCell>{index + 1}</TableCell>
