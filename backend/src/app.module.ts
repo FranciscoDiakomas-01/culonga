@@ -23,6 +23,7 @@ import { TransferModule } from './modules/transfer/transfer.module';
 import { CorsMiddleware } from './middlewares/cors.middleware';
 import { CoupunsModule } from './modules/coupuns/coupuns.module';
 import { AffiliatesModule } from './modules/affiliates/affiliates.module';
+import CronModule from './services/tasks/cron.module';
 @Module({
   imports: [
     UsersModule,
@@ -59,6 +60,7 @@ import { AffiliatesModule } from './modules/affiliates/affiliates.module';
     TransferModule,
     CoupunsModule,
     AffiliatesModule,
+    CronModule,
   ],
   providers: [DatabaseService, TasksService],
 })
