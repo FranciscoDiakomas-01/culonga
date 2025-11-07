@@ -34,6 +34,7 @@ export default class AdmminStartUpService {
             status: 'APROVED',
           },
         });
+        
         if (created && created?.id) {
           this.logger.log('Admin created');
         } else {

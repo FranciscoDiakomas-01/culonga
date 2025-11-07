@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -9,123 +8,90 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-enum Status {
-  APROVED
-  PENDING
-  REJECTED
-  CANCELED
-  BANED
-  CREATED
-}
-
-enum UserRole{
-  ADMIN
-  SELLER
-}
-
-enum PayMethod{
-  EXPRESS
-  REFERENCE
-  PAYPAY
-}
-
-enum TransferType {
-  INTERNAL
-  EXTERNAL
-}
-
 model Settings {
-  id         String            @default(uuid()) @id
+  id      String @id @default(uuid())
   percent Int
 }
 
 model Users {
-  id         String            @default(uuid()) @id
-  name         String
-  lastname     String
-  profile      String?
-  email        String            @unique
-  password     String
-  telefone     String            @unique
-  status       Status            @default(PENDING)
-  role         UserRole          @default(SELLER)
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @default(now()) @updatedAt
-  verification UserVerification? @relation("verification")
-  totalEarned Int  @default(0)
-  totalTranfered Int @default(0)
-  totatReciev Int @default(0)
-  withdrawnAmount Int @default(0)
-  availableBalance Int  @default(0)
-  totalAfiliations Int?
-  totalAfiliates Int?
-  totalAfiliateGain Int?
-  totalAfiliateMade Int?
-  products     Products[]
-  Integrations Integration[]
-  Withdrawal Withdrawal[]
-  Notification Notification[]
-  ResetPassword ResetPassword[]
-  Offer Offer[]
-  Payments Payment[]
-  Bank Bank[]
-  sentTransfers    Transfer[]        @relation("UserFrom")
-  receivedTransfers Transfer[]       @relation("UserTo")
-  Coupons Coupon[]
-  Afiliates Afiliates[]
+  id                String            @id @default(uuid())
+  name              String
+  lastname          String
+  profile           String?
+  email             String            @unique
+  password          String
+  telefone          String            @unique
+  status            Status            @default(PENDING)
+  role              UserRole          @default(SELLER)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @default(now()) @updatedAt
+  availableBalance  Int               @default(0)
+  totalEarned       Int               @default(0)
+  withdrawnAmount   Int               @default(0)
+  totalTranfered    Int               @default(0)
+  totatReciev       Int               @default(0)
+  totalAfiliations  Int?              @default(0)
+  Bank              Bank[]
+  Coupons           Coupon[]
+  Integrations      Integration[]
+  Notification      Notification[]
+  Offer             Offer[]
+  Payments          Payment[]
+  products          Products[]
+  ResetPassword     ResetPassword[]
+  sentTransfers     Transfer[]        @relation("UserFrom")
+  receivedTransfers Transfer[]        @relation("UserTo")
+  verification      UserVerification? @relation("verification")
+  Withdrawal        Withdrawal[]
 }
 
 model Transfer {
-  id         String   @id @default(uuid())
-  fromId     String?
-  toId       String?
-  amount     Int
-  type       TransferType
-  status     Status    @default(APROVED)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-
-  fromUser   Users?    @relation("UserFrom", fields: [fromId], references: [id], onDelete: SetNull)
-  toUser     Users?    @relation("UserTo", fields: [toId], references: [id], onDelete: SetNull)
+  id        String       @id @default(uuid())
+  fromId    String?
+  toId      String?
+  amount    Int
+  type      TransferType
+  status    Status       @default(APROVED)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  fromUser  Users?       @relation("UserFrom", fields: [fromId], references: [id])
+  toUser    Users?       @relation("UserTo", fields: [toId], references: [id])
 }
 
-model Bank{
-   id         String            @default(uuid()) @id
-   iban String  @unique
-   title String
-   image String?
-   userid String
-   user Users @relation(fields: [userid] , references: [id] , onDelete: Cascade)
-   
+model Bank {
+  id     String  @id @default(uuid())
+  iban   String  @unique
+  title  String
+  image  String?
+  userid String
+  user   Users   @relation(fields: [userid], references: [id], onDelete: Cascade)
 }
 
 model ResetPassword {
-   id         String            @default(uuid()) @id
-   userid String 
-   status Status @default(PENDING)
-   createdAt    DateTime          @default(now())
-   token String
-   user Users @relation(fields: [userid] ,references: [id] , onDelete: Cascade)
+  id        String   @id @default(uuid())
+  userid    String
+  status    Status   @default(PENDING)
+  createdAt DateTime @default(now())
+  token     String
+  user      Users    @relation(fields: [userid], references: [id], onDelete: Cascade)
 }
 
-model Withdrawal{
-  id         String            @default(uuid()) @id
-  bank String
-  iban String
-  amount Int
-  userid String
-  status Status @default(PENDING)
-  fileURL String?
-  user Users @relation(fields: [userid] , references: [id] , onDelete: Cascade)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
-
+model Withdrawal {
+  id        String   @id @default(uuid())
+  bank      String
+  iban      String
+  userid    String
+  status    Status   @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  amount    Int
+  fileURL   String?
+  user      Users    @relation(fields: [userid], references: [id], onDelete: Cascade)
 }
 
 model UserVerification {
-  id         String            @default(uuid()) @id
-  userId   String @unique
+  id        String   @id @default(uuid())
+  userId    String   @unique
   images    Json
   status    Status   @default(PENDING)
   createdAt DateTime @default(now())
@@ -134,135 +100,154 @@ model UserVerification {
 }
 
 model Offer {
-  id        String    @default(uuid()) @id
+  id        String   @id @default(uuid())
   productId String
-  userid    String
   price     Int
   link      String
-  title     String
-
-  product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
-  user      Users    @relation(fields: [userid], references: [id], onDelete: Cascade)
-
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+  title     String
+  userid    String
+  product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      Users    @relation(fields: [userid], references: [id], onDelete: Cascade)
 }
 
 model Products {
-  id         String     @default(uuid()) @id
-  productid  Int        @default(autoincrement()) @unique
-  title      String     @unique
-  cover      String?
-  file       String?
-  userId     String
-  description   String?
-  whatsappSuport String?
-  banner     String?
-  price      Int
-  garant     Int        @default(7)
-  orderbumps String[]
-  link       String     @unique
-  upsell     String?
-  pixelId    String?
-  category   String?
-  type       String
-  payment    Int[]
-  percentShare Int?
-  totalPurchase Int? 
-  totalAfiliations Int?
-  totalAfiliationsPurchase Int
-
-  offers     Offer[]
-  backredirect String?
-  status     Status     @default(APROVED)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @default(now()) @updatedAt
-  user       Users      @relation(fields: [userId], references: [id])
-  checkout   ProductCheckout?
-  Afiliates Afiliates[]
+  id                       String           @id @default(uuid())
+  productid                Int              @unique @default(autoincrement())
+  title                    String           @unique
+  userId                   String
+  description              String?
+  whatsappSuport           String?
+  price                    Int
+  garant                   Int              @default(7)
+  orderbumps               String[]
+  link                     String           @unique
+  upsell                   String?
+  category                 String?
+  type                     String
+  payment                  Int[]
+  backredirect             String?
+  status                   Status           @default(APROVED)
+  createdAt                DateTime         @default(now())
+  updatedAt                DateTime         @default(now()) @updatedAt
+  banner                   String?
+  cover                    String?
+  file                     String?
+  pixelId                  String?
+  totalPurchase            Int              @default(0)
+  percentShare             Int              @default(0)
+  totalAfiliations         Int?             @default(0)
+  totalAfiliationsPurchase Int?             @default(0)
+  offers                   Offer[]
+  checkout                 ProductCheckout?
+  user                     Users            @relation(fields: [userId], references: [id])
 }
 
-
 model Afiliates {
-  id Int @id @default(autoincrement())
-  userId String
-  totalSells Int @default(0)
-  totalPurchases Int @default(0)
-  productId String
-  link String
-  status Boolean @default(true)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @default(now()) @updatedAt
-  @@unique([userId , productId])
-  product Products @relation(fields: [productId] , references: [id] , onDelete: Cascade)
-  user Users @relation( fields: [userId] , references: [id] , onDelete: Cascade)
+  id             Int      @id @default(autoincrement())
+  userId         String
+  totalSells     Int      @default(0)
+  totalPurchases Int      @default(0)
+  productId      String
+  link           String
+  status         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+
+  @@unique([userId, productId])
 }
 
 model ProductCheckout {
-  id         String            @default(uuid()) @id
-  productId  String      @unique
-  bg         String?  
-  textColor  String?  
-  timer      Json?    
-  btn        Json     
-  orderbump  Json?    
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
-  product    Products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id        String   @id @default(uuid())
+  productId String   @unique
+  bg        String?
+  textColor String?
+  timer     Json?
+  btn       Json
+  orderbump Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Payment {
-  uuid          String           @default(uuid()) @id
-  order            Int              @default(autoincrement()) @unique
-  method    PayMethod
-  status Status @default(PENDING)
-  amount Int
-  productId String
+  uuid        String    @id @default(uuid())
+  method      PayMethod
+  status      Status    @default(PENDING)
+  amount      Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+  user        Json
+  order       Int       @unique @default(autoincrement())
+  orderbumps  String[]
+  paypayCode  String?   @unique
+  productId   String
+  products    String[]
+  userid      String
+  product     Json?
   description String?
-  orderbumps String[]
-  user Json
-  products String[]
-  product Json?
-  coupun Json?
-  userid String
-  paypayCode String? @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
-  User Users @relation(fields: [userid] , references: [id] , onDelete: Cascade)
+  coupun      Json?
+  User        Users     @relation(fields: [userid], references: [id], onDelete: Cascade)
 }
 
 model Notification {
-  id         String            @default(uuid()) @id
-  title String
-  deepLink String?
-  message String
-  timestemp  DateTime @default(now())
-  read Boolean @default(false)
-  userId String
-  user Users @relation(fields: [userId] , references: [id] , onDelete: Cascade)
+  id        String   @id @default(uuid())
+  title     String
+  deepLink  String?
+  message   String
+  timestemp DateTime @default(now())
+  read      Boolean  @default(false)
+  userId    String
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Integration  {
-  id         String            @default(uuid()) @id
-  userid String
-  status Status @default(APROVED)
-  platform String
-  url String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
-  user Users @relation(fields: [userid] , references: [id] , onDelete:  Cascade)
+model Integration {
+  id        String   @id @default(uuid())
+  userid    String
+  status    Status   @default(APROVED)
+  platform  String
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  user      Users    @relation(fields: [userid], references: [id], onDelete: Cascade)
 }
 
 model Coupon {
-  id          String   @id @default(cuid())
-  code        String   @unique
-  description String?
-  discount    Int
-  usedCount   Int      @default(0)
-  totalPurchased Int @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  active      Boolean  @default(true)
-  userId String
-  User Users @relation(fields: [userId] , references: [id] , onDelete: Cascade)
+  id             String   @id @default(cuid())
+  code           String   @unique
+  description    String?
+  discount       Int
+  usedCount      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  active         Boolean  @default(true)
+  userId         String
+  totalPurchased Int      @default(0)
+  User           Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Status {
+  APROVED
+  PENDING
+  REJECTED
+  CANCELED
+  CREATED
+  BANED
+}
+
+enum UserRole {
+  ADMIN
+  SELLER
+}
+
+enum PayMethod {
+  EXPRESS
+  REFERENCE
+  PAYPAY
+}
+
+enum TransferType {
+  INTERNAL
+  EXTERNAL
 }
