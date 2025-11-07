@@ -11,7 +11,7 @@ export default class UserSetter {
 
   public async LogIn(data: LoginDTO) {
     try {
-      const User = await this.database.users.findUnique({
+      const User = await this.database.users.findFirst({
         where: {
           email: data.email,
         },
