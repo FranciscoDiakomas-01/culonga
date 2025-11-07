@@ -44,6 +44,9 @@ export class AffiliatesService {
       throw new NotFoundException('Produto não encontrado');
     }
 
+    if (product?.userId == user.id) {
+      throw new ConflictException('Esse produto é seu');
+    }
     const [newAfiliation] = await this.database.$transaction([
       this.database.afiliates.create({
         data: {

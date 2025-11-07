@@ -3,6 +3,7 @@ import logo from "@/assets/images/logo.png";
 import {
   ChartArea,
   FolderKanban,
+  Handbag,
   Home,
   Landmark,
   LogOut,
@@ -121,8 +122,8 @@ export default function SideBar() {
       to: "/dashboard/cupons",
     },
     {
-      label: "Afiliações",
-      icon: <UsersRound size={18} />,
+      label: "Marketplace",
+      icon: <Handbag size={18} />,
       to: "/dashboard/afiliates",
     },
     {
