@@ -98,6 +98,17 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
             Comissão {afilition.product.percentShare}
           </Badge>
           <Badge variant="secondary">${afilition.product.price}</Badge>
+
+          <Badge variant="secondary" className="flex items-center gap-1">
+            <Handbag className="w-3 h-3" />
+            {(() => {
+              const gain =
+                (afilition.product.price - afilition.product.price * 0.08) *
+                (parseFloat(afilition.product.percentShare) / 100);
+              return `+${gain.toFixed(2)} KZ`;
+            })()}{" "}
+            ganho
+          </Badge>
         </div>
 
         <p className="text-sm text-center text-muted-foreground line-clamp-3">
@@ -192,7 +203,6 @@ export function ProductToJoinCard({
 
   return (
     <Card className="relative overflow-hidden rounded-md border-white/10 shadow-lg border  bg-transparent transition-all hover:shadow-xl p-0">
-     
       <div className="relative">
         <img
           src={product.banner}
