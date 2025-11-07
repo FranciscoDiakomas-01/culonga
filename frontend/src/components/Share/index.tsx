@@ -10,7 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Copy, ShoppingBag, TrendingUp, CalendarDays } from "lucide-react";
+import {
+  Copy,
+  ShoppingBag,
+  TrendingUp,
+  CalendarDays,
+  Handbag,
+} from "lucide-react";
 import { useState } from "react";
 
 type Afilition = {
@@ -49,7 +55,7 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
   };
 
   return (
-    <Card className="relative overflow-hidden rounded-2xl shadow-lg border border-muted bg-card transition-all hover:shadow-xl">
+    <Card className="relative overflow-hidden rounded-md border-white/10 shadow-lg border  bg-transparent transition-all hover:shadow-xl p-0">
       <div className="relative">
         <img
           src={afilition.product.banner}
@@ -123,18 +129,6 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
             </p>
           </div>
         </div>
-
-        <div className="flex justify-center -space-x-3 mt-4">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Avatar key={i} className="w-8 h-8 border-2 border-background">
-              <AvatarImage src={`https://i.pravatar.cc/150?img=${i + 5}`} />
-              <AvatarFallback>U</AvatarFallback>
-            </Avatar>
-          ))}
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-xs font-medium border-2 border-background">
-            +3
-          </div>
-        </div>
       </CardContent>
       <CardFooter className="flex justify-between px-6 pb-4 pt-2 border-t">
         <Button
@@ -189,6 +183,7 @@ export function ProductToJoinCard({
         "Content-Type": "application/json",
         token: token,
       },
+      method: "POST",
     });
     const data = await res.json();
     toast.info(data?.message);
@@ -196,16 +191,16 @@ export function ProductToJoinCard({
   };
 
   return (
-    <Card className="relative overflow-hidden rounded-2xl shadow-lg border border-muted bg-card transition-all hover:shadow-xl">
-      {/* Banner */}
+    <Card className="relative overflow-hidden rounded-md border-white/10 shadow-lg border  bg-transparent transition-all hover:shadow-xl p-0">
+     
       <div className="relative">
         <img
           src={product.banner}
           alt={product.title}
-          className="w-full h-48 object-cover"
+          className="w-full h-48 object-cover rounded-t-2xl"
         />
 
-        {/* Avatar do criador sobreposto */}
+        {/* Avatar sobreposto */}
         <div className="absolute left-1/2 -bottom-10 transform -translate-x-1/2">
           <Avatar className="w-20 h-20 ring-4 ring-background shadow-md">
             <AvatarImage src={product.user.profile} alt={product.user.name} />
@@ -216,54 +211,48 @@ export function ProductToJoinCard({
         </div>
       </div>
 
-      {/* Cabeçalho */}
-      <CardHeader className="mt-12 text-center space-y-1">
+      <CardHeader className="mt-12 text-center space-y-1 p-0 pt-2">
         <h3 className="text-xl font-semibold">{product.title}</h3>
-        <p className="text-sm text-muted-foreground">por {product.user.name}</p>
+        <p className="text-sm text-muted-foreground">Por {product.user.name}</p>
+        <p className="font-semibold text-sm">{product.user.name}</p>
+        <p className="text-xs text-muted-foreground">{product.user.email}</p>
       </CardHeader>
 
-      {/* Conteúdo */}
-      <CardContent className="space-y-4 px-6">
-        {/* Badges */}
+      <CardContent className="space-y-4 px-6 pt-2">
         <div className="flex justify-center gap-2 flex-wrap">
           <Badge variant="secondary" className="flex items-center gap-1">
             <ShoppingBag className="w-3 h-3" />${product.price}
           </Badge>
+
           <Badge variant="outline" className="flex items-center gap-1">
             <Percent className="w-3 h-3" />
-            {product.percentShare}
+            {product.percentShare}%
+          </Badge>
+
+          <Badge variant="secondary" className="flex items-center gap-1">
+            <Handbag className="w-3 h-3" />
+            {(() => {
+              const gain =
+                (product.price - product.price * 0.08) *
+                (parseFloat(product.percentShare) / 100);
+              return `+${gain.toFixed(2)} KZ`;
+            })()}{" "}
+            ganho
           </Badge>
         </div>
 
-        {/* Descrição */}
         <p className="text-sm text-center text-muted-foreground line-clamp-3">
           {product.description}
         </p>
-
         <Separator />
-
-        {/* Criador */}
-        <div className="flex justify-center items-center gap-2 mt-3">
-          <Avatar className="w-8 h-8">
-            <AvatarImage src={product.user.profile} />
-            <AvatarFallback>
-              {product.user.name.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div className="text-center">
-            <p className="font-semibold text-sm">{product.user.name}</p>
-            <p className="text-xs text-muted-foreground">
-              {product.user.email}
-            </p>
-          </div>
-        </div>
       </CardContent>
 
-      {/* Rodapé */}
       <CardFooter className="flex justify-center border-t pt-4 pb-4">
         <Button
           disabled={loading}
-          onClick={handleJoin}
+          onClick={async () => {
+            await handleJoin();
+          }}
           className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
         >
           {loading ? (
