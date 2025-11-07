@@ -263,6 +263,9 @@ export class AffiliatesService {
           userId: {
             not: userId,
           },
+          percentShare: {
+            gt: 0,
+          },
           Afiliates: {
             none: {
               userId,

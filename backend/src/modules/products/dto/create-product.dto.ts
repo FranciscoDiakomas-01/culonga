@@ -84,6 +84,7 @@ export class UpdateProductDTO {
   @IsInt({ message: 'Comisão deve existir' })
   @Max(100, { message: 'Comisão deve existir' })
   @Min(0, { message: 'Comisão deve existir' })
+  
   percent: number;
 
   @IsString({ message: 'O nome precisa ser textual' })

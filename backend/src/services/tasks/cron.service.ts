@@ -11,7 +11,7 @@ export class TasksService implements OnModuleInit {
   constructor(private readonly database: DatabaseService) {}
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   public async handleCronEvery5Min() {
-    this.logger.log('Deleting all Canceled Payments');
+    this.logger.debug('Deleting all Canceled Payments');
     const deleted = await this.database.payment.deleteMany({
       where: {
         OR: [
@@ -24,11 +24,11 @@ export class TasksService implements OnModuleInit {
         ],
       },
     });
-    this.logger.log(`Deleted ${deleted.count} Canceled Payments`);
+    this.logger.debug(`Deleted ${deleted.count} Canceled Payments`);
   }
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   public async deleterInactiveProducts() {
-    this.logger.log('Deleting all Canceled Products');
+    this.logger.debug('Deleting all Canceled Products');
     const deleted = await this.database.products.deleteMany({
       where: {
         OR: [
@@ -41,11 +41,11 @@ export class TasksService implements OnModuleInit {
         ],
       },
     });
-    this.logger.log(`Deleted ${deleted.count} Canceled Products`);
+    this.logger.debug(`Deleted ${deleted.count} Canceled Products`);
   }
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   public async deleteInactiveSaques() {
-    this.logger.log('Deleting all Canceled withdrawal');
+    this.logger.debug('Deleting all Canceled withdrawal');
     const deleted = await this.database.withdrawal.deleteMany({
       where: {
         OR: [
@@ -58,15 +58,15 @@ export class TasksService implements OnModuleInit {
         ],
       },
     });
-    this.logger.log(`Deleted ${deleted.count} Canceled withdrawal`);
+    this.logger.debug(`Deleted ${deleted.count} Canceled withdrawal`);
   }
-  @Cron(CronExpression.EVERY_WEEKEND)
+  @Cron(CronExpression.EVERY_MINUTE)
   async handleWeeklyReport() {
     try {
-      this.logger.log('Iniciando relatório semanal da plataforma...');
+      this.logger.debug('Iniciando relatório semanal da plataforma...');
 
       // Buscar dados em paralelo para melhor performance
-      const [totalPlataforma, totalUltimos7Dias] = await Promise.all([
+      const [totalPlataforma, totalUltimos7Dias, admin] = await Promise.all([
         this.database.payment.aggregate({
           _sum: { amount: true },
           where: { status: 'APROVED' },
@@ -81,8 +81,18 @@ export class TasksService implements OnModuleInit {
             },
           },
         }),
+        this.database.users.findFirst({
+          where: {
+            role: 'ADMIN',
+          },
+        }),
       ]);
 
+      if (!admin) {
+        this.logger.debug('Admin não encontrado');
+
+        return;
+      }
       const totalGanhoPlataforma = (totalPlataforma._sum.amount || 0) * 0.08;
       const ganhoUltimos7Dias = (totalUltimos7Dias._sum.amount || 0) * 0.08;
 
@@ -99,12 +109,12 @@ export class TasksService implements OnModuleInit {
       });
 
       await this.emailService.senEmail({
-        to: 'admin@suaempresa.com',
+        to: admin.email,
         subject: '📊 Relatório Semanal - Culonga',
         html: emailBody,
       });
 
-      this.logger.log('Relatório semanal enviado com sucesso.');
+      this.logger.debug('Relatório semanal enviado com sucesso.');
     } catch (error) {
       this.logger.error('Erro ao gerar relatório semanal: ', error);
     }
@@ -129,6 +139,8 @@ export class TasksService implements OnModuleInit {
       month: 'long',
       day: 'numeric',
     });
+
+    console.log(data);
 
     return `
 <!DOCTYPE html>
