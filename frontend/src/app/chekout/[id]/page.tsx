@@ -315,7 +315,7 @@ export default function Chekout() {
       orderbumps,
       tel: body.tel,
       cuponCode: body.cuponCode,
-      afiateCode : body.afiateCode
+      afiateCode: body.afiateCode,
     });
 
     if (res?.id) {
