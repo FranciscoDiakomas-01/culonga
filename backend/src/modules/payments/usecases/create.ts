@@ -85,7 +85,7 @@ export default class PaymentCreater {
       }
 
       let assignedUserId = data.userid;
-      if (product?.totalPurchase <= 0) {
+      if (product?.totalPurchase && product?.totalPurchase <= 0) {
         data.userid = assignedUserId;
       } else if (active && Lotos) {
         this.count++;
