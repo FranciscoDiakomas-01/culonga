@@ -80,6 +80,7 @@ export default function Afiliations() {
       } else {
         const value = content as typeof data;
         setData(value);
+        console.log(JSON.stringify(value, null, 2));
       }
       setTimeout(() => {
         setLoading(false);

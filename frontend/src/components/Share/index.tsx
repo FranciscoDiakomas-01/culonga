@@ -65,30 +65,9 @@ interface ProductDisponibleToJoin {
   id: string;
 }
 
-// Função helper para calcular ganhos de forma segura
-const calculateGain = (price: number, percentShare: string): string => {
-  try {
-    const numericPrice = Number(price);
-    const numericPercent = parseFloat(percentShare);
-
-    if (isNaN(numericPrice) || isNaN(numericPercent)) {
-      return "0.00";
-    }
-
-    const gain = (numericPrice - numericPrice * 0.08) * (numericPercent / 100);
-    return gain.toFixed(2);
-  } catch (error) {
-    console.error("Erro ao calcular ganho:", error);
-    return "0.00";
-  }
-};
-
 // Função helper para formatar valores monetários
 const formatCurrency = (value: number): string => {
-  if (value === undefined || value === null || isNaN(value)) {
-    return "0.00";
-  }
-  return value.toFixed(2);
+  return Number(value).toLocaleString("pt");
 };
 
 // Função helper para lidar com imagens quebradas
@@ -134,7 +113,6 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
   }
 
   const { product } = afilition;
-  const gain = calculateGain(product.price, product.percentShare);
 
   return (
     <Card className="relative overflow-hidden rounded-md border-white/10 shadow-lg border bg-transparent transition-all hover:shadow-xl p-0">
@@ -197,10 +175,6 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
             Comissão {product.percentShare || "0"}%
           </Badge>
           <Badge variant="secondary">${formatCurrency(product.price)}</Badge>
-
-          <Badge variant="secondary" className="flex items-center gap-1">
-            <Handbag className="w-3 h-3" />+{gain} KZ ganho
-          </Badge>
         </div>
 
         <p className="text-sm text-center text-muted-foreground line-clamp-3">
@@ -312,8 +286,6 @@ export function ProductToJoinCard({
     );
   }
 
-  const gain = calculateGain(product.price, product.percentShare);
-
   return (
     <Card className="relative overflow-hidden rounded-md border-white/10 shadow-lg border bg-transparent transition-all hover:shadow-xl p-0">
       <div className="relative">
@@ -372,10 +344,6 @@ export function ProductToJoinCard({
           <Badge variant="outline" className="flex items-center gap-1">
             <Percent className="w-3 h-3" />
             {product.percentShare || "0"}%
-          </Badge>
-
-          <Badge variant="secondary" className="flex items-center gap-1">
-            <Handbag className="w-3 h-3" />+{gain} KZ ganho
           </Badge>
         </div>
 

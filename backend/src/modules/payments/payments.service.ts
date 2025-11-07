@@ -117,12 +117,17 @@ export class PaymentsService {
       };
       const valor = payment.amount;
 
-      const { amountToAfiliate, amountToUser, afiliateId, userAfiliationId } =
-        await this.isAfiliatable(
-          String(payment.afiliationcode),
-          payment.productId,
-          this.percent(valor),
-        );
+      const {
+        amountToAfiliate,
+        amountToUser,
+        afiliateId,
+        userAfiliationId,
+        Afifiliate,
+      } = await this.isAfiliatable(
+        String(payment.afiliationcode),
+        payment.productId,
+        this.percent(valor),
+      );
       if (afiliateId && userAfiliationId) {
         await Promise.all([
           this.database.users.update({
@@ -145,7 +150,7 @@ export class PaymentsService {
             where: { id: afiliateId },
           }),
           emailService.senEmail({
-            to: Product.user.email,
+            to: Afifiliate.email,
             subject: '💰 Nova Comissão Recebida - Culonga',
             html: `<!DOCTYPE html>
 <html lang="pt">
@@ -171,7 +176,7 @@ export class PaymentsService {
     </div>
     <div class="content">
       <h1>🎊 Parabéns! Você recebeu uma nova comissão!</h1>
-      <p>Olá, ${Product.user.name},</p>
+      <p>Olá, ${Afiliate.name},</p>
       <p>Seu produto afiliado foi vendido com sucesso. Aqui estão os detalhes:</p>
       
       <div class="info-box">
@@ -440,6 +445,7 @@ export class PaymentsService {
       },
       include: {
         product: true,
+        user: true,
       },
     });
 
@@ -480,6 +486,7 @@ export class PaymentsService {
       amountToAfiliate: commissionAmount,
       afiliateId: canAFiliate.id,
       userAfiliationId: canAFiliate.userId,
+      Afifiliate: canAFiliate.user,
     };
   }
 }
