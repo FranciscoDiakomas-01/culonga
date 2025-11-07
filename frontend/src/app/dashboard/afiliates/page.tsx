@@ -128,7 +128,9 @@ export default function Afiliations() {
                     ))}
                   </span>
                 ) : (
-                  <span className="text-center">Sem produtos afiliados</span>
+                  <span className="text-center">
+                    Sem afiliação , visite o marketplace
+                  </span>
                 )}
               </article>
             )}
@@ -143,7 +145,9 @@ export default function Afiliations() {
                     ))}
                   </span>
                 ) : (
-                  <span className="text-center">Sem produtos afiliados</span>
+                  <span className="text-center">
+                    Sem produtos para se afiliar
+                  </span>
                 )}
               </span>
             )}
