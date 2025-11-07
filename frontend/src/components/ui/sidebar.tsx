@@ -109,27 +109,30 @@ export default function SideBar() {
       label: "Ranking",
       icon: <ChartArea size={18} />,
       to: "/ranking",
-    },
-    {
-      label: "Configurações",
-      icon: <Settings size={18} />,
-      to: "/dashboard/settings",
       isLast: true,
     },
     {
       label: "Cupons",
       icon: <ShoppingCart size={18} />,
       to: "/dashboard/cupons",
+      isLast: true,
     },
     {
       label: "Marketplace",
       icon: <Handbag size={18} />,
       to: "/dashboard/afiliates",
+      isLast: true,
     },
     {
       label: "Suporte",
       icon: <MessageCircleQuestion size={18} />,
       to: "https://api.whatsapp.com/send/?phone=244952755029&text&type=phone_number&app_absent=0",
+      isLast: true,
+    },
+    {
+      label: "Configurações",
+      icon: <Settings size={18} />,
+      to: "/dashboard/settings",
       isLast: true,
     },
   ];

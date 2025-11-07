@@ -1,5 +1,5 @@
 "use client";
-import { Bell } from "lucide-react";
+import { Bell, ChartArea, Handbag, ShoppingCart } from "lucide-react";
 
 import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
@@ -53,10 +53,28 @@ export default function DashBoardHeader({ data }: { data: Prop }) {
           )}
         </div>
         <Link
+          href={"/ranking"}
+          className="border cursor-pointer justify-center flex items-center   rounded-md p-2 lg:hidden"
+        >
+          <ChartArea className="w-5 h-5 " />
+        </Link>
+        <Link
+          href={"/dashboard/cupons"}
+          className="border cursor-pointer justify-center flex items-center   rounded-md p-2 lg:hidden"
+        >
+          <ShoppingCart className="w-5 h-5 " />
+        </Link>{" "}
+        <Link
+          href={"/dashboard/afiliates"}
+          className="border cursor-pointer justify-center flex items-center   rounded-md p-2 lg:hidden"
+        >
+          <Handbag className="w-5 h-5 " />
+        </Link>
+        <Link
           href={"/dashboard/settings"}
           className="border cursor-pointer justify-center flex items-center   rounded-md p-2 lg:hidden"
         >
-          <Settings />
+          <Settings className="w-5 h-5 " />
         </Link>
       </div>
     </header>
