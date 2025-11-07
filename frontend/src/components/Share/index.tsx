@@ -239,14 +239,11 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
         <Button
           variant="outline"
           onClick={handleCopy}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 w-full"
           disabled={!afilition.link}
         >
           <Copy className="w-4 h-4" />
           {copied ? "Link copiado!" : "Copiar link"}
-        </Button>
-        <Button className="bg-primary text-white hover:bg-primary/90">
-          Ver detalhes
         </Button>
       </CardFooter>
     </Card>
