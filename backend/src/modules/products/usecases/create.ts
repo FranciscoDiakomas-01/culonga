@@ -58,6 +58,9 @@ export default class ProductSetter {
           upsell: '',
           status: 'PENDING',
           whatsappSuport: '',
+          totalAfiliationsPurchase: 0,
+          totalAfiliations: 0,
+          totalPurchase: 0,
         },
       });
       const [checkout] = await Promise.all([
