@@ -105,7 +105,7 @@ export default function Afiliations() {
             <Loader2 className="animate-spin" />
           </div>
         ) : (
-          <article className="flex flex-col gap-6">
+          <article className="flex flex-col gap-6 px-4">
             <Button
               className="my-7 w-50"
               variant={isMarketPlace ? "default" : "outline"}
@@ -121,7 +121,7 @@ export default function Afiliations() {
               <article>
                 {Array.isArray(data?.afiliations) &&
                 data?.afiliations.length > 0 ? (
-                  <span className="grid lg:grid-cols-4 gap-4 md:grid-cols-2 grid-cols-1">
+                  <span className="grid lg:grid-cols-4 gap-4  grid-cols-1">
                     {data.afiliations.map((item, idx) => (
                       <AfilitionCard key={idx} afilition={item} />
                     ))}
@@ -136,7 +136,7 @@ export default function Afiliations() {
               <span>
                 {Array.isArray(data?.notAfiliations) &&
                 data?.notAfiliations.length > 0 ? (
-                  <span className="grid lg:grid-cols-4 gap-4 md:grid-cols-2 grid-cols-1">
+                  <span className="grid lg:grid-cols-4 gap-4  grid-cols-1">
                     {data.notAfiliations.map((item, idx) => (
                       <ProductToJoinCard key={idx} product={item} />
                     ))}
