@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import DatabaseService from 'src/services/database/database.service';
 import EmailService from 'src/services/Email/email.service';
 
@@ -7,7 +11,7 @@ export class AffiliatesService {
   private readonly email = new EmailService();
   constructor(private readonly database: DatabaseService) {}
   public async create(productId: string, userId: string) {
-    const [] = await Promise.all([
+    const [product, user, afiliation] = await Promise.all([
       this.database.products.findFirst({
         where: {
           id: productId,
@@ -18,12 +22,23 @@ export class AffiliatesService {
           id: userId,
         },
       }),
-      this.database.a.findFirst({
+      this.database.afiliates.findFirst({
         where: {
-          id: productId,
+          productId,
+          userId,
         },
       }),
     ]);
+
+    if (afiliation) {
+      throw new ConflictException('Afiliação existente');
+    }
+    if (!user) {
+      throw new NotFoundException('Afiliação existente');
+    }
+    if (!product) {
+      throw new NotFoundException('Afiliação existente');
+    }
   }
 
   findAll() {
@@ -32,10 +47,6 @@ export class AffiliatesService {
 
   findOne(id: number) {
     return `This action returns a #${id} affiliate`;
-  }
-
-  update(id: number, updateAffiliateDto: UpdateAffiliateDto) {
-    return `This action updates a #${id} affiliate`;
   }
 
   remove(id: number) {
