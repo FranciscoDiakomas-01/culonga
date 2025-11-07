@@ -109,14 +109,14 @@ export default function Afiliations() {
         ) : (
           <article className="flex flex-col gap-6">
             <Button
-              className="my-7"
+              className="my-7 w-50"
               variant={isMarketPlace ? "default" : "outline"}
               onClick={() => {
                 setReload(true);
                 setIsMarkplace((prev) => !prev);
               }}
             >
-              {isMarketPlace ? "Ver minhas afiliações" : "Tornar-se afiliado"}
+              {isMarketPlace ? "Afiliações" : "MarketPlace"}
             </Button>
 
             {!isMarketPlace && (

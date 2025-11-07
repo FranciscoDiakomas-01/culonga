@@ -50,7 +50,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
@@ -99,56 +99,70 @@ export default function Payments() {
 
   const service = new PaymentService();
 
-  useEffect(() => {
+  // Verificação de autenticação centralizada
+  const checkAuth = useCallback(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/");
-      return;
+      return null;
     }
+    return token;
+  }, [router]);
+
+  useEffect(() => {
+    const token = checkAuth();
+    if (!token) return;
+
     const decodedToken = decodeToken(token);
-    if (decodedToken?.role == "ADMIN") {
-      setIsAdmin(true);
+    setIsAdmin(decodedToken?.role === "ADMIN");
+
+    async function getPayments() {
+      try {
+        const res = await service.getMyPayments(token as string, page);
+        setLoad(false);
+        setData(res);
+        setLastPage(res.data.lastpage ?? 1);
+        setPaymenst(res.data.data ?? []);
+        // Aplicar filtros imediatamente após carregar os pagamentos
+        aplicarFiltros(res.data.data ?? []);
+      } catch (error) {
+        console.error("Erro ao carregar pagamentos:", error);
+        setLoad(false);
+      }
     }
-    if (!token) {
-      router.push("/");
-      return;
-    }
-    async function get(token: string) {
-      const res = await service.getMyPayments(token, page);
-      setLoad(false);
-      setData(res);
-      setLastPage(res.data.lastpage ?? 1);
-      setPaymenst(res.data.data ?? []);
-      setFilteredPayments(res.data.data ?? []);
-    }
-    get(token);
+
+    getPayments();
+
     const interval = setInterval(() => {
-      get(token);
+      getPayments();
     }, 5000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [page]);
+  }, [page, checkAuth]);
 
-  useEffect(() => {
-    aplicarFiltros();
-  }, [filter, Payments, filteredStats, dateStart, dateEnd]);
+  // Função de filtro otimizada
+  const aplicarFiltros = useCallback(
+    (paymentsList = Payments) => {
+      let resultado = [...paymentsList];
 
-  const aplicarFiltros = () => {
-    let resultado = [...Payments];
+      // Aplicar filtro de data apenas para não-admins
+      if (!isAdmin && dateStart && dateEnd) {
+        resultado = aplicarFiltroData(resultado);
+      }
 
-    if (filteredStats && dateStart && dateEnd) {
-      resultado = aplicarFiltroData(resultado);
-    }
-    if (filter !== "ALL") {
-      resultado = resultado.filter((item) => {
-        return item.status.toUpperCase() === filter.toUpperCase();
-      });
-    }
+      // Aplicar filtro de status
+      if (filter !== "ALL") {
+        resultado = resultado.filter((item) => {
+          return item.status.toUpperCase() === filter.toUpperCase();
+        });
+      }
 
-    setFilteredPayments(resultado);
-  };
+      setFilteredPayments(resultado);
+    },
+    [filter, Payments, dateStart, dateEnd, isAdmin]
+  );
 
   const aplicarFiltroData = (paymentsList: any[]) => {
     if (!dateStart || !dateEnd) return paymentsList;
@@ -180,13 +194,27 @@ export default function Payments() {
   };
 
   const handleDateFilter = async () => {
-    if (!isAdmin) {
-      if (!dateStart || !dateEnd) {
-        toast.error("Selecione ambas as datas");
-        return;
-      }
+    // Garantir que apenas users não-admin podem filtrar por data
+    if (isAdmin) {
+      toast.error("Administradores não podem filtrar por data");
+      return;
+    }
 
-      const token = localStorage.getItem("token") as string;
+    if (!dateStart || !dateEnd) {
+      toast.error("Selecione ambas as datas");
+      return;
+    }
+
+    // Validar se a data de início é anterior à data de fim
+    if (dateStart > dateEnd) {
+      toast.error("A data de início deve ser anterior à data de fim");
+      return;
+    }
+
+    try {
+      const token = checkAuth();
+      if (!token) return;
+
       const periodo = `${dateStart.toLocaleDateString(
         "pt-AO"
       )} - ${dateEnd.toLocaleDateString("pt-AO")}`;
@@ -203,7 +231,13 @@ export default function Payments() {
         total: data?.total ?? 0,
       });
 
+      // Aplicar filtros após definir as datas
+      aplicarFiltros();
+
       toast.success(`Filtrado: ${periodo}`);
+    } catch (error) {
+      console.error("Erro ao filtrar por data:", error);
+      toast.error("Erro ao aplicar filtro de data");
     }
   };
 
@@ -211,33 +245,48 @@ export default function Payments() {
     setDateStart(undefined);
     setDateEnd(undefined);
     setFilteredStats(null);
-    setFilteredPayments(Payments);
+    aplicarFiltros(); // Reaplicar filtros sem data
     toast.info("Filtro de data removido");
   };
 
   async function updateManualyStatus(status: "1" | "2", id: string) {
-    const token = localStorage.getItem("token") as string;
+    const token = checkAuth();
+    if (!token) return;
+
     setProcessing({
       id,
       loading: true,
       operation: status,
     });
-    const data = (await service.updateMnualyPaymentStatus({
-      token,
-      payid: id,
-      status,
-    })) as any;
-    toast.info(data?.message ?? "Erro ao actualizar", {
-      description: data?.description,
-    });
-    setTimeout(() => {
-      setProcessing({
-        id: "",
-        loading: false,
-        operation: null,
+
+    try {
+      const data = (await service.updateMnualyPaymentStatus({
+        token,
+        payid: id,
+        status,
+      })) as any;
+
+      toast.info(data?.message ?? "Erro ao actualizar", {
+        description: data?.description,
       });
-    }, 1000);
+    } catch (error) {
+      console.error("Erro ao atualizar status:", error);
+      toast.error("Erro ao atualizar status do pagamento");
+    } finally {
+      setTimeout(() => {
+        setProcessing({
+          id: "",
+          loading: false,
+          operation: null,
+        });
+      }, 1000);
+    }
   }
+
+  // Efeito para aplicar filtros quando qualquer dependência mudar
+  useEffect(() => {
+    aplicarFiltros();
+  }, [aplicarFiltros]);
 
   return (
     <main>
@@ -291,6 +340,8 @@ export default function Payments() {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {/* Filtro de data apenas para não-admins */}
                   {!isAdmin && (
                     <div className="grid gap-3 mt-5 w-full z-60">
                       <p>Filtrar por período</p>
@@ -373,6 +424,7 @@ export default function Payments() {
                       type="submit"
                       className="bg-green-600 hover:bg-green-700 text-white"
                       onClick={handleDateFilter}
+                      disabled={isAdmin} // Desabilitar para admins
                     >
                       Filtrar
                     </Button>
