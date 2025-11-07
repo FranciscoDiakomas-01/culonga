@@ -60,7 +60,7 @@ export class TasksService implements OnModuleInit {
     });
     this.logger.debug(`Deleted ${deleted.count} Canceled withdrawal`);
   }
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_WEEKEND)
   async handleWeeklyReport() {
     try {
       this.logger.debug('Iniciando relatório semanal da plataforma...');
