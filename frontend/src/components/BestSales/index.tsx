@@ -45,6 +45,7 @@ type IProduct = {
 
 export function BestSales() {
   const [load, setLoad] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [myProducts, setMyProducts] = useState<IProduct[]>([]);
   const service = new ProductConsumer();
 
@@ -66,6 +67,17 @@ export function BestSales() {
     setLoad(true);
     const token = localStorage.getItem("token");
     if (!token) {
+      setIsAdmin(false);
+      setLoad(false);
+      return;
+    }
+
+    const decoded = decodeToken(token);
+    const userIsAdmin = decoded?.role === "ADMIN";
+    setIsAdmin(userIsAdmin);
+
+    // Se for admin, não carrega os dados
+    if (userIsAdmin) {
       setLoad(false);
       return;
     }
@@ -95,6 +107,12 @@ export function BestSales() {
     );
   }
 
+  // Se for admin, não mostra o gráfico
+  if (isAdmin) {
+    return null;
+  }
+
+  // Se não há dados de vendas
   if (chartData.length === 0) {
     return (
       <Card className="bg-transparent backdrop-blur-2xl mb-8">
