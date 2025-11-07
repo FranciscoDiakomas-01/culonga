@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AfilitionCard } from "@/components/Share";
+import { AfilitionCard, ProductToJoinCard } from "@/components/Share";
 
 type Afilition = {
   id: number;
@@ -137,7 +137,20 @@ export default function Afiliations() {
               </article>
             )}
 
-            {isMarketPlace && <span></span>}
+            {isMarketPlace && (
+              <span>
+                {Array.isArray(data?.notAfiliations) &&
+                data?.notAfiliations.length > 0 ? (
+                  <span className="grid lg:grid-cols-4 gap-4 md:grid-cols-2 grid-cols-1">
+                    {data.notAfiliations.map((item, idx) => (
+                      <ProductToJoinCard key={idx} product={item} />
+                    ))}
+                  </span>
+                ) : (
+                  <span className="text-center">Sem produtos afiliados</span>
+                )}
+              </span>
+            )}
           </article>
         )}
       </section>
