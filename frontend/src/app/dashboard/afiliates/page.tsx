@@ -80,8 +80,6 @@ export default function Afiliations() {
       } else {
         const value = content as typeof data;
         setData(value);
-        console.log(value);
-        setIsMarkplace(value?.afiliations.length == 0);
       }
       setTimeout(() => {
         setLoading(false);
@@ -112,7 +110,7 @@ export default function Afiliations() {
               className="my-7 w-50"
               variant={isMarketPlace ? "default" : "outline"}
               onClick={() => {
-                setReload(true);
+                setReload((prev) => !prev);
                 setIsMarkplace((prev) => !prev);
               }}
             >

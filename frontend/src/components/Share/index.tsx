@@ -109,7 +109,6 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
       console.error("Erro ao copiar link:", error);
-      // Fallback para navegadores mais antigos
       const textArea = document.createElement("textarea");
       textArea.value = afilition.link;
       document.body.appendChild(textArea);
@@ -165,7 +164,7 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
                 target.style.display = "none";
               }}
             />
-            <AvatarFallback className="bg-primary text-white">
+            <AvatarFallback>
               {product.user?.name
                 ? product.user.name.charAt(0).toUpperCase()
                 : "U"}
@@ -346,7 +345,7 @@ export function ProductToJoinCard({
                 target.style.display = "none";
               }}
             />
-            <AvatarFallback className="bg-primary text-white">
+            <AvatarFallback>
               {product.user?.name
                 ? product.user.name.charAt(0).toUpperCase()
                 : "U"}
