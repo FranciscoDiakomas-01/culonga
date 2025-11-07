@@ -180,29 +180,31 @@ export default function Payments() {
   };
 
   const handleDateFilter = async () => {
-    if (!dateStart || !dateEnd) {
-      toast.error("Selecione ambas as datas");
-      return;
+    if (!isAdmin) {
+      if (!dateStart || !dateEnd) {
+        toast.error("Selecione ambas as datas");
+        return;
+      }
+
+      const token = localStorage.getItem("token") as string;
+      const periodo = `${dateStart.toLocaleDateString(
+        "pt-AO"
+      )} - ${dateEnd.toLocaleDateString("pt-AO")}`;
+
+      const data = await service.getByInterval(
+        token,
+        dateStart.toISOString(),
+        dateEnd.toISOString()
+      );
+
+      setFilteredStats({
+        periodo,
+        sales: data?.sales ?? 0,
+        total: data?.total ?? 0,
+      });
+
+      toast.success(`Filtrado: ${periodo}`);
     }
-
-    const token = localStorage.getItem("token") as string;
-    const periodo = `${dateStart.toLocaleDateString(
-      "pt-AO"
-    )} - ${dateEnd.toLocaleDateString("pt-AO")}`;
-
-    const data = await service.getByInterval(
-      token,
-      dateStart.toISOString(),
-      dateEnd.toISOString()
-    );
-
-    setFilteredStats({
-      periodo,
-      sales: data?.sales ?? 0,
-      total: data?.total ?? 0,
-    });
-
-    toast.success(`Filtrado: ${periodo}`);
   };
 
   const limparFiltroData = () => {
