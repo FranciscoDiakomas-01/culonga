@@ -67,56 +67,51 @@ export class PaymentsService {
     const updater = new PaymentUpdate(this.database);
     return await updater.update(updatePaymentDto);
   }
+
   public async updateManualy(data: updateManualy) {
-    let canMark = true;
     const [payment] = await Promise.all([
       this.database.payment.findFirst({
         where: {
-          OR: [
-            {
-              uuid: data.payid,
-            },
-            {
-              paypayCode: data.payid,
-            },
-          ],
+          OR: [{ uuid: data.payid }, { paypayCode: data.payid }],
         },
-        include: {
-          User: true,
-        },
+        include: { User: true },
       }),
     ]);
 
     if (!payment || !payment.User) {
       throw new NotFoundException('Produto não encontrado');
     }
+
     if (payment.status != 'PENDING') {
       throw new NotFoundException('Pagamento já foi modificado');
     }
+
     const Product = await this.database.products.findFirst({
       where: { id: payment.productId },
-      include: {
-        user: true,
-      },
+      include: { user: true },
     });
 
-    if (!Product || !Product?.user) {
-      return;
-    }
+    if (!Product || !Product.user) return;
+
     const mappedStatus: Status = data.status == '1' ? 'APROVED' : 'CANCELED';
+
     await this.database.payment.update({
       data: { status: mappedStatus },
       where: { uuid: payment.uuid },
     });
-    if (mappedStatus == 'APROVED') {
+
+    if (mappedStatus === 'APROVED') {
       const emailService = new EmailService();
       const user = JSON.parse(payment.user as string) as {
         name: string;
         email: string;
         telefone: string;
       };
-      const valor = payment.amount;
 
+      // 1️⃣ Calcula o valor líquido após taxa da plataforma
+      const valorLiquido = this.percent(payment.amount);
+
+      // 2️⃣ Verifica se há afiliado e divide
       const {
         amountToAfiliate,
         amountToUser,
@@ -126,27 +121,21 @@ export class PaymentsService {
       } = await this.isAfiliatable(
         String(payment.afiliationcode),
         payment.productId,
-        this.percent(valor),
+        valorLiquido,
       );
+
+      // 3️⃣ Atualiza saldo do afiliado
       if (afiliateId && userAfiliationId) {
         await Promise.all([
           this.database.users.update({
             data: {
-              totalEarned: {
-                increment: amountToAfiliate,
-              },
-              availableBalance: {
-                increment: amountToAfiliate,
-              },
+              totalEarned: { increment: amountToAfiliate },
+              availableBalance: { increment: amountToAfiliate },
             },
             where: { id: userAfiliationId },
           }),
           this.database.afiliates.update({
-            data: {
-              totalPurchases: {
-                increment: amountToAfiliate,
-              },
-            },
+            data: { totalPurchases: { increment: amountToAfiliate } },
             where: { id: afiliateId },
           }),
           emailService.senEmail({
@@ -182,7 +171,7 @@ export class PaymentsService {
       <div class="info-box">
 
   <p><strong>Produto:</strong> ${Product?.title}</p>
-  <p><strong>Valor da venda:</strong> ${valor.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
+  <p><strong>Valor da venda:</strong> ${amountToAfiliate.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
   <p><strong>Seu lucro:</strong> ${amountToAfiliate.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
   <p><strong>Comprador:</strong> ${user.name} (${user.email})</p>
   <p><strong>Data da venda:</strong> ${new Date().toLocaleString('pt-AO')}</p>
@@ -200,6 +189,20 @@ export class PaymentsService {
           }),
         ]);
       }
+
+      await this.database.users.update({
+        data: {
+          totalEarned: { increment: amountToUser },
+          availableBalance: { increment: amountToUser },
+        },
+        where: { id: payment.User.id },
+      });
+
+      await this.database.products.update({
+        where: { id: payment.productId },
+        data: { totalPurchase: { increment: payment.amount } },
+      });
+
       await Promise.all([
         emailService.senEmail({
           to: user.email,
@@ -351,7 +354,7 @@ export class PaymentsService {
       
     <div class="info-box">
   <p><strong>Produto:</strong> ${Product?.title}</p>
-  <p><strong>Valor da venda:</strong> ${valor.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
+  <p><strong>Valor da venda:</strong> ${amountToUser.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
   <p><strong>Seu lucro:</strong> ${amountToUser.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
   <p><strong>Comprador:</strong> ${user.name} (${user.email})</p>
   <p><strong>Data da venda:</strong> ${new Date().toLocaleString('pt-AO')}</p>
@@ -372,41 +375,18 @@ export class PaymentsService {
 </body>
 </html>`,
         }),
-        this.database.users.update({
-          data: {
-            totalEarned: {
-              increment: valor,
-            },
-            availableBalance: {
-              increment: amountToUser,
-            },
-          },
-          where: { id: payment.User.id },
-        }),
         this.pushKit.send(),
-        ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
-        this.database.products.update({
-          where: {
-            id: payment.productId,
-          },
-          data: {
-            totalPurchase: {
-              increment: payment.amount,
-            },
-          },
-        }),
+        ExuteMyWebhooks(payment.User.id, this.database, payment.uuid),
       ]);
 
+      // 7️⃣ Atualiza cupom se houver
       try {
-        if (payment?.coupun) {
+        if (payment.coupun) {
           const couponData = JSON.parse(payment.coupun as any);
           if (couponData?.id) {
-            const amount = Number(payment.amount) || 0;
             await this.database.coupon.update({
               where: { id: couponData.id },
-              data: {
-                totalPurchased: { increment: amount },
-              },
+              data: { totalPurchased: { increment: payment.amount } },
             });
           }
         }
@@ -416,71 +396,51 @@ export class PaymentsService {
         );
       }
     }
-    return { message: 'Pagamento modificado', product: Product, canMark };
+
+    return { message: 'Pagamento modificado', product: Product };
   }
 
+  // Calcula valor líquido após taxa da plataforma
   private percent(montante: number): number {
     const taxaPlataforma = 0.08;
     const liquido = montante * (1 - taxaPlataforma);
     return Number(liquido.toFixed(2));
   }
 
+  // Calcula valor do afiliado e do vendedor
   private async isAfiliatable(
     afiliationCode: string,
     productId: string,
     ammountRefined: number,
   ) {
     if (!afiliationCode) {
-      return {
-        amountToUser: ammountRefined,
-        amountToAfiliate: 0,
-      };
+      return { amountToUser: ammountRefined, amountToAfiliate: 0 };
     }
+
     const canAFiliate = await this.database.afiliates.findFirst({
-      where: {
-        link: {
-          endsWith: afiliationCode,
-        },
-        productId,
-      },
-      include: {
-        product: true,
-        user: true,
-      },
+      where: { link: { endsWith: afiliationCode }, productId },
+      include: { product: true, user: true },
     });
 
     if (!canAFiliate) {
-      return {
-        amountToUser: ammountRefined,
-        amountToAfiliate: 0,
-      };
+      return { amountToUser: ammountRefined, amountToAfiliate: 0 };
     }
-    const { product } = canAFiliate;
+
     const percentInAfiliation = canAFiliate.product.percentShare;
-    const commissionAmount = (product.price * percentInAfiliation) / 100;
+    const commissionAmount = (ammountRefined * percentInAfiliation) / 100;
     const amountToProductOwner = ammountRefined - commissionAmount;
+
     await Promise.all([
       this.database.afiliates.update({
-        data: {
-          totalSells: {
-            increment: 1,
-          },
-        },
-        where: {
-          id: canAFiliate?.id,
-        },
+        data: { totalSells: { increment: 1 } },
+        where: { id: canAFiliate.id },
       }),
       this.database.users.update({
-        data: {
-          totalAfiliations: {
-            increment: 1,
-          },
-        },
-        where: {
-          id: canAFiliate.userId,
-        },
+        data: { totalAfiliations: { increment: 1 } },
+        where: { id: canAFiliate.userId },
       }),
     ]);
+
     return {
       amountToUser: amountToProductOwner,
       amountToAfiliate: commissionAmount,
