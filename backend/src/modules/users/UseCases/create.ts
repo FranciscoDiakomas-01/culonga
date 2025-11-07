@@ -63,6 +63,13 @@ export default class UserSetter {
           ...User,
           role: 'SELLER',
           status: 'CREATED',
+          totalAfiliateGain: 0,
+          totalAfiliateMade: 0,
+          totalAfiliates: 0,
+          totalAfiliations: 0,
+          totalEarned: 0,
+          totalTranfered: 0,
+          totatReciev: 0,
           password: hashPasword,
         },
       });

@@ -206,10 +206,7 @@ export default class ProductGetter {
             where: {
               userId: userid,
             },
-            orderBy: {
-              createdAt: 'desc',
-              totalPurchase: 'desc',
-            },
+            orderBy: [{ createdAt: 'desc' }, { totalPurchase: 'desc' }],
           }),
           this.database.products.count({
             where: {
@@ -263,10 +260,7 @@ export default class ProductGetter {
         },
         take: limit,
         skip: (page - 1) * limit,
-        orderBy: {
-          createdAt: 'desc',
-          totalPurchase: 'desc',
-        },
+        orderBy: [{ createdAt: 'desc' }, { totalPurchase: 'desc' }],
       }),
       this.database.products.count({}),
     ]);
