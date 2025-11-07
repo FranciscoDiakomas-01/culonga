@@ -289,74 +289,76 @@ export default function Payments() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="grid gap-3 mt-5 w-full z-60">
-                    <p>Filtrar por período</p>
-                    <div className="flex flex-col gap-3">
-                      <Label htmlFor="date-start" className="px-1">
-                        Data de início
-                      </Label>
-                      <Popover open={openStart} onOpenChange={setOpenStart}>
-                        <PopoverTrigger asChild className="w-full ">
-                          <Button
-                            variant="outline"
-                            id="date-start"
-                            className="w-full justify-between font-normal"
+                  {!isAdmin && (
+                    <div className="grid gap-3 mt-5 w-full z-60">
+                      <p>Filtrar por período</p>
+                      <div className="flex flex-col gap-3">
+                        <Label htmlFor="date-start" className="px-1">
+                          Data de início
+                        </Label>
+                        <Popover open={openStart} onOpenChange={setOpenStart}>
+                          <PopoverTrigger asChild className="w-full ">
+                            <Button
+                              variant="outline"
+                              id="date-start"
+                              className="w-full justify-between font-normal"
+                            >
+                              {dateStart
+                                ? dateStart.toLocaleDateString("pt-AO")
+                                : "Selecione a data"}
+                              <ChevronDownIcon />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-full overflow-hidden p-0"
+                            align="start"
+                            style={{ zIndex: 9999 }}
                           >
-                            {dateStart
-                              ? dateStart.toLocaleDateString("pt-AO")
-                              : "Selecione a data"}
-                            <ChevronDownIcon />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-full overflow-hidden p-0"
-                          align="start"
-                          style={{ zIndex: 9999 }}
-                        >
-                          <Calendar
-                            mode="single"
-                            selected={dateStart}
-                            onSelect={(date) => {
-                              setDateStart(date);
-                              setOpenStart(false);
-                            }}
-                          />
-                        </PopoverContent>
-                      </Popover>
+                            <Calendar
+                              mode="single"
+                              selected={dateStart}
+                              onSelect={(date) => {
+                                setDateStart(date);
+                                setOpenStart(false);
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
 
-                      <Label htmlFor="date-end" className="px-1">
-                        Data de fim
-                      </Label>
-                      <Popover open={openEnd} onOpenChange={setOpenEnd}>
-                        <PopoverTrigger asChild className="w-full ">
-                          <Button
-                            variant="outline"
-                            id="date-end"
-                            className="w-full justify-between font-normal"
+                        <Label htmlFor="date-end" className="px-1">
+                          Data de fim
+                        </Label>
+                        <Popover open={openEnd} onOpenChange={setOpenEnd}>
+                          <PopoverTrigger asChild className="w-full ">
+                            <Button
+                              variant="outline"
+                              id="date-end"
+                              className="w-full justify-between font-normal"
+                            >
+                              {dateEnd
+                                ? dateEnd.toLocaleDateString("pt-AO")
+                                : "Selecione a data"}
+                              <ChevronDownIcon />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-full overflow-hidden p-0"
+                            align="start"
+                            style={{ zIndex: 1000 }}
                           >
-                            {dateEnd
-                              ? dateEnd.toLocaleDateString("pt-AO")
-                              : "Selecione a data"}
-                            <ChevronDownIcon />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-full overflow-hidden p-0"
-                          align="start"
-                          style={{ zIndex: 1000 }}
-                        >
-                          <Calendar
-                            mode="single"
-                            selected={dateEnd}
-                            onSelect={(date) => {
-                              setDateEnd(date);
-                              setOpenEnd(false);
-                            }}
-                          />
-                        </PopoverContent>
-                      </Popover>
+                            <Calendar
+                              mode="single"
+                              selected={dateEnd}
+                              onSelect={(date) => {
+                                setDateEnd(date);
+                                setOpenEnd(false);
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   <div className="border-t place-self-center  w-full dark:border-white/10"></div>
                   <SheetFooter className="grid grid-cols-2 gap-2 px-0">

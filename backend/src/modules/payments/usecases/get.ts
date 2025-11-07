@@ -544,28 +544,6 @@ export default class PaymentGetter {
           message: 'Perfil não encontrado',
         };
       }
-
-      if (user?.role === 'ADMIN') {
-        const totalPayments = await this.database.payment.aggregate({
-          _sum: {
-            amount: true,
-          },
-          where: {
-            status: 'APROVED',
-            createdAt: {
-              gte: date1,
-              lte: dat2,
-            },
-          },
-          _count: true,
-        });
-        this.logger.debug('admin');
-
-        return {
-          total: this.percent(totalPayments?._sum?.amount ?? 0),
-          sales: totalPayments._count,
-        };
-      }
       const totalPayments = await this.database.payment.aggregate({
         _sum: {
           amount: true,
