@@ -116,6 +116,85 @@ export class PaymentsService {
         telefone: string;
       };
       const valor = payment.amount;
+
+      const { amountToAfiliate, amountToUser, afiliateId, userAfiliationId } =
+        await this.isAfiliatable(
+          String(payment.afiliationcode),
+          payment.productId,
+          this.percent(valor),
+        );
+      if (afiliateId && userAfiliationId) {
+        await Promise.all([
+          this.database.users.update({
+            data: {
+              totalEarned: {
+                increment: amountToAfiliate,
+              },
+              availableBalance: {
+                increment: amountToAfiliate,
+              },
+            },
+            where: { id: userAfiliationId },
+          }),
+          this.database.afiliates.update({
+            data: {
+              totalPurchases: {
+                increment: amountToAfiliate,
+              },
+            },
+            where: { id: afiliateId },
+          }),
+          emailService.senEmail({
+            to: Product.user.email,
+            subject: '💰 Nova Comissão Recebida - Culonga',
+            html: `<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nova Venda - Culonga</title>
+  <style>
+    body { background-color: #f9fafb; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; color: #333; }
+    .container { max-width: 600px; margin: 30px auto; background: #ffffff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); overflow: hidden; }
+    .header { background-color: #10b981; color: #fff; padding: 20px; text-align: center; }
+    .content { padding: 25px; }
+    .content h1 { font-size: 22px; color: #10b981; }
+    .content p { font-size: 15px; line-height: 1.6; margin: 10px 0; }
+    .info-box { background: #f0fdf4; border-left: 4px solid #10b981; padding: 15px; margin: 15px 0; border-radius: 4px; }
+    .footer { background: #f3f4f6; padding: 15px; text-align: center; font-size: 12px; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>💰 Nova Venda - Culonga</h2>
+    </div>
+    <div class="content">
+      <h1>🎊 Parabéns! Você recebeu uma nova comissão!</h1>
+      <p>Olá, ${Product.user.name},</p>
+      <p>Seu produto afiliado foi vendido com sucesso. Aqui estão os detalhes:</p>
+      
+      <div class="info-box">
+
+  <p><strong>Produto:</strong> ${Product?.title}</p>
+  <p><strong>Valor da venda:</strong> ${valor.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
+  <p><strong>Seu lucro:</strong> ${amountToAfiliate.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
+  <p><strong>Comprador:</strong> ${user.name} (${user.email})</p>
+  <p><strong>Data da venda:</strong> ${new Date().toLocaleString('pt-AO')}</p>
+
+      </div>
+      <p>Continue afiliando-se a produtos de qualidade para aumentar suas vendas! 🚀</p>
+    </div>
+    <div class="footer">
+      <p>© ${new Date().getFullYear()} Culonga. Todos os direitos reservados.</p>
+      <p>Esta é uma mensagem automática, por favor não responda.</p>
+    </div>
+  </div>
+</body>
+</html>`,
+          }),
+        ]);
+      }
       await Promise.all([
         emailService.senEmail({
           to: user.email,
@@ -268,7 +347,7 @@ export class PaymentsService {
     <div class="info-box">
   <p><strong>Produto:</strong> ${Product?.title}</p>
   <p><strong>Valor da venda:</strong> ${valor.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
-  <p><strong>Seu lucro:</strong> ${this.percent(valor).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
+  <p><strong>Seu lucro:</strong> ${amountToUser.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
   <p><strong>Comprador:</strong> ${user.name} (${user.email})</p>
   <p><strong>Data da venda:</strong> ${new Date().toLocaleString('pt-AO')}</p>
 </div>
@@ -276,7 +355,7 @@ export class PaymentsService {
 <p>O valor já foi creditado na sua conta Culonga e está disponível para saque.</p>
 
 <p><strong>Saldo anterior:</strong> ${payment.User.availableBalance.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
-<p><strong>Novo saldo:</strong> ${(payment.User.availableBalance + this.percent(valor)).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
+<p><strong>Novo saldo:</strong> ${(payment.User.availableBalance + amountToUser).toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>
 
 <p>Continue criando produtos de qualidade para aumentar suas vendas! 🚀</p>
 </div>
@@ -294,7 +373,7 @@ export class PaymentsService {
               increment: valor,
             },
             availableBalance: {
-              increment: this.percent(valor),
+              increment: amountToUser,
             },
           },
           where: { id: payment.User.id },
@@ -339,5 +418,68 @@ export class PaymentsService {
     const taxaPlataforma = 0.08;
     const liquido = montante * (1 - taxaPlataforma);
     return Number(liquido.toFixed(2));
+  }
+
+  private async isAfiliatable(
+    afiliationCode: string,
+    productId: string,
+    ammountRefined: number,
+  ) {
+    if (!afiliationCode) {
+      return {
+        amountToUser: ammountRefined,
+        amountToAfiliate: 0,
+      };
+    }
+    const canAFiliate = await this.database.afiliates.findFirst({
+      where: {
+        link: {
+          endsWith: afiliationCode,
+        },
+        productId,
+      },
+      include: {
+        product: true,
+      },
+    });
+
+    if (!canAFiliate) {
+      return {
+        amountToUser: ammountRefined,
+        amountToAfiliate: 0,
+      };
+    }
+    const { product } = canAFiliate;
+    const percentInAfiliation = canAFiliate.product.percentShare;
+    const commissionAmount = (product.price * percentInAfiliation) / 100;
+    const amountToProductOwner = ammountRefined - commissionAmount;
+    await Promise.all([
+      this.database.afiliates.update({
+        data: {
+          totalSells: {
+            increment: 1,
+          },
+        },
+        where: {
+          id: canAFiliate?.id,
+        },
+      }),
+      this.database.users.update({
+        data: {
+          totalAfiliations: {
+            increment: 1,
+          },
+        },
+        where: {
+          id: canAFiliate.userId,
+        },
+      }),
+    ]);
+    return {
+      amountToUser: amountToProductOwner,
+      amountToAfiliate: commissionAmount,
+      afiliateId: canAFiliate.id,
+      userAfiliationId: canAFiliate.userId,
+    };
   }
 }

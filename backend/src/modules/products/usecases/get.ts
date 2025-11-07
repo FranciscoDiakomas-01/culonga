@@ -43,15 +43,21 @@ export default class ProductGetter {
               notIn: ['BANED', 'CANCELED', 'REJECTED'],
             },
           },
-          select: this.productSelect,
-        }),
+          select: {
+            ...this.productSelect,
+            percentShare: true,
+          },
+        }) as any,
         this.database.offer.findUnique({
           where: {
             id: id,
           },
           select: {
             product: {
-              select: this.productSelect,
+              select: {
+                ...this.productSelect,
+                percentShare: true,
+              },
             },
             price: true,
             link: true,
@@ -151,6 +157,7 @@ export default class ProductGetter {
           message: 'Produto não encontrado ou foi banido',
         };
       }
+      product.percent = product?.percentShare;
       return {
         product: product ?? {
           banner: offer?.product.banner,
@@ -166,6 +173,7 @@ export default class ProductGetter {
           updatedAt: offer?.updatedAt,
           userId: offer?.product?.userId,
           upsell: offer?.product?.upsell,
+          percent: offer?.product.percentShare,
         },
         orderbumps: OrderBumps,
         type: product ? 'Product' : 'Offer',

@@ -18,7 +18,7 @@ import {
   Verified,
   Zap,
 } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -40,7 +40,7 @@ import { CopyButton } from "@/components/Copy";
 export default function Chekout() {
   const { id } = useParams();
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
+  const search = useSearchParams();
 
   const [payId, setpayId] = useState("");
   const [product, setProduct] = useState<any>({});
@@ -248,6 +248,7 @@ export default function Chekout() {
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const afiateCode = search.get("aff");
     const data = new FormData(e.currentTarget);
     const name = data.get("name") as string;
     const cupon = data.get("cupon") as string | undefined;
@@ -279,6 +280,7 @@ export default function Chekout() {
       userid: product.userId,
       tel,
       cuponCode: cupon,
+      afiateCode,
     };
 
     if (pixelId) {
@@ -313,6 +315,7 @@ export default function Chekout() {
       orderbumps,
       tel: body.tel,
       cuponCode: body.cuponCode,
+      afiateCode : body.afiateCode
     });
 
     if (res?.id) {

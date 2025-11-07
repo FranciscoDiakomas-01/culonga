@@ -120,9 +120,14 @@ export default function SideBar() {
       to: "/dashboard/cupons",
     },
     {
+      label: "Afiliações",
+      icon: <ShoppingCart size={18} />,
+      to: "/dashboard/afiliates",
+    },
+    {
       label: "Suporte",
       icon: <MessageCircleQuestion size={18} />,
-      to: "https://api.whatsapp.com/send/?phone=244952775029&text&type=phone_number&app_absent=0",
+      to: "https://api.whatsapp.com/send/?phone=244952755029&text&type=phone_number&app_absent=0",
       isLast: true,
     },
   ];

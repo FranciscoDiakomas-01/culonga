@@ -10,6 +10,7 @@ import {
   IsString,
   IsUrl,
   IsUUID,
+  Max,
   Min,
 } from 'class-validator';
 
@@ -78,6 +79,12 @@ export class UpdateProductDTO {
   @IsInt({ message: 'Preço precisa ser um número' })
   @Min(100, { message: 'Preço mínimo é 100' })
   price: number;
+
+  @IsNotEmpty({ message: 'Comisão deve existir' })
+  @IsInt({ message: 'Comisão deve existir' })
+  @Max(100, { message: 'Comisão deve existir' })
+  @Min(0, { message: 'Comisão deve existir' })
+  percent: number;
 
   @IsString({ message: 'O nome precisa ser textual' })
   @IsNotEmpty({ message: 'O nome não deve ser vazio' })

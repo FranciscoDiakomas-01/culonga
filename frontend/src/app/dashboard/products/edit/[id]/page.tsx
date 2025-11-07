@@ -210,7 +210,8 @@ export default function EditProductPage() {
       !product.price ||
       !product.whatsappSuport ||
       !product.category ||
-      !product.type
+      !product.type ||
+      !product.percent
     ) {
       toast.info("Preenche os dados");
       return;
@@ -231,6 +232,7 @@ export default function EditProductPage() {
       description: product.description,
       price: product.price,
       garant: product.garant,
+      percent: product.percent,
     };
     setProcessing(true);
     const res = await service.update(token, body);
@@ -262,6 +264,7 @@ export default function EditProductPage() {
       setProcessing(false);
     }, 1000);
   }
+
   async function handelOnSubmitProductOffer(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const token = localStorage.getItem("token");
@@ -425,6 +428,31 @@ export default function EditProductPage() {
                                     setProduct((prev: any) => ({
                                       ...prev,
                                       price: +e.target.value,
+                                    }));
+                                  }
+                                }}
+                              />
+                            </div>
+
+                            {/* Preço */}
+                            <div className="flex flex-col gap-3">
+                              <Label htmlFor="price">
+                                Percetagem de Afiliação
+                              </Label>
+                              <Input
+                                id="price"
+                                name="price"
+                                type="number"
+                                value={product?.percent ?? ""}
+                                placeholder="Percetagem de Afiliação"
+                                required
+                                min={0}
+                                max={100}
+                                onChange={(e) => {
+                                  if (product) {
+                                    setProduct((prev: any) => ({
+                                      ...prev,
+                                      percent: +e.target.value,
                                     }));
                                   }
                                 }}

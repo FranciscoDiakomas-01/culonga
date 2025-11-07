@@ -120,6 +120,7 @@ export default class PaymentService {
     userid: string;
     tel: string;
     cuponCode: string | undefined;
+    afiateCode: any;
   }) {
     try {
       const res = await fetch(`${server}payments`, {

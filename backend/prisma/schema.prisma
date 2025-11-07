@@ -31,6 +31,8 @@ model Users {
   totalTranfered    Int               @default(0)
   totatReciev       Int               @default(0)
   totalAfiliations  Int?              @default(0)
+  afiliationsAmount Int               @default(0)
+  Afiliates         Afiliates[]
   Bank              Bank[]
   Coupons           Coupon[]
   Integrations      Integration[]
@@ -139,6 +141,7 @@ model Products {
   percentShare             Int              @default(0)
   totalAfiliations         Int?             @default(0)
   totalAfiliationsPurchase Int?             @default(0)
+  Afiliates                Afiliates[]
   offers                   Offer[]
   checkout                 ProductCheckout?
   user                     Users            @relation(fields: [userId], references: [id])
@@ -154,6 +157,8 @@ model Afiliates {
   status         Boolean  @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now()) @updatedAt
+  product        Products @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user           Users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([userId, productId])
 }
@@ -172,23 +177,25 @@ model ProductCheckout {
 }
 
 model Payment {
-  uuid        String    @id @default(uuid())
-  method      PayMethod
-  status      Status    @default(PENDING)
-  amount      Int
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now()) @updatedAt
-  user        Json
-  order       Int       @unique @default(autoincrement())
-  orderbumps  String[]
-  paypayCode  String?   @unique
-  productId   String
-  products    String[]
-  userid      String
-  product     Json?
-  description String?
-  coupun      Json?
-  User        Users     @relation(fields: [userid], references: [id], onDelete: Cascade)
+  uuid           String    @id @default(uuid())
+  method         PayMethod
+  status         Status    @default(PENDING)
+  amount         Int
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+  user           Json
+  order          Int       @unique @default(autoincrement())
+  orderbumps     String[]
+  paypayCode     String?   @unique
+  productId      String
+  products       String[]
+  userid         String
+  product        Json?
+  description    String?
+  coupun         Json?
+  afiliationused Boolean   @default(false)
+  afiliationcode String?   @db.VarChar(255)
+  User           Users     @relation(fields: [userid], references: [id], onDelete: Cascade)
 }
 
 model Notification {

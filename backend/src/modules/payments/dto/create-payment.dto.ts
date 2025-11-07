@@ -50,4 +50,8 @@ export class CreatePaymentDto {
   @IsString({ message: 'Cupon inválido' })
   @IsOptional({ message: 'Cupon inválido' })
   cuponCode?: string;
+
+  @IsString({ message: 'Cupon inválido' })
+  @IsOptional({ message: 'Cupon inválido' })
+  afiateCode?: string;
 }

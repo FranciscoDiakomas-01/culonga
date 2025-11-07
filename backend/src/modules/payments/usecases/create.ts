@@ -141,6 +141,13 @@ export default class PaymentCreater {
     product: any,
     cupon: any,
   ) {
+    let afiliatedUsed = false;
+    if (data?.afiateCode) {
+      const use = await this.isAfiliatable(data?.afiateCode, data.productId);
+      if (use) {
+        afiliatedUsed = true;
+      }
+    }
     return this.database.payment.create({
       data: {
         status: 'PENDING',
@@ -158,6 +165,8 @@ export default class PaymentCreater {
         paypayCode: code,
         product: JSON.stringify(product),
         coupun: JSON.stringify(cupon ?? {}),
+        afiliationused: afiliatedUsed,
+        afiliationcode: data?.afiateCode,
       },
       select: {
         uuid: true,
@@ -194,5 +203,45 @@ export default class PaymentCreater {
       ...pay,
       id: uuid,
     };
+  }
+  private async isAfiliatable(afiliationCode: string, productId: string) {
+    const canAFiliate = await this.database.afiliates.findFirst({
+      where: {
+        link: {
+          endsWith: afiliationCode,
+        },
+        productId,
+      },
+      include: {
+        product: true,
+      },
+    });
+
+    if (!canAFiliate) {
+      return false;
+    }
+    await Promise.all([
+      this.database.afiliates.update({
+        data: {
+          totalSells: {
+            increment: 1,
+          },
+        },
+        where: {
+          id: canAFiliate?.id,
+        },
+      }),
+      this.database.users.update({
+        data: {
+          totalAfiliations: {
+            increment: 1,
+          },
+        },
+        where: {
+          id: canAFiliate.userId,
+        },
+      }),
+    ]);
+    return true;
   }
 }

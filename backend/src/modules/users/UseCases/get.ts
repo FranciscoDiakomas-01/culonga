@@ -115,33 +115,34 @@ export default class UserGetter {
   }
   public async getUserById(uuid: string) {
     try {
-      const sum = await this.database.payment.aggregate({
-        _sum: {
-          amount: true,
-        },
-        where: {
-          status: 'APROVED',
-        },
-      });
-
-      let User = await this.database.users.findUnique({
-        where: {
-          id: uuid,
-        },
-        select: {
-          name: true,
-          status: true,
-          email: true,
-          lastname: true,
-          profile: true,
-          id: true,
-          telefone: true,
-          createdAt: true,
-          availableBalance: true,
-          role: true,
-          totalEarned: true,
-        },
-      });
+      const [sum, User] = await Promise.all([
+        this.database.payment.aggregate({
+          _sum: {
+            amount: true,
+          },
+          where: {
+            status: 'APROVED',
+          },
+        }),
+        this.database.users.findUnique({
+          where: {
+            id: uuid,
+          },
+          select: {
+            name: true,
+            status: true,
+            email: true,
+            lastname: true,
+            profile: true,
+            id: true,
+            telefone: true,
+            createdAt: true,
+            availableBalance: true,
+            role: true,
+            totalEarned: true,
+          },
+        }),
+      ]);
 
       // Garante que seja number, nunca null
       const totalSum = sum._sum.amount ?? 0;

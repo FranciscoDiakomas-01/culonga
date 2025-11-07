@@ -2,32 +2,37 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Patch,
   Param,
   Delete,
+  Headers,
+  Query,
 } from '@nestjs/common';
 import { AffiliatesService } from './affiliates.service';
 
 @Controller('affiliates')
 export class AffiliatesController {
   constructor(private readonly affiliatesService: AffiliatesService) {}
-
-  @Post()
-  create() {}
-
+  @Post(':id')
+  create(@Headers('userid') userid: string, @Param('id') id: string) {
+    return this.affiliatesService.create(id, userid);
+  }
   @Get()
-  findAll() {
-    return this.affiliatesService.findAll();
-  }
+  async findAll(
+    @Headers('userid') userid: string,
+    @Query('page') page: number = 1,
+  ) {
+    const [afiliations, notAfiliations] = await Promise.all([
+      this.affiliatesService.findAll(userid),
+      this.affiliatesService.getProductsToAfiliate(userid, page),
+    ]);
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.affiliatesService.findOne(+id);
+    return {
+      afiliations,
+      notAfiliations,
+    };
   }
-
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.affiliatesService.remove(+id);
+  remove(@Param('id') id: string, @Headers('userid') userid: string) {
+    return this.affiliatesService.remove(+id, userid);
   }
 }

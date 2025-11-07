@@ -47,6 +47,7 @@ export default class ProductUpdater {
             pixelId: data.pixelId,
             title: data.title,
             price: data.price,
+            percentShare: data.percent,
           },
         });
         return {
