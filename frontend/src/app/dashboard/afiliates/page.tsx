@@ -1,16 +1,13 @@
 "use client";
 
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import DashBoardHeader from "@/components/ui/headerDashboard";
-import { Tabs } from "@/components/ui/tabs";
 import server from "@/services/server";
-import { Loader2, TrendingDown, TrendingUp } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { AfilitionCard, ProductToJoinCard } from "@/components/Share";
 
 type Afilition = {
@@ -110,7 +107,7 @@ export default function Afiliations() {
             <Loader2 className="animate-spin" />
           </div>
         ) : (
-          <article>
+          <article className="flex flex-col gap-6">
             <Button
               className="my-7"
               variant={isMarketPlace ? "default" : "outline"}

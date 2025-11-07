@@ -23,8 +23,8 @@ export class AffiliatesController {
       this.affiliatesService.getProductsToAfiliate(userid),
     ]);
     return {
-      afiliations: afiliations.data,
-      notAfiliations: afiliations.data,
+      afiliations,
+      notAfiliations,
     };
   }
   @Delete(':id')

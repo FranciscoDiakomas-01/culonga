@@ -50,7 +50,6 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
 
   return (
     <Card className="relative overflow-hidden rounded-2xl shadow-lg border border-muted bg-card transition-all hover:shadow-xl">
-      {/* Banner do produto */}
       <div className="relative">
         <img
           src={afilition.product.banner}
@@ -58,7 +57,6 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
           className="w-full h-48 object-cover"
         />
 
-        {/* Avatar do criador sobreposto */}
         <div className="absolute left-1/2 -bottom-10 transform -translate-x-1/2">
           <Avatar className="w-20 h-20 ring-4 ring-background shadow-md">
             <AvatarImage
@@ -72,7 +70,6 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
         </div>
       </div>
 
-      {/* Cabeçalho */}
       <CardHeader className="mt-12 text-center space-y-1">
         <h3 className="text-xl font-semibold">{afilition.product.title}</h3>
         <p className="text-sm text-muted-foreground">
@@ -81,7 +78,6 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
       </CardHeader>
 
       <CardContent className="space-y-4 px-6">
-        {/* Badges */}
         <div className="flex justify-center gap-2 flex-wrap">
           <Badge
             className={`${
@@ -98,14 +94,12 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
           <Badge variant="secondary">${afilition.product.price}</Badge>
         </div>
 
-        {/* Descrição */}
         <p className="text-sm text-center text-muted-foreground line-clamp-3">
           {afilition.product.description}
         </p>
 
         <Separator />
 
-        {/* Estatísticas */}
         <div className="grid grid-cols-3 text-center">
           <div className="flex flex-col items-center">
             <ShoppingBag className="w-5 h-5 mb-1 text-primary" />
@@ -130,7 +124,6 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
           </div>
         </div>
 
-        {/* Avatares sobrepostos de afiliados hipotéticos */}
         <div className="flex justify-center -space-x-3 mt-4">
           {Array.from({ length: 5 }).map((_, i) => (
             <Avatar key={i} className="w-8 h-8 border-2 border-background">
@@ -143,8 +136,6 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
           </div>
         </div>
       </CardContent>
-
-      {/* Rodapé */}
       <CardFooter className="flex justify-between px-6 pb-4 pt-2 border-t">
         <Button
           variant="outline"

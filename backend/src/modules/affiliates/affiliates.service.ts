@@ -158,9 +158,7 @@ export class AffiliatesService {
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
     }
-    return {
-      data: afiliation,
-    };
+    return afiliation;
   }
   async remove(id: number, requestingUserId: string) {
     const afiliation = await this.database.afiliates.findFirst({
@@ -259,7 +257,7 @@ export class AffiliatesService {
     };
   }
   async getProductsToAfiliate(userId: string) {
-    const [product, total] = await Promise.all([
+    const [product] = await Promise.all([
       this.database.products.findMany({
         where: {
           userId: {
@@ -284,21 +282,7 @@ export class AffiliatesService {
           },
         ],
       }),
-      this.database.products.count({
-        where: {
-          userId: {
-            not: userId,
-          },
-          Afiliates: {
-            none: {
-              userId,
-            },
-          },
-        },
-      }),
     ]);
-    return {
-      data: product,
-    };
+    return product;
   }
 }
