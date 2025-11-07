@@ -25,7 +25,6 @@ export class AffiliatesController {
       this.affiliatesService.findAll(userid),
       this.affiliatesService.getProductsToAfiliate(userid, page),
     ]);
-
     return {
       afiliations,
       notAfiliations,

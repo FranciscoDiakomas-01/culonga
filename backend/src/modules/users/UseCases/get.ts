@@ -140,6 +140,9 @@ export default class UserGetter {
             availableBalance: true,
             role: true,
             totalEarned: true,
+            totalAfiliations: true,
+            totalTranfered: true,
+            totatReciev: true,
           },
         }),
       ]);

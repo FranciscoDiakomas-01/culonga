@@ -12,6 +12,7 @@ import {
   ShoppingCart,
   SlidersHorizontal,
   Users,
+  UsersRound,
   Wallet2,
 } from "lucide-react";
 import Image from "next/image";
@@ -121,7 +122,7 @@ export default function SideBar() {
     },
     {
       label: "Afiliações",
-      icon: <ShoppingCart size={18} />,
+      icon: <UsersRound size={18} />,
       to: "/dashboard/afiliates",
     },
     {
