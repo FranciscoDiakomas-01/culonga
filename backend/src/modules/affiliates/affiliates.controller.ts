@@ -17,17 +17,14 @@ export class AffiliatesController {
     return this.affiliatesService.create(id, userid);
   }
   @Get()
-  async findAll(
-    @Headers('userid') userid: string,
-    @Query('page') page: number = 1,
-  ) {
+  async findAll(@Headers('userid') userid: string) {
     const [afiliations, notAfiliations] = await Promise.all([
       this.affiliatesService.findAll(userid),
-      this.affiliatesService.getProductsToAfiliate(userid, page),
+      this.affiliatesService.getProductsToAfiliate(userid),
     ]);
     return {
-      afiliations,
-      notAfiliations,
+      afiliations: afiliations.data,
+      notAfiliations: afiliations.data,
     };
   }
   @Delete(':id')

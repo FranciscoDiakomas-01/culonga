@@ -258,49 +258,47 @@ export class AffiliatesService {
       data: deletedAfiliation,
     };
   }
-  async getProductsToAfiliate(userId: string, page: number = 1) {
+  async getProductsToAfiliate(userId: string) {
     const [product, total] = await Promise.all([
-      this.database.afiliates.findMany({
+      this.database.products.findMany({
         where: {
           userId: {
             not: userId,
           },
+          Afiliates: {
+            none: {
+              userId,
+            },
+          },
         },
-        take: limit,
-        skip: (page - 1) * limit,
         include: {
-          product: {
-            include: {
-              user: {
-                omit: {
-                  password: true,
-                },
-              },
+          user: {
+            omit: {
+              password: true,
             },
           },
         },
         orderBy: [
           {
-            totalPurchases: 'desc',
-          },
-          {
             createdAt: 'desc',
           },
         ],
       }),
-      this.database.afiliates.count({
+      this.database.products.count({
         where: {
           userId: {
             not: userId,
           },
+          Afiliates: {
+            none: {
+              userId,
+            },
+          },
         },
       }),
     ]);
-    const lastPage = total == 0 ? 0 : Math.ceil(total / limit);
     return {
-      page,
       data: product,
-      lastPage,
     };
   }
 }
