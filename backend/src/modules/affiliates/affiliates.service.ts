@@ -1,11 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAffiliateDto } from './dto/create-affiliate.dto';
-import { UpdateAffiliateDto } from './dto/update-affiliate.dto';
+import DatabaseService from 'src/services/database/database.service';
+import EmailService from 'src/services/Email/email.service';
 
 @Injectable()
 export class AffiliatesService {
-  create(createAffiliateDto: CreateAffiliateDto) {
-    return 'This action adds a new affiliate';
+  private readonly email = new EmailService();
+  constructor(private readonly database: DatabaseService) {}
+  public async create(productId: string, userId: string) {
+    const [] = await Promise.all([
+      this.database.products.findFirst({
+        where: {
+          id: productId,
+        },
+      }),
+      this.database.users.findFirst({
+        where: {
+          id: userId,
+        },
+      }),
+      this.database.a.findFirst({
+        where: {
+          id: productId,
+        },
+      }),
+    ]);
   }
 
   findAll() {

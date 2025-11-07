@@ -71,7 +71,6 @@ model Users {
   sentTransfers    Transfer[]        @relation("UserFrom")
   receivedTransfers Transfer[]       @relation("UserTo")
   Coupons Coupon[]
-  Afiliates Afiliates[]
 }
 
 model Transfer {
@@ -175,7 +174,6 @@ model Products {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @default(now()) @updatedAt
   user       Users      @relation(fields: [userId], references: [id])
-  Afiliates Afiliates[]
   checkout   ProductCheckout?
 }
 
@@ -190,8 +188,7 @@ model Afiliates {
   status Boolean @default(true)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @default(now()) @updatedAt
-  product Products @relation( fields: [productId] , references: [id], onDelete:  Cascade)
-  user Users @relation(fields: [userId] , references: [ id] , onDelete: Cascade)
+  @@unique([userId , productId])
 }
 
 model ProductCheckout {
