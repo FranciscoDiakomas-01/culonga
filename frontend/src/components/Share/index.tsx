@@ -27,7 +27,7 @@ type Afilition = {
   id: number;
   userId: string;
   totalSells: number;
-  totalPurchase: number;
+  totalPurchases: number;
   productId: string;
   link: string;
   status: boolean;
@@ -67,7 +67,7 @@ interface ProductDisponibleToJoin {
 
 // Função helper para formatar valores monetários
 const formatCurrency = (value: number): string => {
-  return Number(value).toLocaleString("pt");
+  return Number(value).toLocaleString("pt") + " " + "kz";
 };
 
 // Função helper para lidar com imagens quebradas
@@ -125,7 +125,7 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
         <img
           src={product.banner || "/images/placeholder-product.jpg"}
           alt={product.title || "Produto sem título"}
-          className={`w-full h-48 object-cover ${
+          className={`w-full h-48 object-cover{
             imageLoading ? "hidden" : "block"
           }`}
           onLoad={() => setImageLoading(false)}
@@ -181,8 +181,6 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
           {product.description || "Sem descrição disponível"}
         </p>
 
-        <Separator />
-
         <div className="grid grid-cols-3 text-center">
           <div className="flex flex-col items-center">
             <ShoppingBag className="w-5 h-5 mb-1 text-primary" />
@@ -194,7 +192,7 @@ export function AfilitionCard({ afilition }: { afilition: Afilition }) {
             <TrendingUp className="w-5 h-5 mb-1 text-primary" />
             <span className="text-xs text-muted-foreground">Ganhos</span>
             <p className="font-semibold">
-              ${formatCurrency(afilition.totalPurchase)}
+              {formatCurrency(afilition.totalPurchases)}
             </p>
           </div>
 
@@ -257,7 +255,7 @@ export function ProductToJoinCard({
       });
 
       if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
+        throw new Error(`HTTP error! status:{res.status}`);
       }
 
       const data = await res.json();
@@ -297,7 +295,7 @@ export function ProductToJoinCard({
         <img
           src={product.banner || "/images/placeholder-product.jpg"}
           alt={product.title || "Produto sem título"}
-          className={`w-full h-48 object-cover rounded-t-2xl ${
+          className={`w-full h-48 object-cover rounded-t-2xl{
             imageLoading ? "hidden" : "block"
           }`}
           onLoad={() => setImageLoading(false)}

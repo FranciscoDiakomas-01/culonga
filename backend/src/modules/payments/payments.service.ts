@@ -176,7 +176,7 @@ export class PaymentsService {
     </div>
     <div class="content">
       <h1>🎊 Parabéns! Você recebeu uma nova comissão!</h1>
-      <p>Olá, ${Afiliate.name},</p>
+      <p>Olá, ${Afifiliate.name},</p>
       <p>Seu produto afiliado foi vendido com sucesso. Aqui estão os detalhes:</p>
       
       <div class="info-box">

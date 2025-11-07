@@ -14,7 +14,7 @@ type Afilition = {
   id: number;
   userId: string;
   totalSells: number;
-  totalPurchase: number;
+  totalPurchases: number;
   productId: string;
   link: string;
   status: boolean;
