@@ -56,8 +56,6 @@ model Users {
   totalEarned Int  @default(0)
   totalTranfered Int @default(0)
   totatReciev Int @default(0)
-  totalAfiliations Int? @default(0)
-  totalAfiliates Int? @default(0)
   withdrawnAmount Int @default(0)
   availableBalance Int  @default(0)
   products     Products[]
@@ -163,8 +161,6 @@ model Products {
   pixelId    String?
   category   String?
   type       String
-  totalAfiliates Int? @default(0)
-  totalPurchasedAfiliates Int? @default(0)
   payment    Int[]
   percentShare Int? @default(0)
   totalPurchase Int? @default(0)

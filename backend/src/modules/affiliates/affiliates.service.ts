@@ -20,6 +20,9 @@ export class AffiliatesService {
       this.database.users.findFirst({
         where: {
           id: userId,
+          role: {
+            not: 'ADMIN',
+          },
         },
       }),
       this.database.afiliates.findFirst({
@@ -34,11 +37,26 @@ export class AffiliatesService {
       throw new ConflictException('Afiliação existente');
     }
     if (!user) {
-      throw new NotFoundException('Afiliação existente');
+      throw new NotFoundException('Usuário não encontrado');
     }
     if (!product) {
-      throw new NotFoundException('Afiliação existente');
+      throw new NotFoundException('Produto não encontrado');
     }
+
+    const [] = await Promise.all([
+      this.database.afiliates.create({
+        data: {
+          userId,
+          productId,
+          link: `${product.link}?aff=${user.id}`,
+        },
+      }),
+      this.email.senEmail({
+        html: ``,
+        subject: '',
+        to: user.email,
+      }),
+    ]);
   }
 
   findAll() {
