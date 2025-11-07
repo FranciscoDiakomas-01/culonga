@@ -524,17 +524,16 @@ export default class PaymentGetter {
       const date1 = new Date(from);
       const dat2 = new Date(to);
 
-      if (date1 == dat2) {
-        return {
-          message: 'Datas não podem ser iguais',
-        };
+      if (isNaN(date1.getTime()) || isNaN(dat2.getTime())) {
+        return { message: 'Data inválida' };
+      }
+      if (date1.getTime() === dat2.getTime()) {
+        return { message: 'Datas não podem ser iguais' };
+      }
+      if (dat2 < date1) {
+        return { message: 'Data final não pode ser menor' };
       }
 
-      if (dat2 < date1) {
-        return {
-          message: 'Data final não pode ser menor',
-        };
-      }
       const user = await this.database.users.findFirst({
         where: {
           id: userid,
@@ -546,7 +545,7 @@ export default class PaymentGetter {
         };
       }
 
-      if (user?.role == 'ADMIN') {
+      if (user?.role === 'ADMIN') {
         const totalPayments = await this.database.payment.aggregate({
           _sum: {
             amount: true,
@@ -560,6 +559,7 @@ export default class PaymentGetter {
           },
           _count: true,
         });
+        this.logger.debug('admin');
 
         return {
           total: this.percent(totalPayments?._sum?.amount ?? 0),
