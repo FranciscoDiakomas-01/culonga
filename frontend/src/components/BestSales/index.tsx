@@ -49,8 +49,10 @@ export function BestSales() {
   const [myProducts, setMyProducts] = useState<IProduct[]>([]);
   const service = new ProductConsumer();
 
+  // Transforma os produtos em dados para o gráfico
   const chartData = myProducts
-    .slice(0, 10)
+    .filter((product) => product.totalPurchase > 0) // Apenas produtos com vendas
+    .slice(0, 10) // Limita a 6 produtos para o gráfico
     .map((product, index) => ({
       product:
         product.title.length > 15
@@ -69,6 +71,17 @@ export function BestSales() {
       setLoad(false);
       return;
     }
+
+    const decoded = decodeToken(token);
+    const userIsAdmin = decoded?.role === "ADMIN";
+    setIsAdmin(userIsAdmin);
+
+    // Se for admin, não carrega os dados
+    if (userIsAdmin) {
+      setLoad(false);
+      return;
+    }
+
     async function get(token: string) {
       try {
         const data1 = await service.get(token, 1);

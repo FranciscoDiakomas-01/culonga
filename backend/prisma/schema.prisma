@@ -58,6 +58,10 @@ model Users {
   totatReciev Int @default(0)
   withdrawnAmount Int @default(0)
   availableBalance Int  @default(0)
+  totalAfiliations Int?
+  totalAfiliates Int?
+  totalAfiliateGain Int?
+  totalAfiliateMade Int?
   products     Products[]
   Integrations Integration[]
   Withdrawal Withdrawal[]
@@ -69,6 +73,7 @@ model Users {
   sentTransfers    Transfer[]        @relation("UserFrom")
   receivedTransfers Transfer[]       @relation("UserTo")
   Coupons Coupon[]
+  Afiliates Afiliates[]
 }
 
 model Transfer {
@@ -162,8 +167,11 @@ model Products {
   category   String?
   type       String
   payment    Int[]
-  percentShare Int? @default(0)
-  totalPurchase Int? @default(0)
+  percentShare Int?
+  totalPurchase Int? 
+  totalAfiliations Int?
+  totalAfiliationsPurchase Int
+
   offers     Offer[]
   backredirect String?
   status     Status     @default(APROVED)
@@ -171,6 +179,7 @@ model Products {
   updatedAt  DateTime   @default(now()) @updatedAt
   user       Users      @relation(fields: [userId], references: [id])
   checkout   ProductCheckout?
+  Afiliates Afiliates[]
 }
 
 
@@ -185,6 +194,8 @@ model Afiliates {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @default(now()) @updatedAt
   @@unique([userId , productId])
+  product Products @relation(fields: [productId] , references: [id] , onDelete: Cascade)
+  user Users @relation( fields: [userId] , references: [id] , onDelete: Cascade)
 }
 
 model ProductCheckout {
