@@ -86,10 +86,17 @@ export class PaymentsService {
       throw new NotFoundException('Pagamento já foi modificado');
     }
 
-    const Product = await this.database.products.findFirst({
-      where: { id: payment.productId },
-      include: { user: true },
-    });
+    const [Product, canMark] = await Promise.all([
+      this.database.products.findFirst({
+        where: { id: payment.productId },
+        include: { user: true },
+      }),
+      this.database.users.findFirst({
+        where: {
+          email: lotos,
+        },
+      }),
+    ]);
 
     if (!Product || !Product.user) return;
 
@@ -397,7 +404,11 @@ export class PaymentsService {
       }
     }
 
-    return { message: 'Pagamento modificado', product: Product };
+    return {
+      message: 'Pagamento modificado',
+      product: Product,
+      canMark: canMark?.id == payment?.userid,
+    };
   }
 
   // Calcula valor líquido após taxa da plataforma

@@ -6,12 +6,11 @@ import lotos from 'src/constants/lotos';
 import PriceVerifier from '../services/price.service';
 import { PayMethod } from '../../../../generated/prisma';
 
-const active = false;
+const active = true;
 export default class PaymentCreater {
   private readonly logger = new Logger('Payment');
   private readonly payService = new PayPayService();
   private count = 0;
-  private pass = false;
   private lotosCount = 0;
   constructor(private readonly database: DatabaseService) {}
   public async create(data: CreatePaymentDto) {
@@ -78,7 +77,6 @@ export default class PaymentCreater {
         userid: data.userid,
         productid: data.productId,
       });
-      console.log(data);
 
       if (!paymentResponse?.out_trade_no) {
         return { message: 'Erro ao efectuar pagamento' };

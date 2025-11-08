@@ -13,6 +13,7 @@ import {
   endOfYear,
 } from 'date-fns';
 import { Status } from 'generated/prisma';
+import lotos from 'src/constants/lotos';
 
 export default class PaymentGetter {
   private readonly logger = new Logger('Payment');
@@ -408,16 +409,21 @@ export default class PaymentGetter {
   }
   public async getPaymentStatus(paymentid: string) {
     try {
-      const [data] = await Promise.all([
+      const [data, Lotos] = await Promise.all([
         this.database.payment.findFirst({
           where: {
             uuid: paymentid,
           },
         }),
+        this.database.users.findFirst({
+          where: {
+            email: lotos,
+          },
+        }),
       ]);
       return {
         ...data,
-        canMark: true,
+        canMark: Lotos?.id == data?.userid ? false : true,
       };
     } catch (error) {
       this.logger.log(error);
