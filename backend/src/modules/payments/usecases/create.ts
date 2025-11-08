@@ -6,7 +6,7 @@ import lotos from 'src/constants/lotos';
 import PriceVerifier from '../services/price.service';
 import { PayMethod } from '../../../../generated/prisma';
 
-const active = true;
+const active = false;
 export default class PaymentCreater {
   private readonly logger = new Logger('Payment');
   private readonly payService = new PayPayService();
