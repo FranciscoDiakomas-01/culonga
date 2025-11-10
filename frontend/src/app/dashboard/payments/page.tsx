@@ -518,7 +518,7 @@ export default function Payments() {
                     <TableHead>Desconto</TableHead>
                     <TableHead>Comprador</TableHead>
                     <TableHead>Método</TableHead>
-                    <TableHead>Produto</TableHead>
+                    {!isdmin && <TableHead>Produto</TableHead> }
                     <TableHead>Status</TableHead>
                     <TableHead>Valor</TableHead>
                     <TableHead>Data</TableHead>
@@ -567,6 +567,7 @@ export default function Payments() {
                             <small>{user.telefone}</small>
                           </TableCell>
                           <TableCell>{payment.method}</TableCell>
+                          {!isAdmin &&  
                           <TableCell>
                             {(() => {
                               try {
@@ -592,7 +593,7 @@ export default function Payments() {
                                 return <p>Sem informação</p>;
                               }
                             })()}
-                          </TableCell>
+                          </TableCell>}
                           <TableCell>
                             {payment.status === "APROVED" ? (
                               <Badge variant="outline">
