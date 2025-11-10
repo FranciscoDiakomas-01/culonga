@@ -5,7 +5,7 @@ import { Status } from 'generated/prisma';
 import ExuteMyWebhooks from 'src/modules/integrations/useCases/executeIntegrations';
 import WebHookService from 'src/services/webhook/webhook.service';
 import EmailService from 'src/services/Email/email.service';
-import lotos from '../'
+import lotos from 'src/constants/lotos';
 
 export default class PaymentUpdate {
   private readonly logger = new Logger('PaymentLogger');
