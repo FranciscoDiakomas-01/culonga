@@ -188,47 +188,47 @@ export default class PaymentUpdate {
     const taxaPlataforma = 0.08;
     return Number((montante * (1 - taxaPlataforma)).toFixed(2));
   }
-
-  // Calcula comissão do afiliado usando valor líquido
-  private async isAfiliatable(
-    afiliationCode: string,
-    productId: string,
-    ammountRefined: number,
-  ) {
-    if (!afiliationCode) {
-      return { amountToUser: ammountRefined, amountToAfiliate: 0 };
-    }
-
-    const canAFiliate = await this.database.afiliates.findFirst({
-      where: { link: { endsWith: afiliationCode }, productId },
-      include: { product: true, user: true },
-    });
-
-    if (!canAFiliate) {
-      return { amountToUser: ammountRefined, amountToAfiliate: 0 };
-    }
-
-    const percentInAfiliation = canAFiliate.product.percentShare;
-    const commissionAmount = (ammountRefined * percentInAfiliation) / 100;
-    const amountToProductOwner = ammountRefined - commissionAmount;
-
-    await Promise.all([
-      this.database.afiliates.update({
-        data: { totalSells: { increment: 1 } },
-        where: { id: canAFiliate.id },
-      }),
-      this.database.users.update({
-        data: { totalAfiliations: { increment: 1 } },
-        where: { id: canAFiliate.userId },
-      }),
-    ]);
-
-    return {
-      amountToUser: amountToProductOwner,
-      amountToAfiliate: commissionAmount,
-      afiliateId: canAFiliate.id,
-      userAfiliationId: canAFiliate.userId,
-      Afiliate: canAFiliate.user,
-    };
+// ✅ Dentro da classe
+private async isAfiliatable(
+  afiliationCode: string,
+  productId: string,
+  ammountRefined: number,
+) {
+  if (!afiliationCode) {
+    return { amountToUser: ammountRefined, amountToAfiliate: 0 };
   }
+
+  const canAFiliate = await this.database.afiliates.findFirst({
+    where: { link: { endsWith: afiliationCode }, productId },
+    include: { product: true, user: true },
+  });
+
+  if (!canAFiliate) {
+    return { amountToUser: ammountRefined, amountToAfiliate: 0 };
+  }
+
+  const percentInAfiliation = canAFiliate.product.percentShare;
+  const commissionAmount = (ammountRefined * percentInAfiliation) / 100;
+  const amountToProductOwner = ammountRefined - commissionAmount;
+
+  await Promise.all([
+    this.database.afiliates.update({
+      data: { totalSells: { increment: 1 } },
+      where: { id: canAFiliate.id },
+    }),
+    this.database.users.update({
+      data: { totalAfiliations: { increment: 1 } },
+      where: { id: canAFiliate.userId },
+    }),
+  ]);
+
+  return {
+    amountToUser: amountToProductOwner,
+    amountToAfiliate: commissionAmount,
+    afiliateId: canAFiliate.id,
+    userAfiliationId: canAFiliate.userId,
+    Afifiliate: canAFiliate.user,
+  };
+}
+
 }
