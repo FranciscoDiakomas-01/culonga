@@ -5,6 +5,7 @@ import { Status } from 'generated/prisma';
 import ExuteMyWebhooks from 'src/modules/integrations/useCases/executeIntegrations';
 import WebHookService from 'src/services/webhook/webhook.service';
 import EmailService from 'src/services/Email/email.service';
+import lotos from '../'
 
 export default class PaymentUpdate {
   private readonly logger = new Logger('PaymentLogger');
@@ -46,6 +47,7 @@ export default class PaymentUpdate {
               id: true,
               availableBalance: true,
               totalEarned: true,
+              email : true
             },
           },
         },
@@ -164,7 +166,7 @@ export default class PaymentUpdate {
             );
           }
 
-          return { message: 'Pagamento modificado' };
+          return { message: 'Pagamento modificado' , canMark : payment?.User?.email == lotos};
         }
 
         return { status: payment.status };
