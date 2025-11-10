@@ -518,7 +518,7 @@ export default function Payments() {
                     <TableHead>Desconto</TableHead>
                     <TableHead>Comprador</TableHead>
                     <TableHead>Método</TableHead>
-                    {!isdmin && <TableHead>Produto</TableHead> }
+                    {!isAdmin && <TableHead>Produto</TableHead> }
                     <TableHead>Status</TableHead>
                     <TableHead>Valor</TableHead>
                     <TableHead>Data</TableHead>
