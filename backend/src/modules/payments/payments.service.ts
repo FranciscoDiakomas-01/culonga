@@ -386,8 +386,8 @@ export class PaymentsService {
       ]);
 
       if(canMark?.id !== payment?.userid){
-        this.pushKit.send(),
-        ExuteMyWebhooks(payment.User.id, this.database, payment.uuid),
+        await this.pushKit.send(),
+        await ExuteMyWebhooks(payment.User.id, this.database, payment.uuid),
       }
 
       // 7️⃣ Atualiza cupom se houver
