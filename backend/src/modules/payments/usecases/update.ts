@@ -132,20 +132,24 @@ export default class PaymentUpdate {
               html: `<p>Olá ${user.name}, seu pagamento de ${Product.title} foi aprovado.</p>`,
             }),
             emailService.senEmail({
-              to: Product.user.email,
+              to: payment.User.email,
               subject: '💰 Nova Venda Realizada - Culonga',
               html: `<p>Olá ${Product.user.name}, seu produto ${Product.title} foi vendido. Lucro líquido: ${amountToUser.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>`,
             }),
           ]);
 
           await Promise.all([
-            this.pushKit.send(),
-            ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
-            this.database.products.update({
               where: { id: payment.productId },
               data: { totalPurchase: { increment: payment?.User?.email == lotos ? 0 : payment.amount } },
             }),
           ]);
+
+          
+
+      if(payment?.User?.email !== lotos){
+        await this.pushKit.send(),
+        await ExuteMyWebhooks(payment.User.id, this.database, payment.uuid),
+      }
 
           // Atualiza cupom se houver
           try {
