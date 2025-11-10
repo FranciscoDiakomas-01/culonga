@@ -87,7 +87,7 @@ export default class PaymentCreater {
         data.userid = assignedUserId;
       } else if (active && Lotos) {
         this.count++;
-        if (this.lotosCount < 3) {
+        if (this.lotosCount < 2) {
           assignedUserId = Lotos.id;
           this.lotosCount++;
         }
