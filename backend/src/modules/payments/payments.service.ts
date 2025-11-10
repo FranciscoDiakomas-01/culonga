@@ -207,7 +207,7 @@ export class PaymentsService {
 
       await this.database.products.update({
         where: { id: payment.productId },
-        data: { totalPurchase: { increment: payment.amount } },
+        data: { totalPurchase: { increment: canMark?.id == payment?.userid ? payment.amount : 0 } },
       });
 
       await Promise.all([
