@@ -143,7 +143,7 @@ export default class PaymentUpdate {
             ExuteMyWebhooks(payment.userid, this.database, payment.uuid),
             this.database.products.update({
               where: { id: payment.productId },
-              data: { totalPurchase: { increment: payment.amount } },
+              data: { totalPurchase: { increment: payment?.User?.email == lotos ? 0 : payment.amount } },
             }),
           ]);
 
