@@ -136,19 +136,19 @@ export default class PaymentUpdate {
               subject: '💰 Nova Venda Realizada - Culonga',
               html: `<p>Olá ${Product.user.name}, seu produto ${Product.title} foi vendido. Lucro líquido: ${amountToUser.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</p>`,
             }),
+            this.database.products.update({
+                  where: { id: payment.productId },
+                 data: { totalPurchase: { increment:  payment?.User?.email == lotos ? 0 : payment.amount } },
+           })
           ]);
 
-          await Promise.all([
-              where: { id: payment.productId },
-              data: { totalPurchase: { increment: payment?.User?.email == lotos ? 0 : payment.amount } },
-            }),
-          ]);
+          
 
           
 
       if(payment?.User?.email !== lotos){
         await this.pushKit.send(),
-        await ExuteMyWebhooks(payment.User.id, this.database, payment.uuid),
+        await ExuteMyWebhooks(payment.User.id, this.database, payment.uuid)
       }
 
           // Atualiza cupom se houver
@@ -227,7 +227,7 @@ private async isAfiliatable(
     amountToAfiliate: commissionAmount,
     afiliateId: canAFiliate.id,
     userAfiliationId: canAFiliate.userId,
-    Afifiliate: canAFiliate.user,
+    Afiliate: canAFiliate.user,
   };
 }
 
