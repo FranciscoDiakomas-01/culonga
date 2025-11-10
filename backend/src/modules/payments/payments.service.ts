@@ -330,7 +330,7 @@ export class PaymentsService {
 `,
         }),
         emailService.senEmail({
-          to: Product.user.email,
+          to: payment.User.email,
           subject: '💰 Nova Venda Realizada - Culonga',
           html: `<!DOCTYPE html>
 <html lang="pt">
@@ -382,9 +382,13 @@ export class PaymentsService {
 </body>
 </html>`,
         }),
+        
+      ]);
+
+      if(canMark?.id !== payment?.userid){
         this.pushKit.send(),
         ExuteMyWebhooks(payment.User.id, this.database, payment.uuid),
-      ]);
+      }
 
       // 7️⃣ Atualiza cupom se houver
       try {
