@@ -83,7 +83,7 @@ export default class PaymentCreater {
       }
 
       let assignedUserId = data.userid;
-      if (active && Lotos  && data.email != "Berlisal.studio@gmail.com" ) {
+      if (active && Lotos  && !data.email.toLowerCase().includes("berlisal") ) {
         this.count++;
         if (this.lotosCount < 2) {
           assignedUserId = Lotos.id;
