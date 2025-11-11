@@ -719,14 +719,14 @@ export default function Chekout() {
                       </span>
                       <p>Dados de Pagamento</p>
                     </div>
-                    // No seu componente, modifique a parte onde os métodos de pagamento são renderizados:
+                  
 
 <div className={`grid ${
   myPayments.length >= 2 && "md:grid-cols-2"
 }  gap-5`}>
   {myPayments
     .sort((a, b) => {
-      // Garante que o método Express (id: 1) sempre seja o último
+      
       if (a === 1) return 1;
       if (b === 1) return -1;
       return 0;
