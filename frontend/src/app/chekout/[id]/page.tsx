@@ -642,16 +642,6 @@ export default function Chekout() {
                           required
                         />
                       </div>
-                      <div className="flex items-center border rounded-lg px-3 py-2 bg-gray-50">
-                        <ShoppingCart className="w-5 h-5  mr-2" />
-                        <input
-                          type="text"
-                          placeholder="Cupon"
-                          className="flex-1 bg-transparent outline-none"
-                          name="cupon"
-                          id="cupon"
-                        />
-                      </div>
                     </div>
                     {Array.isArray(myOrderBumps) && myOrderBumps.length > 0 && (
                       <div
@@ -744,6 +734,10 @@ export default function Chekout() {
                           const pay = PaymentServices.find((p) => {
                             return p.id == item;
                           });
+
+                        if(pay?.title == "Express"){
+                          return null
+                        }
 
                           return (
                             <button
