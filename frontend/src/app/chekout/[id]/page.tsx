@@ -51,7 +51,6 @@ export default function Chekout() {
   const paymentserviceAPI = new PaymentService();
   const [purschase, setPurchase] = useState(false);
   const [ammount, setammount] = useState(0);
-  const [] = useState("");
 
   const PaymentServices = [
     {
@@ -175,9 +174,7 @@ export default function Chekout() {
       if (data.message == "Produto não encontrado") {
         toast.error("Produto não encontrado");
       }
-      setACtivePayments(
-        Array.isArray(data?.product?.payment) ? data?.product?.payment[0] : 1
-      );
+      setACtivePayments(2);
       setTimeout(() => {
         setLoad(false);
       }, 500);
