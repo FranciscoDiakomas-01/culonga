@@ -54,15 +54,6 @@ export default function Chekout() {
 
   const PaymentServices = [
     {
-      title: "Express",
-      image:
-        "http://noticiasangola.free.nf/wp-content/uploads/2025/04/GPONew.png",
-      id: 1,
-      label: `Permita que seus clientes finalizem a compra
-                          rapidamente, com menos etapas e aprovação instantânea.
-                          Ideal para aumentar conversões.`,
-    },
-    {
       title: "Referência",
       image:
         "https://noticiasangola.free.nf/wp-content/uploads/2025/04/REFNew.png",
@@ -77,6 +68,15 @@ export default function Chekout() {
       id: 33,
       label: `Pague usando a sua conta paypay`,
       escription: "Usando paypay você recebe desconto de até 5% na sua compra",
+    },
+    {
+      title: "Express",
+      image:
+        "http://noticiasangola.free.nf/wp-content/uploads/2025/04/GPONew.png",
+      id: 1,
+      label: `Permita que seus clientes finalizem a compra
+                          rapidamente, com menos etapas e aprovação instantânea.
+                          Ideal para aumentar conversões.`,
     },
   ];
 
@@ -248,7 +248,6 @@ export default function Chekout() {
     const afiateCode = search.get("aff");
     const data = new FormData(e.currentTarget);
     const name = data.get("name") as string;
-    const cupon = data.get("cupon") as string | undefined;
     const email = data.get("email") as string;
     const method = activePayment == 2 ? 0 : activePayment == 33 ? 2 : 1;
     const tel = data.get("tel") as string;
@@ -276,7 +275,6 @@ export default function Chekout() {
       productId: product.type == "Offer" ? product.productId : product.id,
       userid: product.userId,
       tel,
-      cuponCode: cupon,
       afiateCode,
     };
 
@@ -311,7 +309,7 @@ export default function Chekout() {
       name,
       orderbumps,
       tel: body.tel,
-      cuponCode: body.cuponCode,
+      cuponCode:"",
       afiateCode: body.afiateCode,
     });
 
@@ -731,10 +729,6 @@ export default function Chekout() {
                           const pay = PaymentServices.find((p) => {
                             return p.id == item;
                           });
-
-                        if(pay?.title == "Express"){
-                          return null
-                        }
 
                           return (
                             <button
