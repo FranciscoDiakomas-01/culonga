@@ -356,7 +356,7 @@ export class PaymentsService {
     </div>
     <div class="content">
       <h1>🎊 Parabéns! Você realizou uma nova venda!</h1>
-      <p>Olá, ${Product.user.name},</p>
+      <p>Olá, ${payment.User.name},</p>
       <p>Seu produto foi vendido com sucesso. Aqui estão os detalhes:</p>
       
     <div class="info-box">
