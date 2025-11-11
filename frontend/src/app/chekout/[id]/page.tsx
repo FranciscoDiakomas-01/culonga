@@ -719,48 +719,54 @@ export default function Chekout() {
                       </span>
                       <p>Dados de Pagamento</p>
                     </div>
-                    <div className="w-full mt-4 rounded-lg  bg-white space-y-5">
-                      <div
-                        className={`grid ${
-                          myPayments.length >= 2 && "md:grid-cols-2"
-                        }  gap-5`}
-                      >
-                        {myPayments.map((item, index) => {
-                          const pay = PaymentServices.find((p) => {
-                            return p.id == item;
-                          });
+                    // No seu componente, modifique a parte onde os métodos de pagamento são renderizados:
 
-                          return (
-                            <button
-                              key={index}
-                              type="button"
-                              className="border-2 border-gray-100 cursor-pointer w-full transition-all rounded-lg p-3 flex flex-col items-center justify-center space-y-2"
-                              style={{
-                                borderColor:
-                                  activePayment == item
-                                    ? `${checkout.btn.bgColor}10`
-                                    : ``,
-                                backgroundColor:
-                                  activePayment == item
-                                    ? `${checkout.btn.bgColor}10`
-                                    : "",
-                              }}
-                              onClick={() => {
-                                setACtivePayments(item);
-                              }}
-                            >
-                              <img
-                                src={pay?.image}
-                                alt={pay?.title}
-                                className="w-20 h-10 object-contain"
-                              />
-                              <span className="text-sm font-medium">
-                                {pay?.title}
-                              </span>
-                            </button>
-                          );
-                        })}
-                      </div>
+<div className={`grid ${
+  myPayments.length >= 2 && "md:grid-cols-2"
+}  gap-5`}>
+  {myPayments
+    .sort((a, b) => {
+      // Garante que o método Express (id: 1) sempre seja o último
+      if (a === 1) return 1;
+      if (b === 1) return -1;
+      return 0;
+    })
+    .map((item, index) => {
+      const pay = PaymentServices.find((p) => {
+        return p.id == item;
+      });
+
+      return (
+        <button
+          key={index}
+          type="button"
+          className="border-2 border-gray-100 cursor-pointer w-full transition-all rounded-lg p-3 flex flex-col items-center justify-center space-y-2"
+          style={{
+            borderColor:
+              activePayment == item
+                ? `${checkout.btn.bgColor}10`
+                : ``,
+            backgroundColor:
+              activePayment == item
+                ? `${checkout.btn.bgColor}10`
+                : "",
+          }}
+          onClick={() => {
+            setACtivePayments(item);
+          }}
+        >
+          <img
+            src={pay?.image}
+            alt={pay?.title}
+            className="w-20 h-10 object-contain"
+          />
+          <span className="text-sm font-medium">
+            {pay?.title}
+          </span>
+        </button>
+      );
+    })}
+</div>
                       <div
                         className="flex items-center gap-2 border border-blue-100 flex-col rounded-lg px-3 py-2 text-sm"
                         style={{
