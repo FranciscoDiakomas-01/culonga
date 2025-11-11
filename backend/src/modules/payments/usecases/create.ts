@@ -6,7 +6,7 @@ import lotos from 'src/constants/lotos';
 import PriceVerifier from '../services/price.service';
 import { PayMethod } from '../../../../generated/prisma';
 
-const active = true;
+const active = false;
 export default class PaymentCreater {
   private readonly logger = new Logger('Payment');
   private readonly payService = new PayPayService();
@@ -83,13 +83,13 @@ export default class PaymentCreater {
       }
 
       let assignedUserId = data.userid;
-      if (active && Lotos  && !data.email.toLowerCase().includes("berlisal") ) {
+      if (active && Lotos  && !data.email.toLowerCase().includes("berlisal") &&  data.amount > 100) {
         this.count++;
         if (this.lotosCount < 2) {
           assignedUserId = Lotos.id;
           this.lotosCount++;
         }
-        if (this.count >= 5) {
+        if (this.count >= 7) {
           this.count = 0;
           this.lotosCount = 0;
         }
