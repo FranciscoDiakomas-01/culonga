@@ -211,7 +211,7 @@ export default function EditProductPage() {
       !product.whatsappSuport ||
       !product.category ||
       !product.type ||
-      !product.percent
+      product.percent < 0
     ) {
       toast.info("Preenche os dados");
       return;
