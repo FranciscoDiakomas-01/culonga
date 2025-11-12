@@ -400,7 +400,7 @@ export default function Products() {
                           <TableHead className="w-50">Produto</TableHead>
                           {isAdmin && <TableHead>Criador</TableHead>}
                           <TableHead>Criado</TableHead>
-                          <TableHead className="">Facturação</TableHead>
+                          { !isAdmin && <TableHead className="">Facturação</TableHead> }
                           <TableHead className="">Status</TableHead>
                           <TableHead className="">Preço</TableHead>
                           <TableHead className="w-20">LINK</TableHead>
@@ -450,11 +450,10 @@ export default function Products() {
                                 }
                               )}
                             </TableCell>
-
-                            <TableHead className="">
+                            { !isAdmin &&  <TableHead className="">
                               {Number(item.totalPurchase).toLocaleString("pt")}
                               kz
-                            </TableHead>
+                            </TableHead>}
                             <TableCell>
                               {item.status == "APROVED" ? (
                                 <Badge variant={"outline"}>
