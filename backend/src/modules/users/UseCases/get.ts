@@ -25,10 +25,6 @@ export default class UserGetter {
               role: true,
               totalEarned: true,
             },
-
-            orderBy: {
-              updatedAt: 'desc',
-            },
             take: limit,
             where: {
               role: 'SELLER',
