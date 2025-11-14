@@ -46,6 +46,23 @@ export function SignForm({
       setIsLoad(false);
       return;
     } else {
+
+      if(telefone.length < 9){
+        
+        setError("Telefone inválido");
+        setTimeout(() => {
+          setError("");
+        }, 2000);
+      }
+
+      
+        if(confirmPassword != password){
+        
+        setError("As senhas não batem");
+        setTimeout(() => {
+          setError("");
+        }, 2000);
+      }
       if (!telefone.startsWith("+244")) {
         telefone = `+244${telefone}`;
       }
@@ -56,6 +73,7 @@ export function SignForm({
         !password ||
         !confirmPassword ||
         !email
+        
       ) {
         setError("Preencha todos os campos");
         setTimeout(() => {
@@ -76,20 +94,18 @@ export function SignForm({
         name,
         password,
         telefone,
-      });
+      }) as any
+      console.log(signIn);
+      const serverMessage = Array.isArray(signIn?message) ? message[0] : message
+      toast.info(serverMessage);
       setTimeout(() => {
         setIsLoad(false);
       }, 1500);
-      console.log(signIn);
       if (signIn?.token.length > 0) {
         localStorage.setItem("token", signIn?.token);
         router.push("/dashboard");
         return;
-      } else {
-        toast.info("Erro ao criar conta", {
-          description: "Email e telefone podem estar em uso",
-        });
-      }
+      } 
     }
   }
   return (
