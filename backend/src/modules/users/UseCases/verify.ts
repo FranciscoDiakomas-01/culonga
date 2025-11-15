@@ -58,6 +58,8 @@ export default class UserVerifier {
               },
             });
 
+            try{
+              
             const email = new EmailService();
             await email.senEmail({
               html: `<!DOCTYPE html>
@@ -333,6 +335,9 @@ export default class UserVerifier {
               created: updated?.id ? true : false,
             };
           }
+            }catch(e){
+              console.log(e)
+            }
           return {
             message: 'Erro ao criar a verificação',
             created: false,
@@ -376,6 +381,7 @@ export default class UserVerifier {
             },
           });
           //email
+          try{
           const email = new EmailService();
           await email.senEmail({
             subject: `🎯 ${mappedStatus == 'APROVED' ? 'Conta Aprovada - Bem-vindo à Culonga!' : 'Conta em Análise - Precisa de Ajustes'}`,
@@ -740,6 +746,9 @@ export default class UserVerifier {
             updated: updatedUser?.id ? true : false,
           };
         }
+            }catch(e){
+              console.log(e)
+            }
         return {
           message: 'Usuário não encontrado',
           updated: false,
