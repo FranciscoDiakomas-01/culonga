@@ -205,8 +205,33 @@ export default class UserVerifier {
       try {
         const email = new EmailService();
         const isApproved = mappedStatus === 'APROVED';
+        const htmlTemplate = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Status da Verificação - Culonga</title>
+<style>
+/* aqui vai todo o CSS do email */
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="card">
+    <div class="icon">{{ICON}}</div>
+    <div class="title">{{TITLE}}</div>
+    <div class="subtitle">Culonga • Plataforma de Produtos Digitais</div>
+    <p class="message">{{MESSAGE}}</p>
+    <div class="box">{{DETAILS}}</div>
+    {{BUTTON}}
+    <div class="footer">© 2025 Culonga — Todos os direitos reservados</div>
+  </div>
+</div>
+</body>
+</html>`;
 
-const html = template
+
+const html = htmlTemplate
   .replace('{{ICON}}', isApproved ? '🎉' : '⚠️')
   .replace('{{TITLE}}', isApproved ? 'Conta Aprovada!' : 'Conta Reprovada')
   .replace(
