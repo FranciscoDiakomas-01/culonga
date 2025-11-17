@@ -127,7 +127,7 @@ export default class UserUpedater {
           Recebemos seu pedido de recuperação de conta. Use o botão abaixo para criar uma nova senha. 
         </p>
         <p style="text-align:center; margin:30px 0;">
-          <a href="${process.env.RESETLINK + Request.token}" target="_blank" 
+            <a href="${process.env.RESETLINK + "/" + Request.token}" target="_blank" 
             style="display:inline-block; background:linear-gradient(90deg,#8257e5,#996dff); color:#fff; text-decoration:none; padding:14px 28px; border-radius:8px; font-weight:bold; font-size:15px;">
             🔑 Redefinir senha
           </a>
