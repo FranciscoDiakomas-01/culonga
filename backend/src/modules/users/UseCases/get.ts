@@ -167,67 +167,78 @@ export default class UserGetter {
   }
 
   public async getUserRanking() {
-    try {
-      const inicioMes = startOfMonth(new Date());
-      const fimMes = endOfMonth(new Date());
+  try {
+    const inicioMes = startOfMonth(new Date());
+    const fimMes = endOfMonth(new Date());
 
-      const ranking = await this.database.payment.groupBy({
-        by: ['userid'],
+    const ranking = await this.database.payment.groupBy({
+      by: ['userid'],
+      _sum: {
+        amount: true,
+      },
+      where: {
+        createdAt: {
+          gte: inicioMes,
+          lte: fimMes,
+        },
+        status: 'APROVED',
+        userid: { // Garantir que userid não seja nulo
+          not: null
+        }
+      },
+      orderBy: {
         _sum: {
-          amount: true,
+          amount: 'desc',
         },
+      },
+      take: 9,
+    });
+
+    // Filtrar userids válidos e não nulos
+    const validUserIds = ranking
+      .map((r) => r.userid)
+      .filter((id): id is string => id !== null);
+
+    const [users] = await Promise.all([
+      this.database.users.findMany({
         where: {
-          createdAt: {
-            gte: inicioMes,
-            lte: fimMes,
-          },
-          status: 'APROVED',
-  
-        },
-        orderBy: {
-          _sum: {
-            amount: 'desc',
-          },
-        },
-        take: 9,
-      });
-      const [users] = await Promise.all([
-        this.database.users.findMany({
-          where: {
-            id: { in: ranking.map((r) => r.userid) },
-            email : {
-                not : "franciscodiakoma@gmail.com"
-
+          id: { in: validUserIds },
+          email: {
+            not: "franciscodiakoma@gmail.com"
           }
-          },
-          select: {
-            id: true,
-            name: true,
-            lastname: true,
-            profile: true,
-          },
-        }),
-      ]);
+        },
+        select: {
+          id: true,
+          name: true,
+          lastname: true,
+          profile: true,
+        },
+      }),
+    ]);
 
-      const result = ranking
-        .map((r) => {
-          const user = users.find((u) => u.id === r.userid);
-          return {
-            name: user?.name,
-            lastname: user?.lastname,
-            profile: user?.profile,
-            totalEarned: r._sum.amount ?? 0,
-          };
-        })
-        .filter((u) => u.totalEarned > 0);
+    const result = ranking
+      .map((r) => {
+        // Só processar se userid não for nulo
+        if (!r.userid) return null;
+        
+        const user = users.find((u) => u.id === r.userid);
+        return {
+          name: user?.name,
+          lastname: user?.lastname,
+          profile: user?.profile,
+          totalEarned: r._sum.amount ?? 0,
+        };
+      })
+      .filter((u): u is NonNullable<typeof u> => u !== null && u.totalEarned > 0);
 
-      const sortedResult = result.sort((a, b) => b.totalEarned - a.totalEarned);
-      return { data: sortedResult };
-    } catch (error) {
-      console.error(error);
-      return { data: [] };
-    }
+    const sortedResult = result.sort((a, b) => b.totalEarned - a.totalEarned);
+    return { data: sortedResult };
+  } catch (error) {
+    console.error('Erro no getUserRanking:', error);
+    this.logger.error(`Erro ao buscar ranking: ${error.message}`);
+    return { data: [] };
   }
+}
 
   public async getAllUsersByStatus(page: number, status: Status) {
     try {
