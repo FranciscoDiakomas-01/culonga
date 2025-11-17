@@ -182,9 +182,6 @@ export default class UserGetter {
           lte: fimMes,
         },
         status: 'APROVED',
-        userid: { // Garantir que userid não seja nulo
-          not: null
-        }
       },
       orderBy: {
         _sum: {
@@ -194,7 +191,6 @@ export default class UserGetter {
       take: 9,
     });
 
-    // Filtrar userids válidos e não nulos
     const validUserIds = ranking
       .map((r) => r.userid)
       .filter((id): id is string => id !== null);
@@ -202,10 +198,7 @@ export default class UserGetter {
     const [users] = await Promise.all([
       this.database.users.findMany({
         where: {
-          id: { in: validUserIds },
-          email: {
-            not: "franciscodiakoma@gmail.com"
-          }
+          id: { in: validUserIds }
         },
         select: {
           id: true,
@@ -218,9 +211,6 @@ export default class UserGetter {
 
     const result = ranking
       .map((r) => {
-        // Só processar se userid não for nulo
-        if (!r.userid) return null;
-        
         const user = users.find((u) => u.id === r.userid);
         return {
           name: user?.name,
@@ -228,8 +218,7 @@ export default class UserGetter {
           profile: user?.profile,
           totalEarned: r._sum.amount ?? 0,
         };
-      })
-      .filter((u): u is NonNullable<typeof u> => u !== null && u.totalEarned > 0);
+      }).filter((u) => u && u.totalEarned > 0);
 
     const sortedResult = result.sort((a, b) => b.totalEarned - a.totalEarned);
     return { data: sortedResult };
