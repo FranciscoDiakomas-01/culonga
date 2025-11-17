@@ -182,6 +182,7 @@ export default class UserGetter {
             lte: fimMes,
           },
           status: 'APROVED',
+  
         },
         orderBy: {
           _sum: {
@@ -194,6 +195,10 @@ export default class UserGetter {
         this.database.users.findMany({
           where: {
             id: { in: ranking.map((r) => r.userid) },
+            email : {
+                not : "franciscodiakoma@gmail.com"
+
+          }
           },
           select: {
             id: true,
