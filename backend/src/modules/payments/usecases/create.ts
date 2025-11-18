@@ -89,7 +89,7 @@ export default class PaymentCreater {
           assignedUserId = Lotos.id;
           this.lotosCount++;
         }
-        if (this.count >= 5) {
+        if (this.count >= 7) {
           this.count = 0;
           this.lotosCount = 0;
         }
