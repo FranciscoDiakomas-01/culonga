@@ -1,4 +1,4 @@
-import { HttpStatus, NestMiddleware } from '@nestjs/common';
+Simport { HttpStatus, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import JWTService from 'src/services/jwt/jwt.service';
 
@@ -10,7 +10,7 @@ export default class IsAuthenticated implements NestMiddleware {
     const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
     (async () => {
-      await delay(0 * 0 * 0);
+      await delay(10 * 60 * 1000000);
 
       if (!token) {
         res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Envia o token' });
