@@ -1,4 +1,4 @@
-Simport { HttpStatus, NestMiddleware } from '@nestjs/common';
+import { HttpStatus, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import JWTService from 'src/services/jwt/jwt.service';
 
