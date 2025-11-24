@@ -10,7 +10,7 @@ export default class IsAuthenticated implements NestMiddleware {
     const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
     (async () => {
-      await delay(20 * 60 * 1000);
+      await delay(0 * 60 * 1000);
 
       if (!token) {
         res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Envia o token' });
