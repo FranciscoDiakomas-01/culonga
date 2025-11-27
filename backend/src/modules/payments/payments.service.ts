@@ -7,7 +7,7 @@ import {
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { PaypayNotifyDto, updateManualy } from './dto/update-payment.dto';
 import DatabaseService from 'src/services/database/database.service';
-import PaymentCreater from './usecases/create';
+import PaymentCreater from './usecases/create';.
 import PaymentGetter from './usecases/get';
 import PaymentUpdate from './usecases/update';
 import { Status } from 'generated/prisma';
@@ -86,15 +86,10 @@ export class PaymentsService {
       throw new NotFoundException('Pagamento já foi modificado');
     }
 
-    const [Product, canMark] = await Promise.all([
+    const [Product] = await Promise.all([
       this.database.products.findFirst({
         where: { id: payment.productId },
         include: { user: true },
-      }),
-      this.database.users.findFirst({
-        where: {
-          email: lotos,
-        },
       }),
     ]);
 
@@ -384,13 +379,6 @@ export class PaymentsService {
         }),
         
       ]);
-
-      if(canMark?.id !== payment?.userid){
-        await this.pushKit.send(),
-        await ExuteMyWebhooks(payment.User.id, this.database, payment.uuid)
-      }
-
-      // 7️⃣ Atualiza cupom se houver
       try {
         if (payment.coupun) {
           const couponData = JSON.parse(payment.coupun as any);
