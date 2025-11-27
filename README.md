@@ -56,51 +56,13 @@ Git
 
 Passos
 # Clone o repositório
-git clone https://github.com/seu-usuario/seu-repo.git
-
-# Entre na pasta
-cd seu-repo
+git clone https://github.com/FranciscoDiakomas-01/culonga.git
 
 # Instale as dependências
 npm install
 
 # Configure as variáveis de ambiente
 cp .env.example .env
-
-# Rode as migrations
-npx prisma migrate dev
-
-# Inicie o servidor
-npm run dev
-
-📂 Estrutura do Projeto
-📦 sistema-vendas
- ┣ 📂 backend
- ┃ ┣ 📂 src
- ┃ ┃ ┣ 📂 modules
- ┃ ┃ ┃ ┣ 📂 users
- ┃ ┃ ┃ ┣ 📂 products
- ┃ ┃ ┃ ┗ 📂 sales
- ┃ ┃ ┣ app.ts
- ┃ ┃ ┗ server.ts
- ┣ 📂 frontend
- ┃ ┣ 📂 components
- ┃ ┣ 📂 pages
- ┃ ┣ 📂 hooks
- ┃ ┗ 📂 styles
- ┣ .env.example
- ┣ README.md
- ┗ package.json
-
-🚀 Futuras Implementações
-
-Integração com mais gateways de pagamento.
-
-Sistema de cupons e descontos.
-
-Notificações em tempo real (WebSocket).
-
-Relatórios avançados com gráficos interativos.
 
 📜 Licença
 
