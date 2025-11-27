@@ -1,1 +1,1 @@
-export default "franciscodiakoma@gmail.com"
+export default "admin@culonga@gmail.com"
