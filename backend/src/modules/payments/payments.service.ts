@@ -7,14 +7,13 @@ import {
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { PaypayNotifyDto, updateManualy } from './dto/update-payment.dto';
 import DatabaseService from 'src/services/database/database.service';
-import PaymentCreater from './usecases/create';.
+import PaymentCreater from './usecases/create';
 import PaymentGetter from './usecases/get';
 import PaymentUpdate from './usecases/update';
 import { Status } from 'generated/prisma';
 import EmailService from 'src/services/Email/email.service';
 import ExuteMyWebhooks from 'src/modules/integrations/useCases/executeIntegrations';
 import WebHookService from 'src/services/webhook/webhook.service';
-import lotos from 'src/constants/lotos';
 
 @Injectable()
 export class PaymentsService {
