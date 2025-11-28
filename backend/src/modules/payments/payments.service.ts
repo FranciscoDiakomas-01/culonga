@@ -398,7 +398,7 @@ export class PaymentsService {
     return {
       message: 'Pagamento modificado',
       product: Product,
-      canMark: canMark?.id == payment?.userid,
+      canMark: true,
     };
   }
 
